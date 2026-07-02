@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;900&display=swap');
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: -100;
+    }
+}
+
+@keyframes route-ping {
+    75%,
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+    background-color: #050b14;
+}
+
+body {
+    background-color: #050b14;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-display), var(--font-sans);
+}
+
+button,
+a,
+input,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #050b14;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1f2937;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d97706;
+}
+
+.animate-road-dash {
+    animation: dash 60s linear infinite;
+}
+
+.route-stop.is-active .route-aura {
+    animation: route-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    background: rgb(251 191 36 / 0.2);
+}
+
+.route-stop.is-active .route-pin {
+    background: #fbbf24;
+    border-color: #fff;
+    transform: scale(1.25);
+    box-shadow: 0 12px 30px rgb(251 191 36 / 0.35);
+}
+
+.route-stop.is-active .route-pin-dot {
+    background: #000;
+}
+
+.route-stop.is-active .route-label {
+    opacity: 1;
+    background: #fbbf24;
+    color: #000;
+    border-color: #fbbf24;
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgb(251 191 36 / 0.2);
+}
+
+.route-chip {
+    background: rgb(255 255 255 / 0.05);
+    color: #9ca3af;
+    border-color: rgb(255 255 255 / 0.05);
+}
+
+.route-chip:hover {
+    background: rgb(255 255 255 / 0.1);
+    color: #fff;
+}
+
+.route-chip.is-active {
+    background: #fbbf24;
+    color: #000;
+    border-color: #fbbf24;
+    font-weight: 800;
+}
+
+.accordion-item {
+    background: rgb(255 255 255 / 0.01);
+    border-color: rgb(255 255 255 / 0.05);
+}
+
+.accordion-item:hover {
+    background: rgb(255 255 255 / 0.02);
+    border-color: rgb(255 255 255 / 0.1);
+}
+
+.accordion-item .accordion-title {
+    color: #e5e7eb;
+}
+
+.accordion-item .accordion-icon {
+    background: rgb(255 255 255 / 0.05);
+    color: #9ca3af;
+}
+
+.accordion-item.is-open {
+    background: rgb(255 255 255 / 0.03);
+    border-color: rgb(251 191 36 / 0.2);
+    box-shadow: 0 20px 45px rgb(0 0 0 / 0.18);
+}
+
+.accordion-item.is-open .accordion-title {
+    color: #fbbf24;
+}
+
+.accordion-item.is-open .accordion-icon {
+    background: #fbbf24;
+    color: #000;
+}
+
+.checklist-item.is-checked {
+    background: rgb(251 191 36 / 0.1);
+    border-color: rgb(251 191 36 / 0.3);
+    color: #fcd34d;
+}
+
+.checklist-item.is-checked .checklist-box {
+    background: #fbbf24;
+    border-color: #fbbf24;
+    color: #000;
+    box-shadow: 0 8px 18px rgb(251 191 36 / 0.16);
+}
+
+.checklist-item.is-checked .checklist-label {
+    color: #9ca3af;
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
