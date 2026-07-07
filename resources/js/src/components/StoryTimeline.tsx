@@ -293,7 +293,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
           </p>
         </div>
 
-        <div className="space-y-40 sm:space-y-64">
+        <div className="space-y-10 sm:space-y-16">
           {items.map((item, index) => {
             const tele = getDayTelemetry(index);
             const TeleIcon = tele.iconType;
@@ -303,9 +303,9 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
               <div
                 key={item.day}
                 id={`timeline-section-${index}`}
-                className="grid grid-cols-12 gap-4 sm:gap-6 md:gap-8 items-center scroll-mt-28 relative py-20 px-4 md:px-8"
+                className="grid min-h-[100svh] grid-cols-12 gap-4 sm:gap-6 md:gap-8 items-center scroll-mt-28 relative py-12 md:py-16 px-4 md:px-8"
               >
-                <div className="absolute inset-y-0 left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] w-screen pointer-events-none z-0 overflow-hidden">
+                <div className="absolute inset-0 left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] w-screen min-h-[100svh] pointer-events-none z-0 overflow-hidden">
                   <img src={item.image} alt="" className="w-full h-full object-cover opacity-100 saturate-[1.1] brightness-[0.95] contrast-[1.05]" referrerPolicy="no-referrer" />
                   <div className="absolute inset-0 bg-gradient-to-b from-[#050B14]/95 via-[#050B14]/20 to-[#050B14]/95" />
                   <div className="absolute inset-0 bg-gradient-to-r from-[#050B14]/65 via-transparent to-[#050B14]/65" />
