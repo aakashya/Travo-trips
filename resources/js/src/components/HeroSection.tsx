@@ -52,11 +52,15 @@ export default function HeroSection({ currentView, onNavigate, onOpenBooking, on
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(11,13,17,0.1)_0%,rgba(0,0,0,0.8)_100%)] pointer-events-none" />
 
       <header className="relative z-30 w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between pointer-events-auto">
-        <button onClick={() => onNavigate("home")} className="flex items-center space-x-2.5 group focus:outline-none">
-          <span className="px-4 py-2 bg-brand-sand text-brand-charcoal font-black tracking-[0.18em] text-sm md:text-base rounded-md border border-white/10 font-display shadow-lg shadow-black/30 transition-transform group-hover:scale-105 active:scale-95">
-            TRAVO
+        <button onClick={() => onNavigate("home")} className="flex items-center group focus:outline-none">
+          <span className="h-14 w-36 md:w-44 overflow-hidden rounded-md border border-white/10 bg-brand-sand-light shadow-lg shadow-black/30 transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center p-1">
+            <img
+              src="/images/travo-logo.jpeg"
+              alt="TRAVO"
+              className="h-full w-full object-contain object-center"
+              decoding="async"
+            />
           </span>
-          <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-brand-sand/80 font-black font-mono">EXPEDITIONS</span>
         </button>
 
         <nav className="hidden md:flex items-center space-x-6 text-xs font-black tracking-widest text-gray-300">

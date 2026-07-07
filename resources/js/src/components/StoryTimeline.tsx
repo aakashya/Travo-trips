@@ -150,12 +150,20 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
     const onScroll = () => {
       if (!timelineRef.current || !pathRef.current || !items.length) return;
 
-      const containerRect = timelineRef.current.getBoundingClientRect();
+      const firstAnchor = document.getElementById("road-anchor-0");
+      const lastAnchor = document.getElementById(`road-anchor-${items.length - 1}`);
+      if (!firstAnchor || !lastAnchor) return;
+
       const viewportHeight = window.innerHeight;
-      const triggerStart = viewportHeight * 0.65;
-      const totalRoadLength = containerRect.height - viewportHeight * 0.25;
-      const amountScrolled = triggerStart - containerRect.top;
-      const pct = Math.max(0, Math.min(1, amountScrolled / (totalRoadLength || 1)));
+      const firstRect = firstAnchor.getBoundingClientRect();
+      const lastRect = lastAnchor.getBoundingClientRect();
+      const firstCenterY = firstRect.top + firstRect.height / 2;
+      const lastCenterY = lastRect.top + lastRect.height / 2;
+      const startTriggerY = viewportHeight * 0.78;
+      const endTriggerY = viewportHeight * 0.42;
+      const roadViewportSpan = Math.max(lastCenterY - firstCenterY, 1);
+      const scrollSpan = roadViewportSpan + (startTriggerY - endTriggerY);
+      const pct = Math.max(0, Math.min(1, (startTriggerY - firstCenterY) / scrollSpan));
 
       targetProgress = pct;
       setActiveDay(Math.floor(pct * (items.length - 0.01)));
@@ -231,7 +239,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
 
       {pathD && carState.x > 0 && (
         <div
-          className="absolute pointer-events-none z-10 transition-transform duration-75 ease-out select-none"
+          className="absolute pointer-events-none z-30 transition-transform duration-75 ease-out select-none"
           style={{
             left: `${carState.x}px`,
             top: `${carState.y}px`,

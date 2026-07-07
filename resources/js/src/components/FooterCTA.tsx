@@ -75,9 +75,15 @@ export default function FooterCTA({ onOpenBooking, tripName, price, bgImage, isH
 
       <div className="border-t border-white/5 py-8 px-6 bg-[#040810] text-center text-xs text-gray-500 font-mono">
         <div className="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto gap-4">
-          <button onClick={() => onNavigate?.("home")} className="flex items-center gap-2 focus:outline-none">
-            <span className="text-sm font-black tracking-widest font-display px-2.5 py-1 bg-brand-sand text-brand-charcoal rounded">TRAVO</span>
-            <p className="text-[9px] text-gray-600 font-black">EXPEDITIONS CO.</p>
+          <button onClick={() => onNavigate?.("home")} className="flex items-center focus:outline-none">
+            <span className="h-11 w-32 overflow-hidden rounded bg-brand-sand-light border border-white/10 flex items-center justify-center p-1">
+              <img
+                src="/images/travo-logo.jpeg"
+                alt="TRAVO"
+                className="h-full w-full object-contain object-center"
+                decoding="async"
+              />
+            </span>
           </button>
           <div className="flex gap-6 text-[9px] font-black tracking-widest">
             <button onClick={() => onNavigate?.("home")} className="hover:text-white transition-colors uppercase">HOME</button>
