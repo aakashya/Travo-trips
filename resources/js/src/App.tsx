@@ -11,10 +11,11 @@ import FooterCTA from "./components/FooterCTA";
 import BookingForm from "./components/BookingForm";
 import GallerySection from "./components/GallerySection";
 import UpcomingCalendar from "./components/UpcomingCalendar";
+import BookNowPage from "./components/BookNowPage";
 import { TRIPS_DATA, TRIPS_LIST } from "./data";
 import { ArrowRight, Calendar, Compass, ShieldCheck, Sparkles, Star, Users } from "lucide-react";
 
-export type AppView = "home" | "manali" | "valley-of-flowers";
+export type AppView = "home" | "manali" | "valley-of-flowers" | "book-now";
 
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>("home");
@@ -23,12 +24,12 @@ export default function App() {
 
   const handleOpenBooking = (tripId: string) => {
     setSelectedTripIdForBooking(tripId || "manali");
-    setIsBookingOpen(true);
+    setCurrentView("book-now");
   };
 
   const handleNavigate = (view: AppView) => {
     setCurrentView(view);
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   const handleExploreClick = () => {
@@ -36,16 +37,18 @@ export default function App() {
     target?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const activeTrip = currentView !== "home" ? TRIPS_DATA[currentView] : null;
+  const activeTrip = currentView !== "home" && currentView !== "book-now" ? TRIPS_DATA[currentView] : null;
 
   return (
     <div className="min-h-screen bg-[#050B14] text-white selection:bg-brand-sand selection:text-brand-charcoal antialiased overflow-x-hidden">
-      <HeroSection
-        currentView={currentView}
-        onNavigate={handleNavigate}
-        onOpenBooking={handleOpenBooking}
-        onExploreClick={handleExploreClick}
-      />
+      {currentView !== "book-now" && (
+        <HeroSection
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          onOpenBooking={handleOpenBooking}
+          onExploreClick={handleExploreClick}
+        />
+      )}
 
       {currentView === "home" && (
         <div className="animate-[fadeIn_0.6s_ease-out]">
@@ -187,6 +190,10 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         </div>
+      )}
+
+      {currentView === "book-now" && (
+        <BookNowPage onNavigate={handleNavigate} initialTripId={selectedTripIdForBooking} />
       )}
 
       {currentView !== "home" && activeTrip && (
