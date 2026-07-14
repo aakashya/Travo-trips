@@ -76,6 +76,7 @@ export default function App() {
             <TripsShowcase 
               onNavigate={handleNavigate}
               onOpenBooking={handleOpenBooking}
+              isHomePage={true}
             />
           </div>
 

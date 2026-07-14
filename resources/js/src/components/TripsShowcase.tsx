@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Compass, Calendar, Timer, MapPin, Search, SlidersHorizontal, 
-  ArrowRight, Star, Heart, Check, X, Shield, Sparkles, ChevronRight, HelpCircle
+  ArrowRight, Star, Heart, Check, X, Shield
 } from "lucide-react";
 
 // Types for the showcase trips
@@ -28,6 +28,7 @@ export interface ShowcaseTrip {
 interface TripsShowcaseProps {
   onNavigate: (view: any) => void;
   onOpenBooking: (tripId: string) => void;
+  isHomePage?: boolean;
 }
 
 // 30+ Curated Trips Across 5 Distinct Categories
@@ -762,11 +763,14 @@ const ALL_SHOWCASE_TRIPS: ShowcaseTrip[] = [
   }
 ];
 
-export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowcaseProps) {
+const HOME_TRIPS_PER_PAGE = 6;
+
+export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = false }: TripsShowcaseProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("popular");
+  const [homePageIndex, setHomePageIndex] = useState(0);
   
   // Modal State for details of a selected trip
   const [selectedDetailedTrip, setSelectedDetailedTrip] = useState<ShowcaseTrip | null>(null);
@@ -828,6 +832,16 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
     { id: "leisure", name: "🌿 Leisure & Nature", count: ALL_SHOWCASE_TRIPS.filter(t => t.category === "leisure").length },
   ];
 
+  const homePageCount = Math.ceil(filteredAndSortedTrips.length / HOME_TRIPS_PER_PAGE);
+  const visibleTrips = isHomePage
+    ? filteredAndSortedTrips.slice(homePageIndex * HOME_TRIPS_PER_PAGE, (homePageIndex + 1) * HOME_TRIPS_PER_PAGE)
+    : filteredAndSortedTrips;
+
+  const handleCategoryChange = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    setHomePageIndex(0);
+  };
+
   const handleTripCardAction = (trip: ShowcaseTrip) => {
     // If it's one of our two primary deep-interactive trips, use onNavigate to show full immersive view
     if (trip.id === "manali" || trip.id === "valley-of-flowers") {
@@ -859,7 +873,8 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
         </div>
 
         {/* Dynamic Filters Bar */}
-        <div className="p-4 sm:p-6 bg-white rounded-3xl border border-neutral-200 shadow-sm space-y-4">
+        <div className={isHomePage ? "space-y-5" : "p-4 sm:p-6 bg-white rounded-3xl border border-neutral-200 shadow-sm space-y-4"}>
+          {!isHomePage && (
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             
             {/* Search Input */}
@@ -918,17 +933,20 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
 
             </div>
           </div>
+          )}
 
           {/* Horizontal Category Selection Tabs */}
-          <div className="border-t border-neutral-100 pt-4 flex items-center overflow-x-auto gap-2 no-scrollbar scroll-smooth">
+          <div className={isHomePage ? "flex flex-wrap items-center justify-center gap-2 sm:gap-3" : "border-t border-neutral-100 pt-4 flex items-center overflow-x-auto gap-2 no-scrollbar scroll-smooth"}>
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => handleCategoryChange(cat.id)}
                 className={`px-4 py-2.5 rounded-2xl text-xs uppercase tracking-wider font-black transition-all duration-300 whitespace-nowrap flex items-center gap-2 ${
                   activeCategory === cat.id
                     ? "bg-[#9C753B] text-white shadow-md shadow-[#9C753B]/20 scale-[1.02]"
-                    : "bg-[#FAF9F6] text-neutral-700 border border-neutral-200 hover:border-[#9C753B]/45 hover:bg-white"
+                    : isHomePage
+                      ? "bg-white text-neutral-700 border border-neutral-200 shadow-sm hover:border-[#9C753B]/45 hover:bg-[#FFFDF9] hover:shadow-md"
+                      : "bg-[#FAF9F6] text-neutral-700 border border-neutral-200 hover:border-[#9C753B]/45 hover:bg-white"
                 }`}
               >
                 <span>{cat.name}</span>
@@ -944,7 +962,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
         {/* Trips Grid Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
-            {filteredAndSortedTrips.map((trip) => (
+            {visibleTrips.map((trip) => (
               <motion.div
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -1061,6 +1079,25 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
             </div>
           )}
         </div>
+
+        {isHomePage && homePageCount > 1 && (
+          <div className="flex items-center justify-center gap-2 pt-1" aria-label="Trip pages">
+            {Array.from({ length: homePageCount }).map((_, pageIndex) => (
+              <button
+                key={pageIndex}
+                type="button"
+                onClick={() => setHomePageIndex(pageIndex)}
+                aria-label={`Show trip page ${pageIndex + 1}`}
+                aria-current={homePageIndex === pageIndex ? "page" : undefined}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  homePageIndex === pageIndex
+                    ? "w-8 bg-[#9C753B] shadow-sm"
+                    : "w-2.5 bg-neutral-300 hover:bg-neutral-400"
+                }`}
+              />
+            ))}
+          </div>
+        )}
 
       </div>
 
