@@ -117,7 +117,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
               </span>
             </h2>
             <p className="text-xs sm:text-sm text-neutral-600 font-normal max-w-xl mx-auto leading-relaxed">
-              Choose from 3 carefully curated group departures. Designed for young hearts (Age 18-35), led by experts, and budgeted with full transparency.
+              Explore carefully curated group departures designed for young hearts (Age 18-35), led by experts, and budgeted with full transparency.
             </p>
           </div>
         )}
@@ -200,9 +200,6 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
                 }`}
               >
                 <span>{cat.name}</span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-lg font-mono ${activeCategory === cat.id ? "bg-white/25 text-white" : "bg-neutral-200/60 text-neutral-600"}`}>
-                  {cat.count}
-                </span>
               </button>
             ))}
           </div>

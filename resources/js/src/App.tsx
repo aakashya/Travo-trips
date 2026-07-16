@@ -17,6 +17,7 @@ import TeamPage from "./components/TeamPage";
 import AboutPage from "./components/AboutPage";
 import ContactPage from "./components/ContactPage";
 import { TRIPS_DATA, TRIPS_LIST } from "./data";
+import { PUBLISHED_CATALOGUE_TRIPS } from "./catalogueTrips";
 import { Flame, Compass, Calendar, Timer, ArrowRight, ShieldCheck, Star, Users, MapPin, Sparkles } from "lucide-react";
 
 export type AppView = "home" | "manali" | "valley-of-flowers" | "book-now" | "trips" | "team" | "about" | "contact";
@@ -129,6 +130,9 @@ export default function App() {
   };
 
   const activeTrip = ["manali", "valley-of-flowers"].includes(currentView) ? (TRIPS_DATA as any)[currentView] : null;
+  const bookingTrip = TRIPS_DATA[selectedTripIdForBooking]
+    || PUBLISHED_CATALOGUE_TRIPS.find((trip) => trip.id === selectedTripIdForBooking)
+    || TRIPS_DATA["manali"];
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand/30 selection:text-brand-charcoal antialiased overflow-x-hidden">
@@ -154,11 +158,8 @@ export default function App() {
             />
           </div>
 
-          {/* B. TRAVO Philosophy Story Intro (General Mode) */}
-          <StoryIntro tripId="general" />
-
-          {/* C. The TRAVO Trust Promise (Why Travelers Choose Us) */}
-          <section className="py-24 px-6 bg-[#FAF9F6] relative overflow-hidden text-neutral-900 border-b border-neutral-200">
+          {/* B. The TRAVO Trust Promise (Why Travelers Choose Us) */}
+          <section className="py-24 px-6 bg-white relative overflow-hidden text-neutral-900 border-b border-neutral-200">
             <div className="absolute top-1/2 left-0 w-80 h-80 bg-brand-sand/[0.05] rounded-full filter blur-3xl pointer-events-none" />
 
             <div className="max-w-7xl mx-auto space-y-16">
@@ -219,13 +220,16 @@ export default function App() {
             </div>
           </section>
 
-          {/* Upcoming Trips Calendar Section */}
+          {/* C. Upcoming Trips Calendar Section */}
           <UpcomingCalendar 
             onNavigate={handleNavigate}
             onOpenBooking={handleOpenBooking}
           />
 
-          {/* Interactive Cinematic Gallery Section */}
+          {/* D. TRAVO Philosophy Story Intro (General Mode) */}
+          <StoryIntro tripId="general" />
+
+          {/* E. Interactive Cinematic Gallery Section */}
           <GallerySection />
 
           {/* D. Shared General Footer CTA */}
@@ -372,10 +376,10 @@ export default function App() {
             initialTripId={selectedTripIdForBooking}
           />
           <FooterCTA
-            onOpenBooking={() => handleOpenBooking((TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).id)}
-            tripId={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).id}
-            tripName={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).name}
-            price={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).price}
+            onOpenBooking={() => handleOpenBooking(bookingTrip.id)}
+            tripId={bookingTrip.id}
+            tripName={bookingTrip.name}
+            price={bookingTrip.price}
             bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />

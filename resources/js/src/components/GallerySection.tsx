@@ -152,7 +152,7 @@ export default function GallerySection() {
   }, [selectedImageIndex, filteredImages]);
 
   return (
-    <section id="gallery" className="relative bg-white py-24 px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
+    <section id="gallery" className="relative bg-[#FAF9F6] py-24 px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
       {/* Absolute Ambient Glows */}
       <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-brand-sand/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-brand-sand/10 rounded-full blur-[160px] pointer-events-none" />

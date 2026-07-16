@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { X, Ticket, Plus, Minus, Gift, Sparkles, CheckCircle2, ShieldAlert } from "lucide-react";
 import { BookingDetails } from "../types";
 import { TRIPS_DATA } from "../data";
+import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
+import { postJson } from "../api";
 
 interface BookingFormProps {
   isOpen: boolean;
@@ -10,7 +12,9 @@ interface BookingFormProps {
 }
 
 export default function BookingForm({ isOpen, onClose, selectedTripId }: BookingFormProps) {
-  const trip = TRIPS_DATA[selectedTripId] || TRIPS_DATA["manali"];
+  const trip = TRIPS_DATA[selectedTripId]
+    || PUBLISHED_CATALOGUE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
+    || TRIPS_DATA["manali"];
   
   // Parse numeric fare per seat from the trip price (e.g. "₹9,999/-" -> 9999)
   const fareStr = trip.price.replace(/[^\d]/g, "");
@@ -92,7 +96,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
     setDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!details.fullName || !details.phoneNumber || !details.email) {
       setFormError("Please fill in all required fields!");
@@ -102,23 +106,32 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
 
     setIsSubmitting(true);
 
-    // Simulate database write & boarding ticket production
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await postJson<{ reference_code: string }>("/forms/booking-inquiries", {
+        trip_id: selectedTripId,
+        full_name: details.fullName,
+        phone: details.phoneNumber,
+        email: details.email,
+        seats: details.seats,
+        promo_code: appliedPromo || null,
+        special_requests: details.specialRequests || null,
+      });
+
+      setGeneratedPass(response.reference_code);
       setIsSuccess(true);
-      const randomId = Math.floor(1000 + Math.random() * 9000);
-      const prefix = selectedTripId === "manali" ? "TRV-MNL" : "TRV-VOF";
-      setGeneratedPass(`${prefix}-${randomId}`);
-    }, 1500);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Unable to submit your booking. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const subTotal = details.seats * FARE_PER_SEAT;
   const netTotal = Math.max(1, subTotal - discountAmount);
 
-  // Determine Assembly Point based on active trip
-  const assemblyPoint = selectedTripId === "manali" 
-    ? "New Delhi Metro Station, Gate 1" 
-    : "IFFCO Chowk Gurgaon & New Delhi Metro Gate 2";  return (
+  const assemblyPoint = "IFFCO Chowk, Gurugram";
+
+  return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background overlay screen click backdrop */}
       <div 
@@ -311,7 +324,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                 disabled={isSubmitting}
                 className="w-full py-4 text-center bg-[#9C753B] hover:bg-[#7C552B] text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
               >
-                {isSubmitting ? "Generating Boarding Token..." : `Authorize Boarding Booking`}
+                {isSubmitting ? "Saving Booking Inquiry..." : `Authorize Boarding Booking`}
               </button>
 
             </form>

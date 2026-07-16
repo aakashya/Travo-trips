@@ -13,10 +13,9 @@ export default function AboutPage() {
           {/* Photo Montage card */}
           <div className="relative p-1 rounded-[36px] bg-gradient-to-br from-brand-sand via-white/40 to-transparent border border-neutral-200 shadow-2xl overflow-hidden aspect-[4/3] group">
             <img 
-              src="https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=1000&auto=format&fit=crop" 
-              alt="Group of friends hiking together" 
+              src="/images/group.JPG"
+              alt="TRAVO travel group at the Atal Tunnel"
               className="w-full h-full object-cover rounded-[32px] filter brightness-[0.85] saturate-[1.05] group-hover:scale-[1.01] transition-transform duration-700"
-              referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-[32px] pointer-events-none" />
             <div className="absolute bottom-6 left-6 right-6 text-white space-y-2 text-left">

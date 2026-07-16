@@ -4,6 +4,7 @@ import {
   Mail, Phone, MapPin, Send, HelpCircle, Check, 
   ChevronDown
 } from "lucide-react";
+import { postJson } from "../api";
 
 interface FAQItem {
   q: string;
@@ -29,7 +30,7 @@ const FAQ_ITEMS: FAQItem[] = [
   },
   {
     q: "Do you offer customizable corporate or private group tours?",
-    a: "Yes! If you have a group of 10+ colleagues, friends, or family members, we can customize a private Tempo Traveller expedition with a dedicated Captain on any of our 30+ routes."
+    a: "Yes! If you have a group of 10+ colleagues, friends, or family members, we can customize a private Tempo Traveller expedition with a dedicated Captain on our available routes."
   }
 ];
 
@@ -42,20 +43,38 @@ export default function ContactPage() {
     message: ""
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [referenceCode, setReferenceCode] = useState("");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formState.name || !formState.email || !formState.message) {
-      alert("Please fill in all mandatory fields.");
+      setFormError("Please fill in all mandatory fields.");
       return;
     }
-    // Simulate real database or email submission
-    setIsSubmitted(true);
-    setTimeout(() => {
-      // Clear form after a delay
+
+    setFormError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await postJson<{ reference_code: string }>("/forms/contact-inquiries", {
+        name: formState.name,
+        email: formState.email,
+        phone: formState.phone,
+        trip_interest: formState.tripInterest,
+        message: formState.message,
+      });
+
+      setReferenceCode(response.reference_code);
+      setIsSubmitted(true);
       setFormState({ name: "", email: "", phone: "", tripInterest: "general", message: "" });
-    }, 4000);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Unable to send your inquiry. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,8 +128,8 @@ export default function ContactPage() {
                 <div className="space-y-1 text-xs">
                   <p className="font-bold text-neutral-400 uppercase tracking-widest text-[9px] leading-none">Basecamp headquarters</p>
                   <p className="font-black text-neutral-800 text-sm mt-0.5 leading-snug">
-                    TRAVO Expeditions HQ, Phase 3, <br />
-                    DLF Cyber City, Gurugram, Haryana - 122002
+                    TRAVO Trips HQ, Sector 14, <br />
+                    Gurugram, Haryana - 122001
                   </p>
                 </div>
               </div>
@@ -152,8 +171,15 @@ export default function ContactPage() {
                   <p className="text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed">
                     Thank you! A senior TRAVO captain has been assigned to your request and will contact you via phone or WhatsApp shortly.
                   </p>
+                  <p className="text-[10px] font-mono font-black tracking-widest text-[#9C753B]">
+                    Reference: {referenceCode}
+                  </p>
                   <button 
-                    onClick={() => setIsSubmitted(false)}
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setReferenceCode("");
+                      setFormError("");
+                    }}
                     className="px-5 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-xl text-xs font-bold uppercase tracking-wider"
                   >
                     Send Another Message
@@ -208,8 +234,8 @@ export default function ContactPage() {
                       >
                         <option value="general">✨ General Information Inquiry</option>
                         <option value="manali">🏔️ Manali Kasol Escape</option>
-                        <option value="vof">🌸 Valley of Flowers Expedition</option>
-                        <option value="ladakh">🗺️ Leh Ladakh Roadtrip</option>
+                        <option value="valley-of-flowers">🌸 Valley of Flowers Expedition</option>
+                        <option value="udaipur-lakes">🏰 Udaipur Lakes & Palaces</option>
                         <option value="corporate">💼 Corporate Custom Group Tour</option>
                       </select>
                     </div>
@@ -227,11 +253,18 @@ export default function ContactPage() {
                     />
                   </div>
 
+                  {formError && (
+                    <p className="text-xs text-rose-600 font-bold bg-rose-50 border border-rose-200 rounded-xl px-4 py-3">
+                      {formError}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full py-4.5 bg-[#9C753B] hover:bg-[#7C552B] active:scale-[0.98] text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="w-full py-4.5 bg-[#9C753B] hover:bg-[#7C552B] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
                   >
-                    <span>Send Inquiry Packet</span>
+                    <span>{isSubmitting ? "Sending Inquiry..." : "Send Inquiry Packet"}</span>
                     <Send className="w-3.5 h-3.5" />
                   </button>
 

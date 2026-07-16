@@ -63,7 +63,7 @@ export default function StoryIntro({ chapters, tripId, tripName }: StoryIntroPro
   ];
 
   return (
-    <section id="chapter-intro" className="relative bg-[#FAF9F6] py-24 md:py-32 px-6 overflow-hidden border-b border-neutral-200">
+    <section id="chapter-intro" className={`relative py-24 md:py-32 px-6 overflow-hidden border-b border-neutral-200 ${tripId === "general" ? "bg-white" : "bg-[#FAF9F6]"}`}>
       {/* Visual glowing geometric background element */}
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />

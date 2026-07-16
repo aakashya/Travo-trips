@@ -76,7 +76,7 @@ export default function FooterCTA({
           <div className="pt-5 flex flex-wrap justify-center items-center gap-x-8 gap-y-2 text-[10px] font-mono uppercase tracking-widest text-neutral-600 font-bold">
             <span className="flex items-center gap-1">🛡️ verified secure operators</span>
             <span className="flex items-center gap-1">🗺️ hand-vetted alpine trails</span>
-            <span className="flex items-center gap-1">⭐ 4.9 Rating (420+ campers)</span>
+            <span className="flex items-center gap-1">⭐ 98% positive feedback</span>
           </div>
         </div>
       </div>

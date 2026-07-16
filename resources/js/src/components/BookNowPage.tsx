@@ -21,7 +21,9 @@ import {
   ArrowRight,
   Info
 } from "lucide-react";
-import { TRIPS_DATA, TRIPS_LIST } from "../data";
+import { TRIPS_DATA } from "../data";
+import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
+import { postJson } from "../api";
 
 interface BookNowPageProps {
   onNavigate: (view: "home" | "manali" | "valley-of-flowers" | "book-now") => void;
@@ -30,7 +32,9 @@ interface BookNowPageProps {
 
 export default function BookNowPage({ onNavigate, initialTripId = "manali" }: BookNowPageProps) {
   const [selectedTripId, setSelectedTripId] = useState<string>(initialTripId);
-  const trip = TRIPS_DATA[selectedTripId] || TRIPS_DATA["manali"];
+  const trip = TRIPS_DATA[selectedTripId]
+    || PUBLISHED_CATALOGUE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
+    || TRIPS_DATA["manali"];
 
   // Parse numeric fare per seat from the trip price (e.g. "₹9,999/-" -> 9999)
   const fareStr = trip.price.replace(/[^\d]/g, "");
@@ -95,7 +99,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     setDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!details.fullName || !details.phoneNumber || !details.email) {
       setFormError("Please fill in all required fields!");
@@ -104,14 +108,24 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     setFormError("");
     setIsSubmitting(true);
 
-    // Simulate database write & boarding ticket production
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await postJson<{ reference_code: string }>("/forms/booking-inquiries", {
+        trip_id: selectedTripId,
+        full_name: details.fullName,
+        phone: details.phoneNumber,
+        email: details.email,
+        seats: details.seats,
+        promo_code: appliedPromo || null,
+        special_requests: details.specialRequests || null,
+      });
+
+      setGeneratedPass(response.reference_code);
       setIsSuccess(true);
-      const randomId = Math.floor(1000 + Math.random() * 9000);
-      const prefix = selectedTripId === "manali" ? "TRV-MNL" : "TRV-VOF";
-      setGeneratedPass(`${prefix}-${randomId}`);
-    }, 1200);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Unable to submit your booking. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopy = (text: string, label: string) => {
@@ -124,10 +138,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
   const netTotal = Math.max(1, subTotal - discountAmount);
   const tokenAmount = details.seats * 2000;
 
-  // Determine Assembly Point based on active trip
-  const assemblyPoint = selectedTripId === "manali" 
-    ? "New Delhi Metro Station, Gate 1 (9:00 PM Departure)" 
-    : "IFFCO Chowk Gurgaon (8:30 PM) & New Delhi Metro Gate 2 (9:00 PM)";
+  const assemblyPoint = "IFFCO Chowk, Gurugram";
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand selection:text-neutral-900 antialiased pb-24">
@@ -190,8 +201,8 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                   </h2>
                   
                   {!isSuccess && (
-                    <div className="grid grid-cols-2 gap-3 pt-2">
-                      {TRIPS_LIST.map((t) => (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                      {PUBLISHED_CATALOGUE_TRIPS.map((t) => (
                         <button
                           key={t.id}
                           type="button"
@@ -394,7 +405,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       disabled={isSubmitting}
                       className="w-full py-4 text-center bg-[#9C753B] hover:bg-[#7C552B] text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
                     >
-                      {isSubmitting ? "Generating Boarding Token..." : `Authorize Boarding Booking`}
+                      {isSubmitting ? "Saving Booking Inquiry..." : `Authorize Boarding Booking`}
                     </button>
 
                   </form>

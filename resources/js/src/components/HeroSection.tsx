@@ -204,7 +204,7 @@ export default function HeroSection({
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center space-y-4 my-auto py-12 animate-[fadeIn_0.5s_ease-out]">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/25 text-[10px] font-black uppercase tracking-widest text-brand-sand">
             <Sparkles className="w-3.5 h-3.5 text-brand-sand animate-pulse" /> 
-            {currentView === "trips" && "3 Active Journeys"}
+            {currentView === "trips" && "Active Group Journeys"}
             {currentView === "team" && "Founder-Led Journeys"}
             {currentView === "about" && "Founded by Backpackers"}
             {currentView === "contact" && "24/7 Dispatch Center"}
