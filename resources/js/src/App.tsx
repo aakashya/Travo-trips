@@ -43,6 +43,8 @@ const VIEW_TITLES: Record<AppView, string> = {
   contact: "Contact Us | TRAVO",
 };
 
+const FOOTER_BG_IMAGE = "https://unsplash.com/photos/dgyl6znQ3Q4/download?force=true&w=1800";
+
 const normalizePath = (pathname: string) => {
   if (pathname === "/") return pathname;
   return pathname.replace(/\/+$/, "");
@@ -232,7 +234,7 @@ export default function App() {
             tripId="general"
             tripName="TRAVO Expeditions"
             price="₹9,999"
-            bgImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop"
+            bgImage={FOOTER_BG_IMAGE}
             isHomeView={true}
             onNavigate={handleNavigate}
           />
@@ -292,7 +294,7 @@ export default function App() {
             tripId={activeTrip.id}
             tripName={activeTrip.name}
             price={activeTrip.price}
-            bgImage={activeTrip.heroImage}
+            bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />
 
@@ -311,7 +313,7 @@ export default function App() {
             tripId="general"
             tripName="TRAVO Expeditions"
             price="₹9,999"
-            bgImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop"
+            bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />
         </div>
@@ -326,7 +328,7 @@ export default function App() {
             tripId="general"
             tripName="TRAVO Expeditions"
             price="₹9,999"
-            bgImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop"
+            bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />
         </div>
@@ -341,7 +343,7 @@ export default function App() {
             tripId="general"
             tripName="TRAVO Expeditions"
             price="₹9,999"
-            bgImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop"
+            bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />
         </div>
@@ -356,7 +358,7 @@ export default function App() {
             tripId="general"
             tripName="TRAVO Expeditions"
             price="₹9,999"
-            bgImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop"
+            bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />
         </div>
@@ -374,7 +376,7 @@ export default function App() {
             tripId={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).id}
             tripName={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).name}
             price={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).price}
-            bgImage={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).heroImage}
+            bgImage={FOOTER_BG_IMAGE}
             onNavigate={handleNavigate}
           />
         </div>
