@@ -34,7 +34,7 @@ export default function HeroSection({
   }, []);
 
   const trips = TRIPS_LIST;
-  const isSubPage = ["trips", "team", "about", "contact"].includes(currentView);
+  const isSubPage = ["trips", "team", "about", "contact", "book-now"].includes(currentView);
   const currentTrip = (currentView === "home" || isSubPage) ? trips[0] : TRIPS_DATA[currentView];
 
   return (
@@ -208,20 +208,23 @@ export default function HeroSection({
             {currentView === "team" && "Founder-Led Journeys"}
             {currentView === "about" && "Founded by Backpackers"}
             {currentView === "contact" && "24/7 Dispatch Center"}
+            {currentView === "book-now" && "Secure Your Journey"}
           </div>
           
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none uppercase font-display drop-shadow-xl text-white">
             {currentView === "trips" && "Expedition Catalogue"}
-            {currentView === "team" && "Meet The Founders"}
+            {currentView === "team" && "Meet The Team"}
             {currentView === "about" && "The TRAVO Story"}
             {currentView === "contact" && "Get in Touch"}
+            {currentView === "book-now" && "Book Your Journey"}
           </h1>
 
           <p className="text-xs sm:text-sm text-gray-200 max-w-xl mx-auto leading-relaxed font-light drop-shadow">
             {currentView === "trips" && "Explore our active Manali, Valley of Flowers, and Udaipur small-group journeys."}
             {currentView === "team" && "Meet the people bringing together vision, operations, and technology to build every TRAVO experience."}
             {currentView === "about" && "How three freezing solo backpackers around a Kasol bonfire decided to build India's most intimate premium road-trip travel club."}
-            {currentView === "contact" && "Have a question about group composition, custom corporate departures, or road safety? Our coordination team is active 24/7."}
+            {currentView === "contact" && "Have questions about our itineraries, group composition, or custom corporate bookings?"}
+            {currentView === "book-now" && "Reserve your place on an upcoming TRAVO journey and complete your booking details securely."}
           </p>
         </div>
       ) : (

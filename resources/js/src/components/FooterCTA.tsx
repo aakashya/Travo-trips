@@ -80,7 +80,7 @@ export default function FooterCTA({
               </button>
             ) : (
               <a
-                href={`https://wa.me/911234567890?text=${encodeURIComponent(`Hi TRAVO! My friends and I are stoked about the upcoming ${tripName} expedition. Are slots available?`)}`}
+                href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My friends and I are stoked about the upcoming ${tripName} expedition. Are slots available?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto px-8 py-4 bg-[#25D366] hover:bg-[#20ba56] text-white font-extrabold text-xs uppercase tracking-widest rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
@@ -157,11 +157,11 @@ export default function FooterCTA({
       {/* Floating Sticky Circular Contact badge on right corner of viewport */}
       <div className="fixed bottom-6 right-6 z-40">
         <a
-          href={`https://wa.me/911234567890?text=${encodeURIComponent(isHomeView ? "Hi TRAVO! I'd like to ask a general query about upcoming Himalayan group trips." : `Hi TRAVO! I have a question regarding the ${tripName} expedition.`)}`}
+          href={`https://wa.me/919996965697?text=${encodeURIComponent(isHomeView ? "Hi TRAVO! I'd like to ask a general query about upcoming Himalayan group trips." : `Hi TRAVO! I have a question regarding the ${tripName} expedition.`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="relative group w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl scale-100 hover:scale-110 active:scale-95 transition-all"
-          title="Speak to Trip Captain"
+            title="Chat with us"
         >
           {/* Pulsing surrounding ring */}
           <span className="absolute -inset-1.5 rounded-full border border-emerald-500/40 animate-ping pointer-events-none" />
@@ -169,7 +169,7 @@ export default function FooterCTA({
           <MessageSquare className="w-6 h-6 fill-current" />
           
           <span className="absolute right-16 scale-0 group-hover:scale-100 transition-transform origin-right bg-white border border-neutral-200 font-bold uppercase tracking-widest font-mono text-[9px] text-[#9C753B] px-3 py-1.5 rounded-xl whitespace-nowrap shadow-xl">
-            COORDINATOR ONLINE
+              CHAT WITH US
           </span>
         </a>
       </div>

@@ -61,14 +61,14 @@ const GALLERY_IMAGES: GalleryImage[] = [
   },
   {
     id: "gal-5",
-    url: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=800&auto=format&fit=crop",
+    url: "https://commons.wikimedia.org/wiki/Special:FilePath/Flowers%20at%20Valley%20Of%20Flowers%20National%20Park.jpg?width=1200",
     title: "UNESCO Floral Meadows",
     category: "passes",
     location: "Valley of Flowers National Park",
     elevation: "11,811 ft",
-    photographer: "@botanist_abroad",
-    cameraSettings: "Nikon Z6 II • 50mm • f/2.8 • ISO 200 • 1/320s",
-    description: "Thousands of wild blue poppies, bellflowers, and rare Himalayan orchids blooming together in absolute harmony."
+    photographer: "Moodybaba80 / Wikimedia Commons",
+    cameraSettings: "Valley of Flowers, Chamoli • CC BY-SA 4.0",
+    description: "A real view of the colorful alpine blooms spread across the Valley of Flowers National Park in Chamoli, Uttarakhand."
   },
   {
     id: "gal-6",
@@ -105,6 +105,9 @@ const GALLERY_IMAGES: GalleryImage[] = [
   }
 ];
 
+// Temporary switch: change to true when fullscreen gallery viewing is needed again.
+const FULLSCREEN_GALLERY_ENABLED = false;
+
 export default function GallerySection() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
@@ -135,6 +138,8 @@ export default function GallerySection() {
 
   // Keyboard navigation for Lightbox
   useEffect(() => {
+    if (!FULLSCREEN_GALLERY_ENABLED) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (selectedImageIndex === null) return;
       if (e.key === "Escape") setSelectedImageIndex(null);
@@ -207,8 +212,8 @@ export default function GallerySection() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
-                onClick={() => setSelectedImageIndex(index)}
-                className="group relative rounded-2xl overflow-hidden bg-white border border-neutral-200 hover:border-[#9C753B] hover:shadow-lg transition-all duration-500 cursor-pointer min-h-[360px] flex flex-col justify-between shadow-sm"
+                onClick={FULLSCREEN_GALLERY_ENABLED ? () => setSelectedImageIndex(index) : undefined}
+                className={`group relative rounded-2xl overflow-hidden bg-white border border-neutral-200 hover:border-[#9C753B] hover:shadow-lg transition-all duration-500 min-h-[360px] flex flex-col justify-between shadow-sm ${FULLSCREEN_GALLERY_ENABLED ? "cursor-pointer" : "cursor-default"}`}
               >
                 {/* Background Image */}
                 <div 
@@ -264,7 +269,7 @@ export default function GallerySection() {
 
       {/* Lightbox Immersive Fullscreen Modal */}
       <AnimatePresence>
-        {selectedImageIndex !== null && (
+        {FULLSCREEN_GALLERY_ENABLED && selectedImageIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

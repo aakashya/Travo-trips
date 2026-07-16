@@ -7,22 +7,6 @@ export default function AboutPage() {
     <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-16 px-6">
       <div className="max-w-7xl mx-auto space-y-20">
         
-        {/* Simple Page Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-[#9C753B]/10 border border-[#9C753B]/20 rounded-full inline-flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5" /> THE TRAVO CHRONICLES
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-neutral-900">
-            Our Origin & <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
-              Travel Philosophy
-            </span>
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed max-w-xl mx-auto">
-            We don't sell generic vacation tickets. We host carefully curated, high-altitude group road trips that transform strangers into a tight-knit family.
-          </p>
-        </div>
-
         {/* Story Section - Text & Visual Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           
@@ -37,7 +21,7 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-[32px] pointer-events-none" />
             <div className="absolute bottom-6 left-6 right-6 text-white space-y-2 text-left">
               <span className="text-[10px] uppercase tracking-widest bg-brand-sand text-neutral-900 px-3 py-1 font-black rounded-lg shadow-md">
-                KASOL CAMPFIRE, EST. 2023
+                KASOL CAMPFIRE, MAY 2025
               </span>
               <p className="text-lg font-black font-display uppercase leading-tight">
                 "Where three shivering solo backpackers decided to fix group tourism."
@@ -51,7 +35,7 @@ export default function AboutPage() {
               It Started with a Shivering Bonfire
             </h3>
             <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light">
-              In December 2023, three solo travelers sat around a freezing bonfire in Kasol, Himachal Pradesh. They noticed that standard commercial travel agencies crowded 45+ tourists on old massive sleeper buses, with absolutely zero group compatibility, rushing past stunning landscapes to check off bullet points.
+              In May 2025, three solo travelers sat around a bonfire in Kasol, Himachal Pradesh. They noticed that standard commercial travel agencies crowded 45+ tourists on old massive sleeper buses, with absolutely zero group compatibility, rushing past stunning landscapes to check off bullet points.
             </p>
             <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light">
               They asked themselves: <strong>Why can't group travel be highly curated, comfortable, and deeply intimate?</strong>
@@ -63,15 +47,15 @@ export default function AboutPage() {
             {/* Quick trust metrics */}
             <div className="pt-4 border-t border-neutral-200 grid grid-cols-3 gap-4">
               <div>
-                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">4,200+</p>
+                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">200+</p>
                 <p className="text-[9px] uppercase text-neutral-400 font-bold mt-1.5">Souls Onboarded</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">1,500+</p>
+                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">50+</p>
                 <p className="text-[9px] uppercase text-neutral-400 font-bold mt-1.5">Solo Travelers</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">98.4%</p>
+                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">98%</p>
                 <p className="text-[9px] uppercase text-neutral-400 font-bold mt-1.5">5-Star Feedback</p>
               </div>
             </div>

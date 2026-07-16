@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Mail, Phone, MapPin, Send, HelpCircle, Check, 
-  MessageSquare, Clock, ShieldCheck, ChevronDown, Sparkles
+  ChevronDown
 } from "lucide-react";
 
 interface FAQItem {
@@ -62,22 +62,6 @@ export default function ContactPage() {
     <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-16 px-6">
       <div className="max-w-7xl mx-auto space-y-20">
         
-        {/* Page title */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-[#9C753B]/10 border border-[#9C753B]/20 rounded-full inline-flex items-center gap-1.5">
-            <Phone className="w-3.5 h-3.5" /> 24/7 COORDINATION DESK
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-neutral-900">
-            Let's Plan Your <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
-              Next Escape
-            </span>
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed max-w-xl mx-auto">
-            Have questions about our itineraries, group composition, or custom corporate bookings? Drop us a line and our trip coordinators will reach out within 2 hours.
-          </p>
-        </div>
-
         {/* Contact info grid & Form block */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-6xl mx-auto items-start">
           
@@ -100,7 +84,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-1 text-xs">
                   <p className="font-bold text-neutral-400 uppercase tracking-widest text-[9px] leading-none">Reservations desk</p>
-                  <p className="font-black text-neutral-800 text-sm mt-0.5">+91 98765 43210</p>
+                  <p className="font-black text-neutral-800 text-sm mt-0.5">+91 9996965697</p>
                   <p className="text-[10px] text-neutral-500 font-light">Mon - Sat, 10:00 AM - 7:00 PM</p>
                 </div>
               </div>
@@ -112,7 +96,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-1 text-xs">
                   <p className="font-bold text-neutral-400 uppercase tracking-widest text-[9px] leading-none">Official email</p>
-                  <p className="font-black text-neutral-800 text-sm mt-0.5">expeditions@travo.com</p>
+                  <p className="font-black text-neutral-800 text-sm mt-0.5">expeditions@travotrips.com</p>
                   <p className="text-[10px] text-neutral-500 font-light">Inquiries answered in under 2 hrs</p>
                 </div>
               </div>
@@ -133,16 +117,17 @@ export default function ContactPage() {
 
             </div>
 
-            {/* Emergency / Safety notice panel */}
+            {/* Emergency / Safety notice panel
             <div className="p-5 rounded-2xl bg-[#9C753B]/5 border border-[#9C753B]/10 space-y-2 text-xs">
               <div className="flex items-center gap-1.5 font-bold text-[#9C753B] uppercase tracking-wider text-[10px]">
                 <ShieldCheck className="w-4 h-4" />
                 <span>24/7 active route tracker</span>
               </div>
               <p className="text-neutral-600 font-light leading-relaxed">
-                Parents can contact our special dispatch center at <strong>+91 99999 11111</strong> to receive active GPS telemetry positions of our running Tempo Travellers during high-altitude climbs.
+                Parents can contact our special dispatch center at <strong>+91 9996965697</strong> to receive active GPS telemetry positions of our running Tempo Travellers during high-altitude climbs.
               </p>
             </div>
+            */}
 
           </div>
 
@@ -194,7 +179,7 @@ export default function ContactPage() {
                       <input
                         type="tel"
                         required
-                        placeholder="+91 99999-XXXXX"
+                        placeholder="+91 9996965697"
                         value={formState.phone}
                         onChange={(e) => setFormState({...formState, phone: e.target.value})}
                         className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-xs text-neutral-900 focus:outline-none focus:border-[#9C753B]"

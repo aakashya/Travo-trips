@@ -132,14 +132,12 @@ export default function App() {
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand/30 selection:text-brand-charcoal antialiased overflow-x-hidden">
       
       {/* 1. Universal Cinematic Hero Section / Carousel */}
-      {currentView !== "book-now" && (
-        <HeroSection 
-          currentView={currentView}
-          onNavigate={handleNavigate}
-          onOpenBooking={(tripId) => handleOpenBooking(tripId)}
-          onExploreClick={handleExploreClick}
-        />
-      )}
+      <HeroSection
+        currentView={currentView}
+        onNavigate={handleNavigate}
+        onOpenBooking={(tripId) => handleOpenBooking(tripId)}
+        onExploreClick={handleExploreClick}
+      />
 
       {/* Render Homepage Content */}
       {currentView === "home" && (
@@ -366,10 +364,20 @@ export default function App() {
 
       {/* Render Book Now page */}
       {currentView === "book-now" && (
-        <BookNowPage 
-          onNavigate={handleNavigate} 
-          initialTripId={selectedTripIdForBooking} 
-        />
+        <div className="animate-[fadeIn_0.5s_ease-out]">
+          <BookNowPage
+            onNavigate={handleNavigate}
+            initialTripId={selectedTripIdForBooking}
+          />
+          <FooterCTA
+            onOpenBooking={() => handleOpenBooking((TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).id)}
+            tripId={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).id}
+            tripName={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).name}
+            price={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).price}
+            bgImage={(TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"]).heroImage}
+            onNavigate={handleNavigate}
+          />
+        </div>
       )}
 
       {/* Floating securing ticket booking form */}

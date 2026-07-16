@@ -131,44 +131,6 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand selection:text-neutral-900 antialiased pb-24">
-      {/* Top Header */}
-      <header className="relative z-30 w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between border-b border-neutral-200 bg-[#FAF9F6]/90 backdrop-blur-md sticky top-0">
-        <button 
-          onClick={() => onNavigate("home")} 
-          className="flex items-center group focus:outline-none"
-        >
-          <div className="h-14 w-36 md:w-44 overflow-hidden rounded-md border border-neutral-200 bg-white shadow transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center">
-            <img
-              src="/images/logo/travo-logo-website.png"
-              alt="TRAVO logo"
-              className="h-full w-full object-cover object-center"
-              decoding="async"
-            />
-          </div>
-        </button>
-
-        <nav className="flex items-center space-x-4 sm:space-x-6 text-[10px] sm:text-xs font-black tracking-widest text-neutral-500">
-          <button 
-            onClick={() => onNavigate("home")}
-            className="hover:text-[#9C753B] transition-colors"
-          >
-            HOME
-          </button>
-          <button 
-            onClick={() => onNavigate("manali")}
-            className={`hover:text-[#9C753B] transition-colors ${selectedTripId === "manali" ? "text-neutral-900 font-extrabold" : ""}`}
-          >
-            MANALI
-          </button>
-          <button 
-            onClick={() => onNavigate("valley-of-flowers")}
-            className={`hover:text-[#9C753B] transition-colors ${selectedTripId === "valley-of-flowers" ? "text-neutral-900 font-extrabold" : ""}`}
-          >
-            VALLEY OF FLOWERS
-          </button>
-        </nav>
-      </header>
-
       <div className="max-w-7xl mx-auto px-6 pt-12 space-y-12">
         {/* Back Button & Title */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-200 pb-8">
@@ -199,7 +161,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
               <p className="text-[10px] font-black tracking-widest uppercase text-[#9C753B]">Need Instant Help?</p>
               <p className="text-xs text-neutral-600 font-light mb-1.5">Chat with our coordinator for seat logs & discounts.</p>
               <a
-                href={`https://wa.me/911234567890?text=${encodeURIComponent("Hi TRAVO! I'm on the Book Now page. I have a few questions regarding seat availability and booking steps.")}`}
+                href={`https://wa.me/919996965697?text=${encodeURIComponent("Hi TRAVO! I'm on the Book Now page. I have a few questions regarding seat availability and booking steps.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[10px] uppercase font-black tracking-wider text-[#9C753B] hover:text-[#7C552B] transition-colors flex items-center gap-1"
@@ -295,7 +257,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                           required
                           value={details.phoneNumber}
                           onChange={handleInputChange}
-                          placeholder="e.g. +91 98765 43210"
+                          placeholder="e.g. +91 9996965697"
                           className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 shadow-sm"
                         />
                       </div>
@@ -504,7 +466,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       </p>
                       
                       <a
-                        href={`https://wa.me/911234567890?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I've submitted a Booking Inquiry on your page for the ${trip.name} starting on ${trip.upcomingDeparture}. Here is my Boarding Pass Ticket Code: ${generatedPass}. I am ready to complete the booking!`)}`}
+                        href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I've submitted a Booking Inquiry on your page for the ${trip.name} starting on ${trip.upcomingDeparture}. Here is my Boarding Pass Ticket Code: ${generatedPass}. I am ready to complete the booking!`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full py-4 bg-[#25D366] hover:bg-[#20ba56] transition-all font-black text-xs uppercase tracking-widest text-white rounded-xl inline-flex items-center justify-center gap-2 shadow hover:scale-[1.02] active:scale-95"

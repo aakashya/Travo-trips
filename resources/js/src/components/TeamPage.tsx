@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Compass, Mail, MapPin, Sparkles } from "lucide-react";
+import { Compass, Mail, MapPin } from "lucide-react";
 
 function InstagramIcon({ className = "" }: { className?: string }) {
   return (
@@ -43,9 +43,14 @@ const TEAM_MEMBERS: TeamMember[] = [
     bio: "Naman leads TRAVO's vision, brand, partnerships, and the community-first approach behind every journey we create.",
     badge: "Vision & Leadership",
     initials: "NA",
+    image: "/images/team/naman.png",
     location: "Gurugram, Haryana",
     destinationsTravelled: "150+",
-    socials: { email: "expeditions@travo.com" },
+    socials: {
+      instagram: "https://www.instagram.com/00namanahuja",
+      linkedin: "https://www.linkedin.com/in/naman-ahuja-8a17b2358/",
+      email: "namanahuja@travotrips.com",
+    },
   },
   {
     name: "Vikas Yadav",
@@ -56,7 +61,11 @@ const TEAM_MEMBERS: TeamMember[] = [
     image: "/images/team/vikas.png",
     location: "Gurugram, Haryana",
     destinationsTravelled: "200+",
-    socials: { email: "expeditions@travo.com" },
+    socials: {
+      instagram: "https://www.instagram.com/vikas28_yadav",
+      linkedin: "https://www.linkedin.com/in/yadavvikass/",
+      email: "vikasyadav@travotrips.com",
+    },
   },
   {
     name: "Aakash Yadav",
@@ -64,8 +73,13 @@ const TEAM_MEMBERS: TeamMember[] = [
     bio: "Aakash leads technology and product, building the digital systems that make discovering, planning, and booking a TRAVO journey effortless.",
     badge: "Product & Technology",
     initials: "AY",
+    image: "/images/team/aakash.png",
     location: "Gurugram, Haryana",
-    socials: { email: "expeditions@travo.com" },
+    destinationsTravelled: "50+",
+    socials: {
+      instagram: "https://www.instagram.com/aakash._.ya",
+      email: "aakashyadav@travotrips.com",
+    },
   },
 ];
 
@@ -75,21 +89,6 @@ export default function TeamPage() {
       
       {/* Page Title Header */}
       <div className="max-w-7xl mx-auto space-y-16">
-        
-        <div className="text-center max-w-2xl mx-auto space-y-4">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-[#9C753B]/10 border border-[#9C753B]/20 rounded-full inline-flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" /> MEET THE FOUNDERS
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-neutral-900">
-            The People <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
-              Behind TRAVO
-            </span>
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-600 font-normal leading-relaxed max-w-xl mx-auto">
-            Three founders bringing together vision, operations, and technology to create thoughtful group journeys and lasting travel stories.
-          </p>
-        </div>
 
         {/* Team Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -158,7 +157,7 @@ export default function TeamPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {member.socials.instagram ? (
+                  {member.socials.instagram && (
                     <a
                       href={member.socials.instagram}
                       target="_blank"
@@ -168,17 +167,9 @@ export default function TeamPage() {
                     >
                       <InstagramIcon className="h-3.5 w-3.5" />
                     </a>
-                  ) : (
-                    <span
-                      aria-label="Instagram profile not added"
-                      title="Instagram profile not added"
-                      className="cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-100 p-2 text-neutral-300"
-                    >
-                      <InstagramIcon className="h-3.5 w-3.5" />
-                    </span>
                   )}
 
-                  {member.socials.linkedin ? (
+                  {member.socials.linkedin && (
                     <a
                       href={member.socials.linkedin}
                       target="_blank"
@@ -188,14 +179,6 @@ export default function TeamPage() {
                     >
                       <LinkedInIcon className="h-3.5 w-3.5" />
                     </a>
-                  ) : (
-                    <span
-                      aria-label="LinkedIn profile not added"
-                      title="LinkedIn profile not added"
-                      className="cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-100 p-2 text-neutral-300"
-                    >
-                      <LinkedInIcon className="h-3.5 w-3.5" />
-                    </span>
                   )}
 
                   <a

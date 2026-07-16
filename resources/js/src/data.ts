@@ -6,7 +6,7 @@ export const SNOW_IMAGE = "https://images.unsplash.com/photo-1519681393784-d1202
 export const CAFE_IMAGE = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=85&w=1800&auto=format&fit=crop";
 export const MANIKARAN_IMAGE = "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=85&w=1800&auto=format&fit=crop";
 export const DELHI_HIGHWAY_IMAGE = "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=85&w=1800&auto=format&fit=crop";
-export const FLOWERS_IMAGE = "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=85&w=1800&auto=format&fit=crop";
+export const FLOWERS_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Valley%20of%20flowers%20national%20park%2C%20Uttarakhand%2C%20India%2003.jpg?width=1800";
 export const HEMKUND_IMAGE = "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=85&w=1800&auto=format&fit=crop";
 export const BADRINATH_IMAGE = "https://images.unsplash.com/photo-1627894158434-60471900dfc1?q=85&w=1800&auto=format&fit=crop";
 

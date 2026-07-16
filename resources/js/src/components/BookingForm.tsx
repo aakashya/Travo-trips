@@ -187,7 +187,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                     required
                     value={details.phoneNumber}
                     onChange={handleInputChange}
-                    placeholder="e.g. +91 98765 43210"
+                    placeholder="e.g. +91 9996965697"
                     className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 shadow-sm"
                   />
                 </div>
@@ -384,7 +384,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               <div className="space-y-3 w-full">
                 {/* Redirecting to WhatsApp with prefilled parameters code details */}
                 <a
-                  href={`https://wa.me/911234567890?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I just reserved ${details.seats} seats for the ${trip.name} starting on ${trip.upcomingDeparture} under ticket code ${generatedPass}. Please verify my reservation!`)}`}
+                  href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I just reserved ${details.seats} seats for the ${trip.name} starting on ${trip.upcomingDeparture} under ticket code ${generatedPass}. Please verify my reservation!`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-4 bg-[#25D366] hover:bg-[#20ba56] transition-all font-black text-xs uppercase tracking-widest text-white rounded-xl inline-flex items-center justify-center gap-2 shadow hover:scale-[1.02] active:scale-95"

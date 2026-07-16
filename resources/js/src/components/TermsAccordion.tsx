@@ -47,7 +47,7 @@ export default function TermsAccordion({ termsAccordion, tripName }: TermsAccord
               Have specific queries about the <strong className="text-neutral-900">{tripName}</strong>? Let our support captains solve them.
             </p>
           </div>
-          <a href={`https://wa.me/911234567890?text=${encodeURIComponent(`Hi TRAVO, I'd like to know more about the rules for the ${tripName} expedition.`)}`} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-[#9C753B] hover:text-neutral-900 transition-colors uppercase tracking-widest shrink-0">
+          <a href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO, I'd like to know more about the rules for the ${tripName} expedition.`)}`} target="_blank" rel="noopener noreferrer" className="text-xs font-black text-[#9C753B] hover:text-neutral-900 transition-colors uppercase tracking-widest shrink-0">
             Chat Captain Now
           </a>
         </div>
