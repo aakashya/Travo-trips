@@ -205,21 +205,21 @@ export default function HeroSection({
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/25 text-[10px] font-black uppercase tracking-widest text-brand-sand">
             <Sparkles className="w-3.5 h-3.5 text-brand-sand animate-pulse" /> 
             {currentView === "trips" && "3 Active Journeys"}
-            {currentView === "team" && "Certified Rescue Captains"}
+            {currentView === "team" && "Founder-Led Journeys"}
             {currentView === "about" && "Founded by Backpackers"}
             {currentView === "contact" && "24/7 Dispatch Center"}
           </div>
           
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none uppercase font-display drop-shadow-xl text-white">
             {currentView === "trips" && "Expedition Catalogue"}
-            {currentView === "team" && "Meet The Captains"}
+            {currentView === "team" && "Meet The Founders"}
             {currentView === "about" && "The TRAVO Story"}
             {currentView === "contact" && "Get in Touch"}
           </h1>
 
           <p className="text-xs sm:text-sm text-gray-200 max-w-xl mx-auto leading-relaxed font-light drop-shadow">
             {currentView === "trips" && "Explore our active Manali, Valley of Flowers, and Udaipur small-group journeys."}
-            {currentView === "team" && "Meet the NIM-certified mountaineers, wilderness first-responders, and local survival specialists leading your next safe escape."}
+            {currentView === "team" && "Meet the people bringing together vision, operations, and technology to build every TRAVO experience."}
             {currentView === "about" && "How three freezing solo backpackers around a Kasol bonfire decided to build India's most intimate premium road-trip travel club."}
             {currentView === "contact" && "Have a question about group composition, custom corporate departures, or road safety? Our coordination team is active 24/7."}
           </p>

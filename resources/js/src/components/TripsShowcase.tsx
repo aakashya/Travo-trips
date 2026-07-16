@@ -105,21 +105,22 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
     <section id="all-trips-showcase" className="py-24 px-6 bg-[#F9F8F6] border-b border-neutral-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto space-y-12">
         
-        {/* Header Title with premium alignment */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-[#9C753B]/10 border border-[#9C753B]/20 rounded-full inline-flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '40s' }} /> EXPEDITION CATALOGUE
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-neutral-900">
-            Discover Our <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
-              Major Destinations
+        {isHomePage && (
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-[#9C753B]/10 border border-[#9C753B]/20 rounded-full inline-flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '40s' }} /> EXPEDITION CATALOGUE
             </span>
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-600 font-normal max-w-xl mx-auto leading-relaxed">
-            Choose from 3 carefully curated group departures. Designed for young hearts (Age 18-35), led by experts, and budgeted with full transparency.
-          </p>
-        </div>
+            <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-neutral-900">
+              Discover Our <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
+                Major Destinations
+              </span>
+            </h2>
+            <p className="text-xs sm:text-sm text-neutral-600 font-normal max-w-xl mx-auto leading-relaxed">
+              Choose from 3 carefully curated group departures. Designed for young hearts (Age 18-35), led by experts, and budgeted with full transparency.
+            </p>
+          </div>
+        )}
 
         {/* Dynamic Filters Bar */}
         <div className={isHomePage ? "space-y-5" : "p-4 sm:p-6 bg-white rounded-3xl border border-neutral-200 shadow-sm space-y-4"}>
