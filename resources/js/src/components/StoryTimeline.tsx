@@ -361,8 +361,8 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
                     referrerPolicy="no-referrer"
                   />
                   {/* Elegant refined vignetting and gradient transitions with light themes */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/95 via-[#FAF9F6]/25 to-[#FAF9F6]/95" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/65 via-transparent to-[#FAF9F6]/65" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/70 via-[#FAF9F6]/20 to-[#FAF9F6]/70" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/50 via-transparent to-[#FAF9F6]/50" />
                 </div>
 
                 {/* 4a. Milestone Column: alternate order */}

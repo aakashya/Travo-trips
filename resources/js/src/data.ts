@@ -1,14 +1,24 @@
 import { TripDetails } from "./types";
 
-export const HERO_BG_IMAGE = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=85&w=1800&auto=format&fit=crop";
-export const CAMP_IMAGE = "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=85&w=1800&auto=format&fit=crop";
-export const SNOW_IMAGE = "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=85&w=1800&auto=format&fit=crop";
-export const CAFE_IMAGE = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=85&w=1800&auto=format&fit=crop";
-export const MANIKARAN_IMAGE = "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=85&w=1800&auto=format&fit=crop";
-export const DELHI_HIGHWAY_IMAGE = "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=85&w=1800&auto=format&fit=crop";
+export const DELHI_IMAGE = "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1800&q=85";
+export const MANALI_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Himalayan%20mountains%20in%20Manali%2C%20Himachal%20Pradesh.jpg?width=1800";
+export const BEAS_RIVER_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Beas%20River%20flowing%20through%20Manali.jpg?width=1800";
+export const HADIMBA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Hadimba%20Temple.jpg?width=1800";
+export const SOLANG_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Solang%20Valley%20Manali.JPG?width=1800";
+export const ROHTANG_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Panorama%20at%20the%20other%20side%20of%20Rohtang%20Pass%20%2810441463105%29.jpg?width=1800";
+export const JOGINI_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Jogini%20falls.jpg?width=1800";
+export const KASOL_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Kasol-parvati%20valley%2C%20himachal%20pradesh.jpg?width=1800";
+export const MANIKARAN_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Manikaran%20Sahib%20Gurudwara.jpg?width=1800";
+export const RISHIKESH_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Rishikesh%27s%20ganga.jpg?width=1800";
+export const DEVPRAYAG_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/A%20confluence%20of%20Alaknanda%20and%20Bhagirathi%20rivers%2C%20Devprayag%2C%20Uttarakhand.jpg?width=1800";
+export const JOSHIMATH_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Bibekraj%20Joshimath%20Uttarakhand.jpg?width=1800";
+export const GOVINDGHAT_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Govindghat%20%2829336213897%29.jpg?width=1800";
+export const GHANGARIA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Govind%20Ghat%2C%20Ghangaria%2C%20Chamoli%2C%20Uttarakhand%2C%20India%20%282012%29.jpg?width=1800";
 export const FLOWERS_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Valley%20of%20flowers%20national%20park%2C%20Uttarakhand%2C%20India%2003.jpg?width=1800";
-export const HEMKUND_IMAGE = "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=85&w=1800&auto=format&fit=crop";
-export const BADRINATH_IMAGE = "https://images.unsplash.com/photo-1627894158434-60471900dfc1?q=85&w=1800&auto=format&fit=crop";
+export const FLOWERS_STREAM_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Valley%20of%20Flowers%2C%20Uttarakhand.jpg?width=1800";
+export const FLOWERS_CLOSEUP_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Flowers%20at%20Valley%20Of%20Flowers%20National%20Park.jpg?width=1800";
+export const HEMKUND_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Hemkund%20sahib.jpg?width=1800";
+export const BADRINATH_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Badrinath%20Temple%20Closeup%20View.jpg?width=1800";
 
 export const TRIPS_DATA: Record<string, TripDetails> = {
   "manali": {
@@ -18,8 +28,8 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
     price: "Rs. 9,999/-",
     duration: "5 Days / 4 Nights",
     upcomingDeparture: "10th July 2026",
-    bannerImage: CAFE_IMAGE,
-    heroImage: HERO_BG_IMAGE,
+    bannerImage: HADIMBA_IMAGE,
+    heroImage: MANALI_IMAGE,
     routeStops: [
       { id: "delhi", name: "Delhi", tag: "STARTING LINE", coords: { x: 10, y: 80 }, description: "The journey begins at 9:00 PM with a group briefing, warm introductions, curated playlists, and overnight road-trip energy." },
       { id: "manali", name: "Manali Arrival", tag: "DAY 1 STOP", coords: { x: 30, y: 55 }, description: "Wake up to snow mountains, check in, explore Hadimba Temple, wander Old Manali cafes, walk Mall Road, and gather for a cozy bonfire." },
@@ -34,7 +44,7 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
         day: "Day 0",
         title: "Departure from Delhi",
         quote: "The best stories of our lives always begin with an overnight road trip.",
-        image: HERO_BG_IMAGE,
+        image: MANALI_IMAGE,
         highlights: [
           "Group assembles at our central pickup point in Delhi at 8:30 PM",
           "Meet your trip captains and co-travelers for ice-breaking activities",
@@ -47,7 +57,7 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
         day: "Day 1",
         title: "Manali Arrival and Cafe Hopping",
         quote: "Misty pine breezes, cozy wooden cafes, and a slow mountain rhythm.",
-        image: CAFE_IMAGE,
+        image: HADIMBA_IMAGE,
         highlights: [
           "11:00 AM: Scenic drive into Manali, hotel check-in, and breakfast rest",
           "Visit the iconic wooden Hadimba Temple built in 1553",
@@ -61,7 +71,7 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
         day: "Day 2",
         title: "Rohtang Pass and Snow Thrills",
         quote: "To touch the snow valleys and feel the highest Himalayan heights.",
-        image: SNOW_IMAGE,
+        image: ROHTANG_IMAGE,
         highlights: [
           "Early departure for Solang Valley and the Atal Tunnel route",
           "Paragliding, ATV rides, zorbing, and high-altitude activities",
@@ -75,7 +85,7 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
         day: "Day 3",
         title: "Kasol Drive and DJ Camp Night",
         quote: "Sleep beside the roaring river Parvati, under a ceiling of infinite stars.",
-        image: CAMP_IMAGE,
+        image: KASOL_IMAGE,
         highlights: [
           "Morning breakfast and check-out from Manali",
           "Breathtaking road trip down the sweeping Parvati Valley",
@@ -102,7 +112,7 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
         day: "Day 5",
         title: "Return to Delhi with Lifetime Memories",
         quote: "Strangers on Day 0, a tight-knit family on Day 5. Until the next valley calls.",
-        image: DELHI_HIGHWAY_IMAGE,
+        image: BEAS_RIVER_IMAGE,
         highlights: [
           "Scenic overnight drive back through Himalayan foothill roads",
           "Sunrise highway pitstop for masala chai and butter parathas",
@@ -113,13 +123,13 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
       },
     ],
     experienceMoments: [
-      { id: "snow", title: "High Snow Adventure", tag: "ROHTANG & SOLANG", image: SNOW_IMAGE, icon: "Snowflake" },
-      { id: "valley", title: "Valley Paragliding", tag: "SOLANG ACTIVITIES", image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800&auto=format&fit=crop", icon: "Compass" },
-      { id: "trek", title: "Anjani Mahadev Trek", tag: "SECRET WATERFALL", image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop", icon: "Footprints" },
-      { id: "cafe", title: "Old Manali Cafe Hopping", tag: "LOCAL MOODS", image: CAFE_IMAGE, icon: "Coffee" },
-      { id: "camp", title: "Kasol Riverside Camps", tag: "PARVATI VALLEY", image: CAMP_IMAGE, icon: "Tent" },
-      { id: "bonfire", title: "Intimate Bonfire Evenings", tag: "STRANGERS TO FRIENDS", image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=800&auto=format&fit=crop", icon: "Flame" },
-      { id: "dj", title: "Starry DJ Nights", tag: "FOREST DANCE", image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop", icon: "Music" },
+      { id: "snow", title: "Rohtang Snow Ridges", tag: "ROHTANG PASS", image: ROHTANG_IMAGE, icon: "Snowflake" },
+      { id: "valley", title: "Solang Valley", tag: "MANALI ADVENTURE VALLEY", image: SOLANG_IMAGE, icon: "Compass" },
+      { id: "trek", title: "Jogini Waterfall", tag: "MANALI FOREST TRAIL", image: JOGINI_IMAGE, icon: "Footprints" },
+      { id: "cafe", title: "Hadimba Cedar Temple", tag: "OLD MANALI", image: HADIMBA_IMAGE, icon: "Home" },
+      { id: "camp", title: "Kasol & Parvati Valley", tag: "RIVERSIDE HIMALAYAS", image: KASOL_IMAGE, icon: "Tent" },
+      { id: "bonfire", title: "Parvati Valley Views", tag: "KASOL LANDSCAPE", image: KASOL_IMAGE, icon: "Flame" },
+      { id: "dj", title: "Beas River Drive", tag: "MANALI HIGHWAY", image: BEAS_RIVER_IMAGE, icon: "Waves" },
       { id: "manikaran", title: "Manikaran Sahib Visit", tag: "GEOTHERMAL SPRINGS", image: MANIKARAN_IMAGE, icon: "Sun" },
     ],
     inclusions: [
@@ -178,23 +188,23 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
       { id: "delhi_return", name: "Delhi Return", tag: "THE ARRIVAL", coords: { x: 100, y: 80 }, description: "Overnight drive back with loaded memories and a changed mountain soul." },
     ],
     timelineItems: [
-      { day: "Day 0", title: "Delhi to Rishikesh - Himalayan Gateway", quote: "And just like that, our mountain expedition begins under a starlit canopy.", image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?q=80&w=1200&auto=format&fit=crop", highlights: ["Departure from Delhi with Gurgaon pickup options at 9:00 PM", "Meet certified trip captains and fellow travelers", "Premium deluxe AC Tempo Traveller with loaded playlist", "Overnight drive toward Rishikesh with highway dhaba stops"], telemetry: { loc: "DELHI SANSAD MARG", icon: "IN", alt: "210m Alt", temp: "32C Warmth", distance: "0 KM", iconType: "Clock" } },
-      { day: "Day 1", title: "Rishikesh to Govindghat - Panch Prayag Route", quote: "Witnessing the sacred confluences where holy rivers collide.", image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=80&w=1200&auto=format&fit=crop", highlights: ["Breakfast and lunch en route at hill eateries", "Witness Devprayag, Rudraprayag, Karnaprayag, Nandaprayag, and Vishnuprayag", "Drive into the Garhwal Himalayas", "Check in at Govindghat by early evening"], telemetry: { loc: "GOVINDGHAT VALLEY", icon: "PEAK", alt: "1,820m Alt", temp: "18C Pleasant", distance: "480 KM", iconType: "Compass" } },
-      { day: "Day 2", title: "Govindghat to Ghangaria - Bhyundar Trek", quote: "Walking into the deep forest, leaving the modern world behind.", image: HEMKUND_IMAGE, highlights: ["Start early with stretching exercises", "Quick 4 km drive to Pulna", "Begin the 10 km moderate trek along Bhyundar River", "Arrive at Ghangaria and settle into homestay or camp", "Visit the Valley of Flowers information centre"], telemetry: { loc: "GHANGARIA BASECAMP", icon: "CAMP", alt: "3,050m Alt", temp: "11C Chilly", distance: "490 KM", iconType: "Flame" } },
+      { day: "Day 0", title: "Delhi to Rishikesh - Himalayan Gateway", quote: "And just like that, our mountain expedition begins under a starlit canopy.", image: RISHIKESH_IMAGE, highlights: ["Departure from Delhi with Gurgaon pickup options at 9:00 PM", "Meet certified trip captains and fellow travelers", "Premium deluxe AC Tempo Traveller with loaded playlist", "Overnight drive toward Rishikesh with highway dhaba stops"], telemetry: { loc: "DELHI SANSAD MARG", icon: "IN", alt: "210m Alt", temp: "32C Warmth", distance: "0 KM", iconType: "Clock" } },
+      { day: "Day 1", title: "Rishikesh to Govindghat - Panch Prayag Route", quote: "Witnessing the sacred confluences where holy rivers collide.", image: DEVPRAYAG_IMAGE, highlights: ["Breakfast and lunch en route at hill eateries", "Witness Devprayag, Rudraprayag, Karnaprayag, Nandaprayag, and Vishnuprayag", "Drive into the Garhwal Himalayas", "Check in at Govindghat by early evening"], telemetry: { loc: "GOVINDGHAT VALLEY", icon: "PEAK", alt: "1,820m Alt", temp: "18C Pleasant", distance: "480 KM", iconType: "Compass" } },
+      { day: "Day 2", title: "Govindghat to Ghangaria - Bhyundar Trek", quote: "Walking into the deep forest, leaving the modern world behind.", image: GHANGARIA_IMAGE, highlights: ["Start early with stretching exercises", "Quick 4 km drive to Pulna", "Begin the 10 km moderate trek along Bhyundar River", "Arrive at Ghangaria and settle into homestay or camp", "Visit the Valley of Flowers information centre"], telemetry: { loc: "GHANGARIA BASECAMP", icon: "CAMP", alt: "3,050m Alt", temp: "11C Chilly", distance: "490 KM", iconType: "Flame" } },
       { day: "Day 3", title: "Valley of Flowers Exploration", quote: "Walking inside a living postcard designed by nature's own brush.", image: FLOWERS_IMAGE, highlights: ["Trek 6 km one way to Valley of Flowers National Park", "Discover Brahmakamal, blue poppies, bellflowers, and orchids", "Cross wooden bridges, streams, and misty mountain sections", "Packed meal inside the blooming UNESCO valley", "Return to Ghangaria for dinner and group games"], telemetry: { loc: "VALLEY OF FLOWERS", icon: "BLOOM", alt: "3,658m Alt", temp: "14C Cool", distance: "496 KM", iconType: "Sun" } },
       { day: "Day 4", title: "Spiritual Trek to Hemkund Sahib", quote: "Standing high above the clouds at the world's highest shrine.", image: HEMKUND_IMAGE, highlights: ["Hike 6 km one way to Hemkund Sahib at 14,203 ft", "Walk alongside Laxman Ganga", "Visit the Laxman Temple beside the Gurudwara", "Sit beside emerald Hemkund Lake", "Warm up with langar served with love"], telemetry: { loc: "HEMKUND SAHIB LAKE", icon: "SNOW", alt: "4,300m Alt", temp: "4C Alpine", distance: "502 KM", iconType: "Snowflake" } },
       { day: "Day 5", title: "Ghangaria to Badrinath to Joshimath", quote: "Cleansing the soul in geothermal springs and bowing to ancient temples.", image: BADRINATH_IMAGE, highlights: ["Descend from Ghangaria to Pulna", "Drive to the iconic Badrinath Temple", "Take a warm dip in Tapt Kund", "Check in at Joshimath and visit Narsingh Temple", "Final-night feast, music, and group memories"], telemetry: { loc: "BADRINATH & JOSHIMATH", icon: "TEMPLE", alt: "1,875m Alt", temp: "15C Fresh", distance: "525 KM", iconType: "Compass" } },
-      { day: "Day 6", title: "Joshimath to Rishikesh to Delhi", quote: "Strangers on Day 0, a lifetime family on Day 6. Till we meet again.", image: DELHI_HIGHWAY_IMAGE, highlights: ["Breakfast in Joshimath and downhill journey", "Scenic river gorges and roadside tea stops", "Say goodbye to Rishikesh-joining travelers", "Overnight return to Delhi with unforgettable bonds"], telemetry: { loc: "DELHI RETURN GATE", icon: "CREW", alt: "210m Alt", temp: "29C Warm", distance: "1,030 KM", iconType: "Eye" } },
+      { day: "Day 6", title: "Joshimath to Rishikesh to Delhi", quote: "Strangers on Day 0, a lifetime family on Day 6. Till we meet again.", image: JOSHIMATH_IMAGE, highlights: ["Breakfast in Joshimath and downhill journey", "Scenic river gorges and roadside tea stops", "Say goodbye to Rishikesh-joining travelers", "Overnight return to Delhi with unforgettable bonds"], telemetry: { loc: "DELHI RETURN GATE", icon: "CREW", alt: "210m Alt", temp: "29C Warm", distance: "1,030 KM", iconType: "Eye" } },
     ],
     experienceMoments: [
       { id: "vof_meadow", title: "Valley of Flowers", tag: "UNESCO PARADISE", image: FLOWERS_IMAGE, icon: "Flower" },
       { id: "hemkund_lake", title: "Hemkund Glacial Lake", tag: "14,203 FT ALTITUDE", image: HEMKUND_IMAGE, icon: "Waves" },
       { id: "badrinath", title: "Badrinath Temple", tag: "CHAR DHAM SACRED", image: BADRINATH_IMAGE, icon: "Home" },
-      { id: "confluences", title: "Panch Prayag Confluences", tag: "SACRED COLLISION", image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=80&w=800&auto=format&fit=crop", icon: "GitMerge" },
-      { id: "trek_bhyundar", title: "Bhyundar Valley Trek", tag: "PINE SCENIC TRAILS", image: HEMKUND_IMAGE, icon: "Footprints" },
-      { id: "hot_spring", title: "Tapt Kund Hot Spring", tag: "GEOTHERMAL HEAT", image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=800&auto=format&fit=crop", icon: "Flame" },
-      { id: "langar", title: "Gurudwara Langar", tag: "COMMUNITY SERVICE", image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=800&auto=format&fit=crop", icon: "Utensils" },
-      { id: "narsingh", title: "Narsingh Temple", tag: "JOSHIMATH ANCIENT", image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?q=80&w=800&auto=format&fit=crop", icon: "Compass" },
+      { id: "confluences", title: "Devprayag Confluence", tag: "PANCH PRAYAG ROUTE", image: DEVPRAYAG_IMAGE, icon: "GitMerge" },
+      { id: "trek_bhyundar", title: "Bhyundar Valley Trek", tag: "GHANGARIA TRAIL", image: GHANGARIA_IMAGE, icon: "Footprints" },
+      { id: "rishikesh", title: "Rishikesh Gateway", tag: "GANGA FOOTHILLS", image: RISHIKESH_IMAGE, icon: "Waves" },
+      { id: "govindghat", title: "Govindghat Trailhead", tag: "ALPINE STARTING POINT", image: GOVINDGHAT_IMAGE, icon: "Compass" },
+      { id: "valley_stream", title: "Valley Streams", tag: "UNESCO WILDERNESS", image: FLOWERS_STREAM_IMAGE, icon: "Flower" },
     ],
     inclusions: [
       { text: "Pick-up and drop from Delhi or Rishikesh as selected", icon: "MapPin" },

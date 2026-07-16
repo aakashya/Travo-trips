@@ -4,6 +4,23 @@ import {
   ArrowRight, Compass, ShieldAlert, Award, Play, Pause, ChevronLeft, ChevronRight, Sparkles, Flame
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import {
+  BADRINATH_IMAGE,
+  BEAS_RIVER_IMAGE,
+  DELHI_IMAGE,
+  FLOWERS_IMAGE,
+  GHANGARIA_IMAGE,
+  GOVINDGHAT_IMAGE,
+  HADIMBA_IMAGE,
+  HEMKUND_IMAGE,
+  JOGINI_IMAGE,
+  JOSHIMATH_IMAGE,
+  KASOL_IMAGE,
+  MANIKARAN_IMAGE,
+  RISHIKESH_IMAGE,
+  ROHTANG_IMAGE,
+  SOLANG_IMAGE,
+} from "../data";
 
 interface RouteJourneyProps {
   stops?: any[];
@@ -30,56 +47,56 @@ const VALLEY_OF_FLOWERS_DESTINATIONS: DestinationNode[] = [
   {
     id: 'delhi', name: 'Delhi Plains', type: 'pickup', dayNum: 1, altitude: '700 ft',
     coordinates: { x: 50, y: 92 }, distanceToNext: '240 km', durationToNext: '6-7 hrs', icon: '📍',
-    imageUrl: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80',
+    imageUrl: DELHI_IMAGE,
     description: 'The epic mountain journey begins in the historic capital, assembling at night before driving north toward the Uttarakhand foothills.',
     keyAttractions: ['India Gate', 'Departure Point', 'Urban Base']
   },
   {
     id: 'rishikesh', name: 'Rishikesh Stopover', type: 'stopover', dayNum: 1, altitude: '1,120 ft',
     coordinates: { x: 48, y: 72 }, distanceToNext: '250 km', durationToNext: '8-9 hrs', icon: '💧',
-    imageUrl: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    imageUrl: RISHIKESH_IMAGE,
     description: 'A sacred Ganga town and gateway to the Garhwal Himalayas. A serene pause to witness river flows and start the uphill drive.',
     keyAttractions: ['Ganga Aarti', 'Lakshman Jhula', 'River Views']
   },
   {
     id: 'joshimath', name: 'Joshimath Halt', type: 'stopover', dayNum: 2, altitude: '6,150 ft',
     coordinates: { x: 52, y: 55 }, distanceToNext: '20 km', durationToNext: '1 hr', icon: '⛰️',
-    imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80',
+    imageUrl: JOSHIMATH_IMAGE,
     description: 'A towering mountain settlement with views of spectacular peaks, serving as our major acclimatization halt before the trek begins.',
     keyAttractions: ['Mountain Halt', 'Auli Cable Car Access', 'Valley Entrance']
   },
   {
     id: 'govindghat', name: 'Govindghat Gateway', type: 'trailhead', dayNum: 3, altitude: '6,300 ft',
     coordinates: { x: 50, y: 42 }, distanceToNext: '10 km trek', durationToNext: '4-5 hrs', icon: '🧭',
-    imageUrl: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80',
+    imageUrl: GOVINDGHAT_IMAGE,
     description: 'The bustling valley roadhead where we assemble, meet our mountaineering crew, and begin our legendary uphill river trek.',
     keyAttractions: ['Trek Head', 'Alaknanda Confluence', 'Porter Base']
   },
   {
     id: 'ghangaria', name: 'Ghangaria Base', type: 'base', dayNum: 3, altitude: '10,000 ft',
     coordinates: { x: 44, y: 30 }, distanceToNext: '3-6 km', durationToNext: 'Varies by branch', icon: '🏔️',
-    imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: GHANGARIA_IMAGE,
     description: 'Our pine-bordered alpine base village. Cozy wooden guesthouses serve as the direct launchpad to both the Valley of Flowers and Hemkund Sahib.',
     keyAttractions: ['Base Village', 'Pine Forests', 'Cozy Wooden Lodges']
   },
   {
     id: 'valley_of_flowers', name: 'Valley of Flowers', type: 'destination', dayNum: 4, altitude: '11,811 ft',
     coordinates: { x: 30, y: 22 }, distanceToNext: 'Return to Ghangaria', durationToNext: '5-6 hrs roundtrip', icon: '🌸',
-    imageUrl: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80',
+    imageUrl: FLOWERS_IMAGE,
     description: 'A celebrated alpine paradise of endemic wildflowers, misty waterfalls, and high mountain ridges. An unforgettable UNESCO World Heritage site.',
     keyAttractions: ['Endemic Wildflowers', 'UNESCO Landscape', 'Bhyundar Valley']
   },
   {
     id: 'hemkund_sahib', name: 'Hemkund Sahib', type: 'destination', dayNum: 5, altitude: '14,203 ft',
     coordinates: { x: 58, y: 18 }, distanceToNext: 'Return to Ghangaria', durationToNext: '7-8 hrs roundtrip', icon: '❄️',
-    imageUrl: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?auto=format&fit=crop&w=800&q=80',
+    imageUrl: HEMKUND_IMAGE,
     description: 'The world\'s highest Sikh shrine, situated beside a crystalline glacial lake reflecting towering peaks. A deeply spiritual high-altitude trek.',
     keyAttractions: ['World\'s Highest Gurudwara', 'Crystalline Glacial Lake', 'Laxman Temple']
   },
   {
     id: 'badrinath', name: 'Badrinath Shrine', type: 'spiritual', dayNum: 6, altitude: '10,279 ft',
     coordinates: { x: 62, y: 34 }, distanceToNext: 'Drive return', durationToNext: 'Flexible', icon: '🛕',
-    imageUrl: 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?auto=format&fit=crop&w=800&q=80',
+    imageUrl: BADRINATH_IMAGE,
     description: 'A holy Char Dham shrine set against the Nar and Narayan mountains, offering hot sulfur springs and a side drive to the Mana Indo-Tibetan border.',
     keyAttractions: ['Badrinath Temple', 'Mana Village', 'Tapt Kund Springs']
   }
@@ -89,56 +106,56 @@ const MANALI_DESTINATIONS: DestinationNode[] = [
   {
     id: 'delhi', name: 'Delhi Assembly', type: 'pickup', dayNum: 1, altitude: '700 ft',
     coordinates: { x: 50, y: 92 }, distanceToNext: '290 km', durationToNext: '7-8 hrs', icon: '📍',
-    imageUrl: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80',
+    imageUrl: DELHI_IMAGE,
     description: 'Our luxurious travel bus departs from Delhi at night, hitting the broad highway to start our scenic road trip towards Himachal Pradesh.',
     keyAttractions: ['Assembly Point', 'Group Icebreakers', 'Comfortable Drive']
   },
   {
     id: 'rishikesh', name: 'Beas River Drive', type: 'stopover', dayNum: 1, altitude: '2,495 ft',
     coordinates: { x: 48, y: 72 }, distanceToNext: '105 km', durationToNext: '3 hrs', icon: '💧',
-    imageUrl: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80',
+    imageUrl: BEAS_RIVER_IMAGE,
     description: 'Enjoy a beautiful riverside drive along the cascading Beas River, stopping for local paranthas with scenic views.',
     keyAttractions: ['Beas River Views', 'Pandoh Dam', 'Mountain Foothills']
   },
   {
     id: 'joshimath', name: 'Kasol Base Camp', type: 'stopover', dayNum: 2, altitude: '5,182 ft',
     coordinates: { x: 52, y: 55 }, distanceToNext: '5 km', durationToNext: '15 mins', icon: '⛺',
-    imageUrl: 'https://images.unsplash.com/photo-1617014312942-5ba772e09ff7?auto=format&fit=crop&w=800&q=80',
+    imageUrl: KASOL_IMAGE,
     description: 'Our beautiful forest base camp beside the rushing Parvati River, famous for its wooden cafes, local strolls, and chill vibes.',
     keyAttractions: ['Riverside Camps', 'Chalal Nature Walk', 'Parvati River']
   },
   {
     id: 'govindghat', name: 'Manali Arrival', type: 'trailhead', dayNum: 3, altitude: '6,726 ft',
     coordinates: { x: 50, y: 42 }, distanceToNext: '14 km', durationToNext: '40 mins', icon: '⛰️',
-    imageUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+    imageUrl: HADIMBA_IMAGE,
     description: 'Check in at our high-altitude Manali hotel. Discover the wooden Hadimba temple, local pine forests, and Old Manali cafes.',
     keyAttractions: ['Hadimba Temple', 'Mall Road Stroll', 'Old Manali Cafes']
   },
   {
     id: 'ghangaria', name: 'Solang Valley', type: 'base', dayNum: 4, altitude: '8,400 ft',
     coordinates: { x: 44, y: 30 }, distanceToNext: '30 km', durationToNext: '2 hrs roundtrip', icon: '🪁',
-    imageUrl: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
+    imageUrl: SOLANG_IMAGE,
     description: 'Himachal\'s ultimate adventure hub! Experience thrilling paragliding, ATV rides, long ziplines, zorbing, and majestic views.',
     keyAttractions: ['Paragliding', 'Ziplines', 'Anjani Mahadev Hike']
   },
   {
     id: 'valley_of_flowers', name: 'Jogini Waterfall', type: 'destination', dayNum: 4, altitude: '7,850 ft',
     coordinates: { x: 30, y: 22 }, distanceToNext: 'Return to Hotel', durationToNext: '3 hrs trek', icon: '🌊',
-    imageUrl: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80',
+    imageUrl: JOGINI_IMAGE,
     description: 'A peaceful pine-forested nature trek leading to the cascading Jogini Waterfall, offering refreshing mountain spray.',
     keyAttractions: ['Pine Forest Trail', 'Water Cascades', 'Vashisht Springs']
   },
   {
     id: 'hemkund_sahib', name: 'Rohtang Pass', type: 'destination', dayNum: 5, altitude: '13,058 ft',
     coordinates: { x: 58, y: 18 }, distanceToNext: 'Return to Delhi', durationToNext: '12 hrs', icon: '❄️',
-    imageUrl: 'https://images.unsplash.com/photo-1551829142-d9b812eb1a9b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: ROHTANG_IMAGE,
     description: 'A spectacular high alpine ridge with perpetual snow, offering jaw-dropping views of majestic snow-capped peaks.',
     keyAttractions: ['Snow Sledging', 'Glacial Vistas', 'Atal Tunnel Drive']
   },
   {
     id: 'badrinath', name: 'Manikaran Springs', type: 'spiritual', dayNum: 2, altitude: '5,774 ft',
     coordinates: { x: 62, y: 34 }, distanceToNext: 'Return to Camp', durationToNext: '30 mins', icon: '🛕',
-    imageUrl: 'https://images.unsplash.com/photo-1600100397608-f0107a67df6e?auto=format&fit=crop&w=800&q=80',
+    imageUrl: MANIKARAN_IMAGE,
     description: 'Famous natural hot sulfur springs and the ancient Manikaran Sahib Gurudwara nestled under high cliffs.',
     keyAttractions: ['Hot Springs', 'Historic Gurudwara', 'Langar Meal']
   }

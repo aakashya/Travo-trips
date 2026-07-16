@@ -249,50 +249,44 @@ export default function App() {
       {/* Render Trip-Specific Detail Pages */}
       {currentView !== "home" && activeTrip && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
-          
-          {/* A. Trip Story Philosophy Chapters */}
-          <StoryIntro 
-            tripId={activeTrip.id}
-            tripName={activeTrip.name}
-          />
 
-          {/* B. Interactive Road Route Map with traveling van */}
+          {/* A. Interactive Road Route Map with traveling van */}
           <RouteJourney 
             stops={activeTrip.routeStops}
             tripId={activeTrip.id}
             tripName={activeTrip.name}
           />
 
-          {/* C. Day-Wise Story Timeline Serpentine road */}
+          {/* B. Day-Wise Story Timeline Serpentine road */}
           <StoryTimeline 
             items={activeTrip.timelineItems}
             tripId={activeTrip.id}
           />
 
-          {/* D. Bento Moments Highlights panel */}
+          {/* C. Bento Moments Highlights panel */}
           <ExperienceCards 
             experienceMoments={activeTrip.experienceMoments}
           />
 
-          {/* E. Inclusions and Exclusions panel */}
+          {/* D. Inclusions and Exclusions panel */}
           <Inclusions 
             inclusions={activeTrip.inclusions}
             exclusions={activeTrip.exclusions}
           />
 
-          {/* F. Packing Checklist interactive widget */}
+          {/* E. Packing Checklist interactive widget */}
           <Checklist 
             packingChecklist={activeTrip.packingChecklist}
             tripId={activeTrip.id}
           />
 
-          {/* G. Accordions FAQs travel charter */}
+          {/* F. Accordions FAQs travel charter */}
           <TermsAccordion 
             termsAccordion={activeTrip.termsAccordion}
             tripName={activeTrip.name}
           />
 
-          {/* H. Specific trip footer starlit camp CTA */}
+          {/* G. Specific trip footer starlit camp CTA */}
           <FooterCTA 
             onOpenBooking={() => handleOpenBooking(activeTrip.id)}
             tripId={activeTrip.id}
