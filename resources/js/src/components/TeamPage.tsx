@@ -1,6 +1,24 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Sparkles } from "lucide-react";
+import { Compass, Mail, MapPin, Sparkles } from "lucide-react";
+
+function InstagramIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function LinkedInIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M5.2 7.4H2.1V21h3.1V7.4ZM3.65 3A1.82 1.82 0 1 0 3.66 6.64 1.82 1.82 0 0 0 3.65 3ZM21.9 13.2c0-4.1-2.2-6-5.1-6a4.4 4.4 0 0 0-4 2.2v-2H9.7V21h3.1v-6.7c0-1.8.3-3.5 2.5-3.5 2.1 0 2.2 2 2.2 3.6V21h3.1l1.3-7.8Z" />
+    </svg>
+  );
+}
 
 interface TeamMember {
   name: string;
@@ -9,6 +27,13 @@ interface TeamMember {
   badge: string;
   initials: string;
   image?: string;
+  location: string;
+  destinationsTravelled?: string;
+  socials: {
+    instagram?: string;
+    linkedin?: string;
+    email: string;
+  };
 }
 
 const TEAM_MEMBERS: TeamMember[] = [
@@ -18,6 +43,9 @@ const TEAM_MEMBERS: TeamMember[] = [
     bio: "Naman leads TRAVO's vision, brand, partnerships, and the community-first approach behind every journey we create.",
     badge: "Vision & Leadership",
     initials: "NA",
+    location: "Gurugram, Haryana",
+    destinationsTravelled: "150+",
+    socials: { email: "expeditions@travo.com" },
   },
   {
     name: "Vikas Yadav",
@@ -26,6 +54,9 @@ const TEAM_MEMBERS: TeamMember[] = [
     badge: "Operations & Experiences",
     initials: "VY",
     image: "/images/team/vikas.png",
+    location: "Gurugram, Haryana",
+    destinationsTravelled: "200+",
+    socials: { email: "expeditions@travo.com" },
   },
   {
     name: "Aakash Yadav",
@@ -33,6 +64,8 @@ const TEAM_MEMBERS: TeamMember[] = [
     bio: "Aakash leads technology and product, building the digital systems that make discovering, planning, and booking a TRAVO journey effortless.",
     badge: "Product & Technology",
     initials: "AY",
+    location: "Gurugram, Haryana",
+    socials: { email: "expeditions@travo.com" },
   },
 ];
 
@@ -107,6 +140,71 @@ export default function TeamPage() {
                   <p className="text-xs text-neutral-600 font-light leading-relaxed">
                     {member.bio}
                   </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between gap-4 border-t border-neutral-100 px-6 py-5 text-[11px] text-neutral-500">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-[#9C753B]" />
+                    <span>{member.location}</span>
+                  </div>
+                  {member.destinationsTravelled && (
+                    <div className="flex items-center gap-1.5">
+                      <Compass className="h-3.5 w-3.5 text-neutral-400" />
+                      <span><strong>{member.destinationsTravelled}</strong> Destinations Travelled</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {member.socials.instagram ? (
+                    <a
+                      href={member.socials.instagram}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${member.name} on Instagram`}
+                      className="rounded-lg border border-neutral-200 bg-[#FAF9F6] p-2 text-neutral-500 transition-colors hover:border-[#9C753B]/30 hover:text-[#9C753B]"
+                    >
+                      <InstagramIcon className="h-3.5 w-3.5" />
+                    </a>
+                  ) : (
+                    <span
+                      aria-label="Instagram profile not added"
+                      title="Instagram profile not added"
+                      className="cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-100 p-2 text-neutral-300"
+                    >
+                      <InstagramIcon className="h-3.5 w-3.5" />
+                    </span>
+                  )}
+
+                  {member.socials.linkedin ? (
+                    <a
+                      href={member.socials.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${member.name} on LinkedIn`}
+                      className="rounded-lg border border-neutral-200 bg-[#FAF9F6] p-2 text-neutral-500 transition-colors hover:border-[#9C753B]/30 hover:text-[#9C753B]"
+                    >
+                      <LinkedInIcon className="h-3.5 w-3.5" />
+                    </a>
+                  ) : (
+                    <span
+                      aria-label="LinkedIn profile not added"
+                      title="LinkedIn profile not added"
+                      className="cursor-not-allowed rounded-lg border border-neutral-200 bg-neutral-100 p-2 text-neutral-300"
+                    >
+                      <LinkedInIcon className="h-3.5 w-3.5" />
+                    </span>
+                  )}
+
+                  <a
+                    href={`mailto:${member.socials.email}`}
+                    aria-label={`Email ${member.name}`}
+                    className="rounded-lg border border-neutral-200 bg-[#FAF9F6] p-2 text-neutral-500 transition-colors hover:border-[#9C753B]/30 hover:text-[#9C753B]"
+                  >
+                    <Mail className="h-3.5 w-3.5" />
+                  </a>
                 </div>
               </div>
 
