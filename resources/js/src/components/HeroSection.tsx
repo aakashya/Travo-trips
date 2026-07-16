@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { TRIPS_LIST, TRIPS_DATA } from "../data";
 import { 
-  Compass, Calendar, Timer, Users, ChevronDown, Flame, 
-  ChevronLeft, ChevronRight, Sparkles, MapPin, Menu, X 
+  Compass, Calendar, Timer, Users, ChevronDown,
+  ChevronRight, Sparkles, Menu, X
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -19,7 +19,6 @@ export default function HeroSection({
   onOpenBooking,
   onExploreClick
 }: HeroSectionProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -34,43 +33,38 @@ export default function HeroSection({
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // For the homepage and other subpages, we display both trips in a beautiful slider as background
   const trips = TRIPS_LIST;
   const isSubPage = ["trips", "team", "about", "contact"].includes(currentView);
-  const currentTrip = (currentView === "home" || isSubPage) ? trips[activeIndex] : TRIPS_DATA[currentView];
-
-  // Auto-slide on homepage
-  useEffect(() => {
-    if (currentView !== "home") return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % trips.length);
-    }, 8000); // changes slide every 8s
-    return () => clearInterval(interval);
-  }, [currentView, trips.length]);
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + trips.length) % trips.length);
-  };
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % trips.length);
-  };
+  const currentTrip = (currentView === "home" || isSubPage) ? trips[0] : TRIPS_DATA[currentView];
 
   return (
     <section className={`relative w-full overflow-hidden bg-[#FAF9F6] flex flex-col justify-between text-white transition-all duration-700 ${isSubPage ? 'h-[45vh] min-h-[350px]' : 'h-screen'}`}>
-      {/* Background Image with smooth parallax & fade transition */}
-      <div 
-        key={currentTrip.id}
-        className="absolute inset-0 bg-cover bg-center select-none pointer-events-none transition-all duration-1000 ease-out saturate-[1.1] brightness-[0.8] contrast-[1.05] animate-[fadeIn_0.8s_ease-out]"
-        style={{
-          backgroundImage: `url(${currentTrip.heroImage})`,
-          transform: `translate(${mousePos.x * 10}px, ${mousePos.y * 10}px) scale(1.05)`,
-        }}
-      />
+      {currentView === "home" ? (
+        <video
+          className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        >
+          <source src="/images/hero/travo-hero.m4v" type="video/mp4" />
+          <source src="/images/hero/IMG_9301.MOV" type="video/quicktime" />
+        </video>
+      ) : (
+        <div
+          key={currentTrip.id}
+          className="absolute inset-0 bg-cover bg-center select-none pointer-events-none transition-all duration-1000 ease-out saturate-[1.1] brightness-[0.8] contrast-[1.05] animate-[fadeIn_0.8s_ease-out]"
+          style={{
+            backgroundImage: `url(${currentTrip.heroImage})`,
+            transform: `translate(${mousePos.x * 10}px, ${mousePos.y * 10}px) scale(1.05)`,
+          }}
+        />
+      )}
 
-      {/* Cinematic Overlays - Lighter, softer gradients for a brighter ambient glow */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6] via-transparent to-black/45 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(250,249,246,0.2)_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none" />
+      <div className={`absolute inset-0 pointer-events-none ${currentView === "home" ? "bg-gradient-to-b from-black/55 via-black/20 to-black/65" : "bg-gradient-to-t from-[#FAF9F6] via-transparent to-black/45"}`} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_5%,rgba(0,0,0,0.42)_100%)] pointer-events-none" />
 
       {/* Ambient Starry Particles */}
       <div className="absolute inset-0 pointer-events-none opacity-45">
@@ -86,11 +80,11 @@ export default function HeroSection({
           onClick={() => { setIsMobileMenuOpen(false); onNavigate("home"); }} 
           className="flex items-center group focus:outline-none"
         >
-          <div className="h-14 w-36 md:w-44 overflow-hidden rounded-md border border-white/20 bg-brand-sand-light shadow-lg shadow-black/20 transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center p-1">
+          <div className="h-14 w-40 md:w-48 overflow-hidden transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center">
             <img
-              src="/images/travo-logo.jpeg"
-              alt="TRAVO"
-              className="h-full w-full object-contain object-center"
+              src="/images/logo/travo-logo-white.png"
+              alt="TRAVO logo"
+              className="h-full w-full scale-125 object-cover object-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.65)]"
               decoding="async"
             />
           </div>
@@ -197,11 +191,20 @@ export default function HeroSection({
       </AnimatePresence>
 
       {/* Center Body & Glassmorphism Booking Card */}
-      {isSubPage ? (
+      {currentView === "home" ? (
+        <div className="relative z-10 flex w-full flex-grow items-center justify-center px-6 pb-20 pt-10 text-center">
+          <div className="max-w-4xl animate-[fadeIn_0.8s_ease-out]">
+            <h1 className="font-display text-3xl font-bold leading-tight tracking-tight text-white drop-shadow-2xl sm:text-4xl lg:text-5xl">
+              <span className="block">Go beyond the map.</span>
+              <span className="block text-brand-sand">Come home with a story.</span>
+            </h1>
+          </div>
+        </div>
+      ) : isSubPage ? (
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center space-y-4 my-auto py-12 animate-[fadeIn_0.5s_ease-out]">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/25 text-[10px] font-black uppercase tracking-widest text-brand-sand">
             <Sparkles className="w-3.5 h-3.5 text-brand-sand animate-pulse" /> 
-            {currentView === "trips" && "30+ Active Destinations"}
+            {currentView === "trips" && "3 Active Journeys"}
             {currentView === "team" && "Certified Rescue Captains"}
             {currentView === "about" && "Founded by Backpackers"}
             {currentView === "contact" && "24/7 Dispatch Center"}
@@ -215,7 +218,7 @@ export default function HeroSection({
           </h1>
 
           <p className="text-xs sm:text-sm text-gray-200 max-w-xl mx-auto leading-relaxed font-light drop-shadow">
-            {currentView === "trips" && "From misty tea valleys in Munnar to stark high-altitude deserts in Spiti, explore our hand-curated small-group departure dates."}
+            {currentView === "trips" && "Explore our active Manali, Valley of Flowers, and Udaipur small-group journeys."}
             {currentView === "team" && "Meet the NIM-certified mountaineers, wilderness first-responders, and local survival specialists leading your next safe escape."}
             {currentView === "about" && "How three freezing solo backpackers around a Kasol bonfire decided to build India's most intimate premium road-trip travel club."}
             {currentView === "contact" && "Have a question about group composition, custom corporate departures, or road safety? Our coordination team is active 24/7."}
@@ -356,41 +359,6 @@ export default function HeroSection({
         </div>
       )}
 
-      {/* Carousel Dots & Controls (Only shown on Home screen) */}
-      {currentView === "home" && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-5">
-          <button 
-            onClick={handlePrev}
-            className="p-2 rounded-full bg-white/20 hover:bg-[#9C753B] border border-white/30 transition-all text-white active:scale-90"
-            title="Previous Trip"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          {/* Dots */}
-          <div className="flex items-center gap-2">
-            {trips.map((trip, idx) => (
-              <button
-                key={trip.id}
-                onClick={() => setActiveIndex(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  activeIndex === idx ? "w-8 bg-[#9C753B]" : "w-2.5 bg-white/50 hover:bg-white/85"
-                }`}
-                title={`Go to slide ${idx + 1}`}
-              />
-            ))}
-          </div>
-
-          <button 
-            onClick={handleNext}
-            className="p-2 rounded-full bg-white/20 hover:bg-[#9C753B] border border-white/30 transition-all text-white active:scale-90"
-            title="Next Trip"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
       {/* Bottom Indicator */}
       {!isSubPage && (
         <div 
@@ -398,7 +366,7 @@ export default function HeroSection({
           className="relative z-20 pb-6 text-center cursor-pointer flex flex-col items-center gap-1 hover:text-brand-sand transition-colors animate-bounce"
         >
           <span className="text-[9px] uppercase tracking-[0.25em] font-black text-gray-200 drop-shadow">
-            Scroll to unveil story
+            {currentView === "home" ? "Scroll to explore trips" : "Scroll to unveil story"}
           </span>
           <ChevronDown className="w-4 h-4 text-brand-sand" />
         </div>

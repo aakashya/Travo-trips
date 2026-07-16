@@ -132,11 +132,11 @@ export default function FooterCTA({
             className="flex items-center focus:outline-none"
             aria-label="Go to TRAVO home"
           >
-            <span className="h-11 w-32 overflow-hidden rounded bg-brand-sand-light border border-neutral-300 flex items-center justify-center p-1">
+            <span className="h-11 w-32 overflow-hidden rounded bg-white border border-neutral-300 flex items-center justify-center">
               <img
-                src="/images/travo-logo.jpeg"
-                alt="TRAVO"
-                className="h-full w-full object-contain object-center"
+                src="/images/logo/travo-logo-website.png"
+                alt="TRAVO logo"
+                className="h-full w-full object-cover object-center"
                 decoding="async"
               />
             </span>

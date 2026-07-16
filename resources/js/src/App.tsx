@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeroSection from "./components/HeroSection";
 import StoryIntro from "./components/StoryIntro";
 import RouteJourney from "./components/RouteJourney";
@@ -21,13 +21,85 @@ import { Flame, Compass, Calendar, Timer, ArrowRight, ShieldCheck, Star, Users, 
 
 export type AppView = "home" | "manali" | "valley-of-flowers" | "book-now" | "trips" | "team" | "about" | "contact";
 
+const VIEW_PATHS: Record<AppView, string> = {
+  home: "/",
+  trips: "/trips",
+  manali: "/trips/manali",
+  "valley-of-flowers": "/trips/valley-of-flowers",
+  "book-now": "/book-now",
+  team: "/team",
+  about: "/about-us",
+  contact: "/contact-us",
+};
+
+const VIEW_TITLES: Record<AppView, string> = {
+  home: "TRAVO | Curated Group Journeys",
+  trips: "Trips | TRAVO",
+  manali: "Manali Kasol Escape | TRAVO",
+  "valley-of-flowers": "Valley of Flowers | TRAVO",
+  "book-now": "Book Your Journey | TRAVO",
+  team: "Our Team | TRAVO",
+  about: "About Us | TRAVO",
+  contact: "Contact Us | TRAVO",
+};
+
+const normalizePath = (pathname: string) => {
+  if (pathname === "/") return pathname;
+  return pathname.replace(/\/+$/, "");
+};
+
+const getViewFromPath = (pathname: string): AppView => {
+  const normalizedPath = normalizePath(pathname);
+  const matchingView = (Object.keys(VIEW_PATHS) as AppView[]).find(
+    (view) => VIEW_PATHS[view] === normalizedPath,
+  );
+
+  return matchingView || "home";
+};
+
+const getBookingTripFromUrl = () => {
+  return new URLSearchParams(window.location.search).get("trip") || "manali";
+};
+
 export default function App() {
-  const [currentView, setCurrentView] = useState<AppView>("home");
+  const [currentView, setCurrentView] = useState<AppView>(() => getViewFromPath(window.location.pathname));
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [selectedTripIdForBooking, setSelectedTripIdForBooking] = useState<string>("manali");
+  const [selectedTripIdForBooking, setSelectedTripIdForBooking] = useState<string>(() => getBookingTripFromUrl());
+
+  useEffect(() => {
+    const syncViewWithUrl = () => {
+      const nextView = getViewFromPath(window.location.pathname);
+      setCurrentView(nextView);
+
+      if (nextView === "book-now") {
+        setSelectedTripIdForBooking(getBookingTripFromUrl());
+      }
+
+      window.scrollTo({ top: 0, behavior: "instant" });
+    };
+
+    const normalizedPath = normalizePath(window.location.pathname);
+    const isKnownPath = Object.values(VIEW_PATHS).includes(normalizedPath);
+
+    if (!isKnownPath) {
+      window.history.replaceState({ view: "home" }, "", VIEW_PATHS.home);
+      setCurrentView("home");
+    }
+
+    window.addEventListener("popstate", syncViewWithUrl);
+    return () => window.removeEventListener("popstate", syncViewWithUrl);
+  }, []);
+
+  useEffect(() => {
+    document.title = VIEW_TITLES[currentView];
+  }, [currentView]);
 
   const handleOpenBooking = (tripId: string) => {
-    setSelectedTripIdForBooking(tripId || "manali");
+    const selectedTripId = tripId || "manali";
+    const bookingUrl = `${VIEW_PATHS["book-now"]}?trip=${encodeURIComponent(selectedTripId)}`;
+
+    setSelectedTripIdForBooking(selectedTripId);
+    window.history.pushState({ view: "book-now", tripId: selectedTripId }, "", bookingUrl);
     setCurrentView("book-now");
     window.scrollTo({ top: 0, behavior: "instant" });
   };
@@ -37,8 +109,13 @@ export default function App() {
   };
 
   const handleNavigate = (view: AppView) => {
+    const targetPath = VIEW_PATHS[view];
+
+    if (`${window.location.pathname}${window.location.search}` !== targetPath) {
+      window.history.pushState({ view }, "", targetPath);
+    }
+
     setCurrentView(view);
-    // Smooth scroll to top when changing page views
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
@@ -68,10 +145,7 @@ export default function App() {
       {currentView === "home" && (
         <div className="animate-[fadeIn_0.6s_ease-out]">
           
-          {/* A. TRAVO Philosphy Story Intro (General Mode) */}
-          <StoryIntro tripId="general" />
-
-          {/* B. Active Expeditions Grid Showcase with 30+ Trips and Categories */}
+          {/* A. Active Expeditions Catalogue */}
           <div id="explore-expeditions" className="scroll-mt-20">
             <TripsShowcase 
               onNavigate={handleNavigate}
@@ -79,6 +153,9 @@ export default function App() {
               isHomePage={true}
             />
           </div>
+
+          {/* B. TRAVO Philosophy Story Intro (General Mode) */}
+          <StoryIntro tripId="general" />
 
           {/* C. The TRAVO Trust Promise (Why Travelers Choose Us) */}
           <section className="py-24 px-6 bg-[#FAF9F6] relative overflow-hidden text-neutral-900 border-b border-neutral-200">

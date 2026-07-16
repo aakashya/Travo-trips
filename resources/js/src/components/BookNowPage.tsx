@@ -137,11 +137,11 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
           onClick={() => onNavigate("home")} 
           className="flex items-center group focus:outline-none"
         >
-          <div className="h-14 w-36 md:w-44 overflow-hidden rounded-md border border-neutral-200 bg-brand-sand-light shadow transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center p-1">
+          <div className="h-14 w-36 md:w-44 overflow-hidden rounded-md border border-neutral-200 bg-white shadow transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center">
             <img
-              src="/images/travo-logo.jpeg"
-              alt="TRAVO"
-              className="h-full w-full object-contain object-center"
+              src="/images/logo/travo-logo-website.png"
+              alt="TRAVO logo"
+              className="h-full w-full object-cover object-center"
               decoding="async"
             />
           </div>
