@@ -13,6 +13,8 @@ interface HeroSectionProps {
   onExploreClick: () => void;
 }
 
+const SHARED_HEADER_IMAGE = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=85&w=1800&auto=format&fit=crop";
+
 export default function HeroSection({
   currentView,
   onNavigate,
@@ -53,6 +55,7 @@ export default function HeroSection({
   const trips = TRIPS_LIST;
   const isSubPage = ["trips", "team", "about", "contact", "book-now"].includes(currentView);
   const currentTrip = (currentView === "home" || isSubPage) ? trips[0] : TRIPS_DATA[currentView];
+  const headerImage = isSubPage ? SHARED_HEADER_IMAGE : currentTrip.heroImage;
   const heroHeightClass = isSubPage
     ? "h-[46svh] min-h-[360px] sm:h-[45vh]"
     : currentView === "home"
@@ -79,7 +82,7 @@ export default function HeroSection({
           key={currentTrip.id}
           className="absolute inset-0 bg-cover bg-center select-none pointer-events-none transition-all duration-1000 ease-out saturate-[1.1] brightness-[0.8] contrast-[1.05] animate-[fadeIn_0.8s_ease-out]"
           style={{
-            backgroundImage: `url(${currentTrip.heroImage})`,
+            backgroundImage: `url(${headerImage})`,
             transform: `translate(${mousePos.x * 10}px, ${mousePos.y * 10}px) scale(1.05)`,
           }}
         />
