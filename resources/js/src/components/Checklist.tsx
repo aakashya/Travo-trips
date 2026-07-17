@@ -31,7 +31,7 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
   const progressPercent = Math.round((checkedItemsCount / totalItemsCount) * 100) || 0;
 
   return (
-    <section id="checklist" className="relative bg-[#F2EFE9] py-24 px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
+    <section id="checklist" className="relative bg-[#F2EFE9] py-16 sm:py-24 px-4 sm:px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
       {/* Light glow elements */}
       <div className="absolute top-1/4 right-0 w-80 h-80 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />
 
@@ -43,7 +43,7 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
             <span className="text-[10px] uppercase tracking-[0.2em] font-black text-brand-charcoal px-3.5 py-1.5 bg-brand-sand rounded-full inline-flex items-center gap-2 shadow-sm">
               <Luggage className="w-3.5 h-3.5 text-brand-charcoal animate-bounce" /> TRAVEL PACKING GUIDE
             </span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight font-display uppercase text-neutral-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight font-display uppercase text-neutral-900">
               Pack Smart. <br className="sm:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
                 Wander Worry-Free.
@@ -55,8 +55,8 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
           </div>
 
           {/* Interactive Progress Bar */}
-          <div className="w-full lg:w-[420px] bg-white border border-neutral-200 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-sm">
-            <div className="flex justify-between items-center mb-3">
+          <div className="w-full lg:w-[420px] bg-white border border-neutral-200 rounded-3xl p-4 sm:p-6 relative overflow-hidden flex flex-col justify-between shadow-sm">
+            <div className="flex flex-col min-[380px]:flex-row min-[380px]:justify-between gap-1 min-[380px]:items-center mb-3">
               <span className="text-xs font-black text-[#9C753B] uppercase tracking-wider font-mono">
                 Your Packing Stats
               </span>
@@ -73,7 +73,7 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
               />
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between gap-2 items-center">
               <span className="text-[10px] text-neutral-500 font-mono tracking-widest uppercase">
                 {progressPercent === 100 ? "🎉 Ready to board!" : "🎒 Fill your backpack"}
               </span>
@@ -93,7 +93,7 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
           {packingChecklist.map((category) => (
             <div 
               key={category.category}
-              className="p-6 rounded-3xl bg-white border border-neutral-200 hover:border-[#9C753B]/55 transition-all duration-300 space-y-4 flex flex-col justify-between shadow-sm"
+              className="p-4 sm:p-6 rounded-3xl bg-white border border-neutral-200 hover:border-[#9C753B]/55 transition-all duration-300 space-y-4 flex flex-col justify-between shadow-sm"
             >
               <div className="space-y-3">
                 <h3 className="text-base font-black text-[#9C753B] tracking-widest uppercase border-b border-neutral-100 pb-2.5 flex items-center justify-between">

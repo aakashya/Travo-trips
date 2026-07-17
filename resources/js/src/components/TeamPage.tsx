@@ -85,13 +85,13 @@ const TEAM_MEMBERS: TeamMember[] = [
 
 export default function TeamPage() {
   return (
-    <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-16 px-6">
+    <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-12 sm:py-16 px-4 sm:px-6">
       
       {/* Page Title Header */}
       <div className="max-w-7xl mx-auto space-y-16">
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 max-w-6xl mx-auto">
           {TEAM_MEMBERS.map((member, i) => (
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -103,7 +103,7 @@ export default function TeamPage() {
             >
               <div>
                 {/* Photo frame */}
-                <div className="relative h-72 overflow-hidden bg-gradient-to-br from-neutral-800 via-neutral-700 to-[#9C753B]">
+                <div className="relative h-64 sm:h-72 overflow-hidden bg-gradient-to-br from-neutral-800 via-neutral-700 to-[#9C753B]">
                   {member.image ? (
                     <img
                       src={member.image}
@@ -126,7 +126,7 @@ export default function TeamPage() {
                 </div>
 
                 {/* Info block */}
-                <div className="p-6 space-y-4">
+                <div className="p-5 sm:p-6 space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-lg font-black uppercase text-neutral-900 tracking-tight font-display">
                       {member.name}
@@ -142,7 +142,7 @@ export default function TeamPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-4 border-t border-neutral-100 px-6 py-5 text-[11px] text-neutral-500">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-neutral-100 px-5 sm:px-6 py-5 text-[11px] text-neutral-500">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-1.5">
                     <MapPin className="h-3.5 w-3.5 text-[#9C753B]" />

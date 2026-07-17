@@ -196,7 +196,7 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
   const selectedTrips = selectedDateStr ? tripsByDate[selectedDateStr] || [] : [];
 
   return (
-    <section id="trip-calendar" className="py-16 md:py-20 px-6 bg-[#FAF9F6] relative border-t border-b border-neutral-200 scroll-mt-20 overflow-hidden">
+    <section id="trip-calendar" className="py-14 sm:py-16 md:py-20 px-4 sm:px-6 bg-[#FAF9F6] relative border-t border-b border-neutral-200 scroll-mt-20 overflow-hidden">
       {/* Dynamic Ambient Background Glows */}
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-sky-500/[0.04] rounded-full filter blur-3xl pointer-events-none" />
@@ -256,17 +256,17 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
             {displayMode === "calendar" ? (
               <div className="space-y-4">
                 {/* Calendar Header / Month Select */}
-                <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 pb-4">
                   <div className="flex items-center gap-2">
                     <span className="p-2 bg-brand-sand/15 rounded-lg text-[#9C753B]">
                       <Calendar className="w-5 h-5" />
                     </span>
-                    <h3 className="text-xl font-bold tracking-tight text-neutral-900 uppercase font-display">
+                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-neutral-900 uppercase font-display">
                       {MONTH_NAMES[currentMonth]} {currentYear}
                     </h3>
                   </div>
                   
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center justify-between sm:justify-end gap-1.5">
                     <button 
                       onClick={handlePrevMonth}
                       className="p-2 rounded-lg bg-neutral-50 border border-neutral-200 hover:bg-neutral-100 text-neutral-700 hover:text-neutral-900 transition-all"
@@ -289,14 +289,14 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                 </div>
 
                 {/* Weekday Titles */}
-                <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-black uppercase tracking-widest text-neutral-500">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-neutral-500">
                   {WEEKDAYS.map(day => (
                     <div key={day} className="py-2">{day}</div>
                   ))}
                 </div>
 
                 {/* Days Grid */}
-                <div className="grid grid-cols-7 gap-2">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
                   {calendarDays.map((dayObj, idx) => {
                     const tripsOnDay = tripsByDate[dayObj.dateStr] || [];
                     const hasTrips = tripsOnDay.length > 0;
@@ -319,7 +319,7 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                       <button
                         key={idx}
                         onClick={() => setSelectedDateStr(dayObj.dateStr)}
-                        className={`relative aspect-square sm:p-2 flex flex-col justify-between items-center rounded-xl border text-xs font-bold transition-all ${bgClass} ${ringClass} ${
+                        className={`relative aspect-square p-0.5 sm:p-2 flex flex-col justify-between items-center rounded-lg sm:rounded-xl border text-xs font-bold transition-all ${bgClass} ${ringClass} ${
                           hasTrips ? "font-black" : dayObj.isCurrentMonth ? "text-neutral-800" : "text-neutral-400 hover:text-neutral-600"
                         }`}
                       >
@@ -331,7 +331,7 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                           <div className="flex gap-1 justify-center mt-1">
                             {tripsOnDay.slice(0, 3).map((t, tIdx) => (
                               t.status === "completed" ? (
-                                <CircleCheckBig key={tIdx} className="w-4 h-4 text-emerald-600" strokeWidth={2.5} />
+                                <CircleCheckBig key={tIdx} className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-600" strokeWidth={2.5} />
                               ) : (
                                 <span key={tIdx} className="w-2 h-2 rounded-full bg-[#9C753B] shadow-sm animate-pulse" />
                               )
@@ -463,8 +463,8 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                         {/* Contents */}
                         <div className="p-5 space-y-4">
                           <div className="space-y-2">
-                            <div className="flex justify-between items-start gap-4">
-                              <h3 className="text-2xl font-black uppercase text-neutral-900 font-display tracking-tight">
+                            <div className="flex flex-col min-[380px]:flex-row min-[380px]:justify-between items-start gap-2 min-[380px]:gap-4">
+                              <h3 className="text-xl sm:text-2xl font-black uppercase text-neutral-900 font-display tracking-tight">
                                 {trip.name}
                               </h3>
                               <span className={`text-lg font-black whitespace-nowrap ${isCompleted ? "text-neutral-500 line-through" : "text-[#9C753B]"}`}>
@@ -503,7 +503,7 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
 
                           {/* Interactive seat tracking */}
                           <div className="space-y-2">
-                            <div className="flex justify-between text-[10px] uppercase font-bold text-neutral-600">
+                            <div className="flex flex-col sm:flex-row sm:justify-between gap-1 text-[10px] uppercase font-bold text-neutral-600">
                               <span className="flex items-center gap-1.5 font-bold text-neutral-700">
                                 <Users className="w-3.5 h-3.5 text-[#9C753B]" />
                                 <span>Slots Taken: {trip.slotsBooked} / {trip.slotsTotal}</span>

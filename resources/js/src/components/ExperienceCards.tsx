@@ -28,11 +28,11 @@ function renderIcon(name: string) {
 
 export default function ExperienceCards({ experienceMoments }: ExperienceCardsProps) {
   return (
-    <section id="experiences" className="relative bg-[#F2EFE9] py-24 px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
+    <section id="experiences" className="relative bg-[#F2EFE9] py-16 sm:py-24 px-4 sm:px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
       {/* Visual glowing geometric element */}
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto space-y-16">
+      <div className="relative z-10 max-w-7xl mx-auto space-y-10 sm:space-y-16">
         
         {/* Title panel */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
@@ -40,7 +40,7 @@ export default function ExperienceCards({ experienceMoments }: ExperienceCardsPr
             <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-brand-sand/15 border border-brand-sand/30 rounded-full">
               CULTURE, WILDERNESS & ENERGY
             </span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight font-display uppercase text-neutral-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight font-display uppercase text-neutral-900">
               Moments You’ll <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700 font-display">
                 Remember Forever
@@ -96,7 +96,7 @@ export default function ExperienceCards({ experienceMoments }: ExperienceCardsPr
                     <h3 className="text-lg md:text-xl font-black text-white leading-tight uppercase font-display">
                       {moment.title}
                     </h3>
-                    <p className="text-[10px] text-gray-300 font-mono tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-[10px] text-gray-300 font-mono tracking-wider opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                       // TRAVO CURATED EXPERIENCE
                     </p>
                   </div>

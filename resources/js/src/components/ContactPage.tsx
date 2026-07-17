@@ -78,11 +78,11 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-16 px-6">
-      <div className="max-w-7xl mx-auto space-y-20">
+    <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-12 sm:py-16 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto space-y-14 sm:space-y-20">
         
         {/* Contact info grid & Form block */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-6xl mx-auto items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 max-w-6xl mx-auto items-start">
           
           {/* Left Column: Direct info details */}
           <div className="lg:col-span-5 space-y-8 text-left">
@@ -115,7 +115,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-1 text-xs">
                   <p className="font-bold text-neutral-400 uppercase tracking-widest text-[9px] leading-none">Official email</p>
-                  <p className="font-black text-neutral-800 text-sm mt-0.5">expeditions@travotrips.com</p>
+                  <p className="font-black text-neutral-800 text-sm mt-0.5 break-all">expeditions@travotrips.com</p>
                   <p className="text-[10px] text-neutral-500 font-light">Inquiries answered in under 2 hrs</p>
                 </div>
               </div>
@@ -151,7 +151,7 @@ export default function ContactPage() {
           </div>
 
           {/* Right Column: Interactive inquiry form */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-neutral-200 p-6 sm:p-8 shadow-sm text-left">
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-neutral-200 p-4 sm:p-8 shadow-sm text-left">
             <h3 className="text-lg font-black uppercase text-neutral-900 tracking-tight font-display mb-6">
               Send an Expedition Inquiry
             </h3>
@@ -295,7 +295,7 @@ export default function ContactPage() {
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                  className="w-full px-6 py-4.5 flex items-center justify-between text-left focus:outline-none"
+                  className="w-full px-4 sm:px-6 py-4.5 flex items-center justify-between text-left focus:outline-none"
                 >
                   <span className="text-xs sm:text-sm font-black uppercase text-neutral-800 tracking-tight font-display pr-4">
                     {faq.q}
@@ -311,7 +311,7 @@ export default function ContactPage() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}
                     >
-                      <div className="px-6 pb-5 text-xs text-neutral-600 font-light leading-relaxed border-t border-neutral-100 pt-3">
+                      <div className="px-4 sm:px-6 pb-5 text-xs text-neutral-600 font-light leading-relaxed border-t border-neutral-100 pt-3">
                         {faq.a}
                       </div>
                     </motion.div>

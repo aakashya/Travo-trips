@@ -4,11 +4,11 @@ import { Compass, Users, Award, ShieldAlert, Sparkles, Heart, ChevronRight, Chec
 
 export default function AboutPage() {
   return (
-    <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-16 px-6">
-      <div className="max-w-7xl mx-auto space-y-20">
+    <div className="bg-[#FAF9F6] text-neutral-900 min-h-screen py-12 sm:py-16 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto space-y-14 sm:space-y-20">
         
         {/* Story Section - Text & Visual Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
           
           {/* Photo Montage card */}
           <div className="relative p-1 rounded-[36px] bg-gradient-to-br from-brand-sand via-white/40 to-transparent border border-neutral-200 shadow-2xl overflow-hidden aspect-[4/3] group">
@@ -18,11 +18,11 @@ export default function AboutPage() {
               className="w-full h-full object-cover rounded-[32px] filter brightness-[0.85] saturate-[1.05] group-hover:scale-[1.01] transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-[32px] pointer-events-none" />
-            <div className="absolute bottom-6 left-6 right-6 text-white space-y-2 text-left">
+            <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white space-y-2 text-left">
               <span className="text-[10px] uppercase tracking-widest bg-brand-sand text-neutral-900 px-3 py-1 font-black rounded-lg shadow-md">
                 KASOL CAMPFIRE, MAY 2025
               </span>
-              <p className="text-lg font-black font-display uppercase leading-tight">
+              <p className="text-sm sm:text-lg font-black font-display uppercase leading-tight">
                 "Where three shivering solo backpackers decided to fix group tourism."
               </p>
             </div>
@@ -40,21 +40,21 @@ export default function AboutPage() {
               They asked themselves: <strong>Why can't group travel be highly curated, comfortable, and deeply intimate?</strong>
             </p>
             <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light">
-              TRAVO was born out of that simple question. We specialize in premium road trips for the **18-35 age bracket**. By matching energetic souls together, utilizing luxury sanitized Tempo Travellers, and designing day-by-day itineraries packed with hidden trails and acoustic bonfire sessions, we make sure you return with a family for life.
+              TRAVO was born out of that simple question. We specialize in premium road trips for the 18-35 age bracket. By matching energetic souls together, utilizing luxury sanitized Tempo Travellers, and designing day-by-day itineraries packed with hidden trails and acoustic bonfire sessions, we make sure you return with a family for life.
             </p>
 
             {/* Quick trust metrics */}
-            <div className="pt-4 border-t border-neutral-200 grid grid-cols-3 gap-4">
+            <div className="pt-4 border-t border-neutral-200 grid grid-cols-3 gap-2 sm:gap-4">
               <div>
-                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">200+</p>
+                <p className="text-xl sm:text-2xl font-black text-[#9C753B] font-mono leading-none">200+</p>
                 <p className="text-[9px] uppercase text-neutral-400 font-bold mt-1.5">Souls Onboarded</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">50+</p>
+                <p className="text-xl sm:text-2xl font-black text-[#9C753B] font-mono leading-none">50+</p>
                 <p className="text-[9px] uppercase text-neutral-400 font-bold mt-1.5">Solo Travelers</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-[#9C753B] font-mono leading-none">98%</p>
+                <p className="text-xl sm:text-2xl font-black text-[#9C753B] font-mono leading-none">98%</p>
                 <p className="text-[9px] uppercase text-neutral-400 font-bold mt-1.5">5-Star Feedback</p>
               </div>
             </div>
@@ -63,7 +63,7 @@ export default function AboutPage() {
         </div>
 
         {/* Our Three Core Pillars */}
-        <div className="max-w-5xl mx-auto space-y-12">
+        <div className="max-w-5xl mx-auto space-y-8 sm:space-y-12">
           <div className="text-center space-y-3">
             <h3 className="text-2xl font-black uppercase text-neutral-900 tracking-tight font-display">
               The Three Pillars of TRAVO
@@ -73,7 +73,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
             {[
               {
                 title: "1. Energetic Roster Curation",
@@ -103,7 +103,7 @@ export default function AboutPage() {
         </div>
 
         {/* Detailed Traveler Charter Promises */}
-        <div className="max-w-4xl mx-auto p-8 rounded-[36px] bg-white border border-neutral-200 text-left space-y-6 shadow-sm">
+        <div className="max-w-4xl mx-auto p-5 sm:p-8 rounded-[28px] sm:rounded-[36px] bg-white border border-neutral-200 text-left space-y-6 shadow-sm">
           <div className="space-y-2 pb-4 border-b border-neutral-200">
             <span className="text-[9px] uppercase tracking-widest font-black text-[#9C753B] bg-[#9C753B]/10 px-2.5 py-1 rounded">
               TRAVEL CHARTER RULES

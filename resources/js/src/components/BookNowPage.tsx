@@ -142,7 +142,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand selection:text-neutral-900 antialiased pb-24">
-      <div className="max-w-7xl mx-auto px-6 pt-12 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 space-y-8 sm:space-y-12">
         {/* Back Button & Title */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-200 pb-8">
           <div className="space-y-3">
@@ -152,7 +152,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
             >
               <ArrowLeft className="w-4 h-4" /> Return to Home
             </button>
-            <h1 className="text-4xl md:text-5xl font-black font-display tracking-tight uppercase text-neutral-900">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight uppercase text-neutral-900">
               Secure Your <br className="sm:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
                 Himalayan Slot
@@ -164,7 +164,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
           </div>
 
           {/* Quick WhatsApp CTA Card */}
-          <div className="p-4 rounded-2xl bg-brand-sand/15 border border-brand-sand/30 flex items-center gap-4 max-w-sm md:self-end shadow-sm">
+          <div className="w-full md:w-auto p-4 rounded-2xl bg-brand-sand/15 border border-brand-sand/30 flex items-center gap-4 max-w-sm md:self-end shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] shrink-0 animate-pulse">
               <MessageSquare className="w-5 h-5 fill-current" />
             </div>
@@ -189,7 +189,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
           {/* LEFT: Booking Inquiry Form Component (7 Cols) */}
           <div className="lg:col-span-7 space-y-8">
             <div className="p-1 rounded-3xl bg-white border border-neutral-200 shadow-sm">
-              <div className="p-6 md:p-8 rounded-3xl bg-white text-left space-y-6">
+              <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-white text-left space-y-6">
                 
                 {/* Switcher & Form Title */}
                 <div className="space-y-4 pb-4 border-b border-neutral-200">
@@ -315,25 +315,25 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
 
                     {/* Promo Code area */}
                     <div className="space-y-1.5">
-                      <div className="flex justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
                         <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
                           Have a Promo Code?
                         </label>
                         <span className="text-[9px] text-[#9C753B] font-bold font-mono">Try: TRAVO1000 or MOUNTAINLOVE</span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col min-[380px]:flex-row gap-2">
                         <input
                           type="text"
                           name="promoCode"
                           value={details.promoCode}
                           onChange={handleInputChange}
                           placeholder="PROMOCODE"
-                          className="flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
+                          className="w-full min-w-0 flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
                         />
                         <button
                           type="button"
                           onClick={handleApplyPromo}
-                          className="px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
+                          className="w-full min-[380px]:w-auto px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
                         >
                           Apply
                         </button>
@@ -427,7 +427,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                     {/* Ticket Code Display */}
                     <div className="p-1 rounded-2xl bg-gradient-to-br from-[#9C753B] via-[#E5E1D6] to-transparent border border-neutral-200 shadow-sm">
                       <div className="p-5 rounded-2xl bg-white text-left space-y-4">
-                        <div className="flex justify-between items-center pb-3 border-b border-neutral-200">
+                        <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-2 pb-3 border-b border-neutral-200">
                           <span className="text-[10px] font-black text-[#9C753B] uppercase tracking-widest font-display">
                             TRAVO Boarding Ticket Inquiry
                           </span>
@@ -436,7 +436,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 text-xs">
+                        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-4 text-xs">
                           <div>
                             <p className="text-[9px] uppercase text-neutral-400 font-bold">Primary Traveler</p>
                             <p className="font-black text-neutral-800 truncate">{details.fullName}</p>
@@ -525,7 +525,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
             
             {/* Payment Information Card */}
             <div className="p-1 rounded-3xl bg-gradient-to-b from-[#9C753B]/20 via-transparent to-transparent border border-neutral-200 shadow-sm">
-              <div className="p-6 md:p-8 rounded-3xl bg-white text-left space-y-6">
+              <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-white text-left space-y-6">
                 
                 <div className="space-y-2 pb-4 border-b border-neutral-200">
                   <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-brand-sand/15 border border-brand-sand/30 rounded-full inline-block">
@@ -557,14 +557,14 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       </div>
                     </div>
                     
-                    <div className="pt-2 border-t border-neutral-200 flex items-center justify-between gap-2">
-                      <div>
+                    <div className="pt-2 border-t border-neutral-200 flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-2">
+                      <div className="min-w-0">
                         <p className="text-[9px] uppercase text-neutral-400 font-bold">UPI ID</p>
-                        <p className="text-xs font-mono font-black text-[#9C753B]">travoexpeditions@hdfcbank</p>
+                        <p className="text-xs font-mono font-black text-[#9C753B] break-all">travoexpeditions@hdfcbank</p>
                       </div>
                       <button
                         onClick={() => handleCopy("travoexpeditions@hdfcbank", "upi")}
-                        className="p-2 rounded-lg bg-white hover:bg-neutral-50 border border-neutral-200 shadow-sm transition-colors text-neutral-700 shrink-0 flex items-center gap-1.5 text-[10px] font-bold"
+                        className="self-start min-[420px]:self-auto p-2 rounded-lg bg-white hover:bg-neutral-50 border border-neutral-200 shadow-sm transition-colors text-neutral-700 shrink-0 flex items-center gap-1.5 text-[10px] font-bold"
                       >
                         {copiedText === "upi" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                         <span>{copiedText === "upi" ? "Copied" : "Copy ID"}</span>
@@ -585,11 +585,11 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                     </div>
 
                     <div className="space-y-2 pt-2 border-t border-neutral-200 text-xs">
-                      <div className="flex justify-between items-center py-1 border-b border-neutral-100">
+                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1 border-b border-neutral-100">
                         <span className="text-neutral-400 text-[10px] uppercase font-bold">Account Name</span>
-                        <span className="font-extrabold text-neutral-800 text-right">TRAVO EXPEDITIONS PVT LTD</span>
+                        <span className="font-extrabold text-neutral-800 min-[420px]:text-right break-words">TRAVO EXPEDITIONS PVT LTD</span>
                       </div>
-                      <div className="flex justify-between items-center py-1 border-b border-neutral-100">
+                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1 border-b border-neutral-100">
                         <span className="text-neutral-400 text-[10px] uppercase font-bold">Account Number</span>
                         <div className="flex items-center gap-1.5">
                           <span className="font-mono font-extrabold text-neutral-800">50200084321945</span>
@@ -601,7 +601,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                           </button>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center py-1 border-b border-neutral-100">
+                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1 border-b border-neutral-100">
                         <span className="text-neutral-400 text-[10px] uppercase font-bold">IFSC Code</span>
                         <div className="flex items-center gap-1.5">
                           <span className="font-mono font-extrabold text-neutral-800">HDFC0001245</span>
@@ -613,7 +613,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                           </button>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center py-1">
+                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1">
                         <span className="text-neutral-400 text-[10px] uppercase font-bold">Bank Name</span>
                         <span className="font-extrabold text-neutral-700">HDFC Bank Limited</span>
                       </div>
@@ -684,7 +684,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
               <p className="text-[11px] text-neutral-700 leading-relaxed font-light">
                 All transactions are safe and verified. Spots are locked instantly on a first-come, first-serve basis. Under our <strong>100% Honest Budgets guidelines</strong>, we guarantee zero hidden costs or extra charges en route.
               </p>
-              <div className="pt-2 border-t border-brand-sand/30 flex gap-4 text-[9px] font-mono uppercase tracking-widest text-neutral-500">
+              <div className="pt-2 border-t border-brand-sand/30 flex flex-wrap gap-x-4 gap-y-2 text-[9px] font-mono uppercase tracking-widest text-neutral-500">
                 <span>🛡️ Corporate Registered</span>
                 <span>⭐ 4.9/5 Rated Trip Leaders</span>
               </div>

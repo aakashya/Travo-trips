@@ -41,8 +41,14 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: clip;
   background-color: #FAF9F6;
   color: #1A1D20;
+}
+
+img,
+video {
+  max-width: 100%;
 }
 
 h1,
@@ -84,4 +90,12 @@ select {
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(223, 195, 148, 0.35);
+}
+
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }

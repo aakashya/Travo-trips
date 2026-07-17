@@ -132,7 +132,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
   const assemblyPoint = "IFFCO Chowk, Gurugram";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Background overlay screen click backdrop */}
       <div 
         className="absolute inset-0 bg-neutral-900/60 backdrop-blur-md"
@@ -140,8 +140,8 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
       />
 
       {/* Main glass card dialog frame */}
-      <div className="relative w-full max-w-xl p-[1px] rounded-3xl bg-white border border-neutral-200 shadow-2xl z-10 overflow-hidden max-h-[90vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
-        <div className="p-6 rounded-3xl bg-white text-left space-y-6 overflow-y-auto flex-grow border border-neutral-100">
+      <div className="relative w-full max-w-xl p-[1px] rounded-t-3xl sm:rounded-3xl bg-white border border-neutral-200 shadow-2xl z-10 overflow-hidden max-h-[96dvh] sm:max-h-[90vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
+        <div className="p-4 sm:p-6 rounded-t-3xl sm:rounded-3xl bg-white text-left space-y-6 overflow-y-auto overscroll-contain flex-grow border border-neutral-100 pb-[max(1rem,env(safe-area-inset-bottom))]">
           
           {/* Header row */}
           <div className="flex justify-between items-start pb-4 border-b border-neutral-200">
@@ -221,7 +221,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               </div>
 
               {/* Seats selector */}
-              <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
+              <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-3 p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
                 <div className="space-y-1">
                   <p className="text-xs font-bold text-neutral-800 uppercase">Number of Seats</p>
                   <p className="text-[10px] text-neutral-500">Book up to 10 travelers in one ticket</p>
@@ -250,19 +250,19 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                 <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
                   Have a Promo Code? (Try: <strong className="text-[#9C753B]">TRAVO1000</strong> or <strong className="text-[#9C753B]">MOUNTAINLOVE</strong>)
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col min-[380px]:flex-row gap-2">
                   <input
                     type="text"
                     name="promoCode"
                     value={details.promoCode}
                     onChange={handleInputChange}
                     placeholder="PROMOCODE"
-                    className="flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
+                    className="w-full min-w-0 flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
                   />
                   <button
                     type="button"
                     onClick={handleApplyPromo}
-                    className="px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
+                    className="w-full min-[380px]:w-auto px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
                   >
                     Apply
                   </button>
@@ -346,7 +346,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               {/* Elegant Boarding Ticket Receipt */}
               <div className="p-1 rounded-2xl bg-gradient-to-br from-[#9C753B] via-[#E5E1D6] to-transparent border border-neutral-200 shadow-xl">
                 <div className="p-5 rounded-2xl bg-white text-left space-y-4">
-                  <div className="flex justify-between items-center pb-3 border-b border-neutral-200">
+                  <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-2 pb-3 border-b border-neutral-200">
                     <span className="text-[10px] font-black text-[#9C753B] uppercase tracking-widest font-display">
                       TRAVO Official Boarding Ticket
                     </span>
@@ -355,7 +355,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-4 text-xs">
                     <div>
                       <p className="text-[9px] uppercase text-neutral-400 font-bold">Primary Traveler</p>
                       <p className="font-black text-neutral-800 truncate">{details.fullName}</p>
@@ -382,8 +382,8 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-dashed border-neutral-200 flex justify-between items-center">
-                    <div>
+                  <div className="pt-3 border-t border-dashed border-neutral-200 flex flex-wrap justify-between items-center gap-2">
+                    <div className="min-w-0">
                       <p className="text-[9px] uppercase text-neutral-400 font-bold">Assembly Point</p>
                       <p className="text-[10px] text-neutral-600 leading-tight">{assemblyPoint}</p>
                     </div>

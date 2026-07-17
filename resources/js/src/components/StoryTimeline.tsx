@@ -201,7 +201,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
     <section 
       id="story-timeline" 
       ref={timelineRef}
-      className="relative bg-[#FAF9F6] py-32 px-4 sm:px-6 overflow-hidden border-t border-neutral-200"
+      className="relative bg-[#FAF9F6] py-20 sm:py-32 px-2 sm:px-6 overflow-hidden border-t border-neutral-200"
     >
       {/* Decorative starry skies and grids fallback */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(156,117,59,0.05),transparent)] pointer-events-none" />
@@ -327,7 +327,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
           <span className="text-[10px] uppercase tracking-[0.25em] font-black text-brand-charcoal px-4 py-2 bg-brand-sand rounded-full inline-flex items-center gap-2 shadow-sm">
             <Navigation className="w-3.5 h-3.5 text-brand-charcoal animate-bounce" /> Scenic Highway Map
           </span>
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-neutral-900 tracking-tight leading-none text-center font-display">
+          <h2 className="text-3xl sm:text-6xl lg:text-7xl font-black text-neutral-900 tracking-tight leading-none text-center font-display">
             A Day-by-Day<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
               Interactive Chronicle
@@ -350,7 +350,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
               <div
                 key={item.day}
                 id={`timeline-section-${index}`}
-                className="grid min-h-[100svh] grid-cols-12 gap-4 sm:gap-6 md:gap-8 items-center scroll-mt-28 relative py-12 md:py-16 px-4 md:px-8"
+                className="grid min-h-[85svh] sm:min-h-[100svh] grid-cols-12 gap-4 sm:gap-6 md:gap-8 items-center scroll-mt-28 relative py-10 md:py-16 px-2 sm:px-4 md:px-8"
               >
                 {/* Full-Screen-Wide Outer Background Photo for this stage block */}
                 <div className="absolute inset-0 left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] w-screen min-h-[100svh] pointer-events-none z-0 overflow-hidden">

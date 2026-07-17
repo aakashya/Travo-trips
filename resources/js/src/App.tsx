@@ -159,7 +159,7 @@ export default function App() {
           </div>
 
           {/* B. The TRAVO Trust Promise (Why Travelers Choose Us) */}
-          <section className="py-24 px-6 bg-white relative overflow-hidden text-neutral-900 border-b border-neutral-200">
+          <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white relative overflow-hidden text-neutral-900 border-b border-neutral-200">
             <div className="absolute top-1/2 left-0 w-80 h-80 bg-brand-sand/[0.05] rounded-full filter blur-3xl pointer-events-none" />
 
             <div className="max-w-7xl mx-auto space-y-16">
@@ -293,6 +293,7 @@ export default function App() {
             tripName={activeTrip.name}
             price={activeTrip.price}
             bgImage={FOOTER_BG_IMAGE}
+            showMobileBookingBar={true}
             onNavigate={handleNavigate}
           />
 

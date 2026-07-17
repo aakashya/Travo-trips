@@ -8,6 +8,7 @@ interface FooterCTAProps {
   price: string;
   bgImage: string;
   isHomeView?: boolean;
+  showMobileBookingBar?: boolean;
   onNavigate?: (view: AppView) => void;
 }
 
@@ -18,13 +19,14 @@ export default function FooterCTA({
   price,
   bgImage,
   isHomeView = false,
+  showMobileBookingBar = false,
   onNavigate
 }: FooterCTAProps) {
   return (
     <footer className="relative bg-[#E5E1D6] text-brand-charcoal overflow-hidden select-none border-t border-neutral-300">
       
       {/* Final Cinematic CTA Area with Camp Backdrops */}
-      <div className="relative py-16 md:py-20 px-6 border-t border-black/5 flex flex-col justify-center items-center text-center">
+      <div className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 border-t border-black/5 flex flex-col justify-center items-center text-center">
         {/* Parallax background image of campfire tents */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-25 select-none pointer-events-none filter brightness-105"
@@ -82,7 +84,7 @@ export default function FooterCTA({
       </div>
 
       {/* Main minimal footer line mapping credentials */}
-      <div className="border-t border-black/5 py-6 px-6 bg-[#D8D3C5] text-center text-xs text-neutral-600 font-mono space-y-4">
+      <div className="border-t border-black/5 py-6 px-4 sm:px-6 bg-[#D8D3C5] text-center text-xs text-neutral-600 font-mono space-y-4">
         <div className="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto gap-4">
           <button
             onClick={() => onNavigate && onNavigate("home")}
@@ -114,12 +116,12 @@ export default function FooterCTA({
       </div>
 
       {/* Floating Sticky Circular Contact badge on right corner of viewport */}
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className={`fixed right-4 sm:right-6 z-40 ${showMobileBookingBar ? "bottom-24 md:bottom-6" : "bottom-4 sm:bottom-6"}`}>
         <a
           href={`https://wa.me/919996965697?text=${encodeURIComponent(isHomeView ? "Hi TRAVO! I'd like to ask a general query about upcoming Himalayan group trips." : `Hi TRAVO! I have a question regarding the ${tripName} expedition.`)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative group w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl scale-100 hover:scale-110 active:scale-95 transition-all"
+          className="relative group w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl scale-100 hover:scale-110 active:scale-95 transition-all"
             title="Chat with us"
         >
           {/* Pulsing surrounding ring */}
@@ -134,8 +136,8 @@ export default function FooterCTA({
       </div>
 
       {/* Sticky Mobile bottom Booking bar */}
-      {!isHomeView && (
-        <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200 py-3 px-6 flex md:hidden items-center justify-between">
+      {showMobileBookingBar && (
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200 py-3 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex md:hidden items-center justify-between gap-3">
           <div>
             <p className="text-[9px] uppercase tracking-wider text-neutral-600 font-bold leading-none">{tripName.split(" ")[0]} Pass</p>
             <p className="text-sm font-black text-neutral-900 font-mono">{price} <span className="text-[10px] font-normal text-neutral-600">/ traveler</span></p>

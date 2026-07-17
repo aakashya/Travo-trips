@@ -63,20 +63,20 @@ export default function StoryIntro({ chapters, tripId, tripName }: StoryIntroPro
   ];
 
   return (
-    <section id="chapter-intro" className={`relative py-24 md:py-32 px-6 overflow-hidden border-b border-neutral-200 ${tripId === "general" ? "bg-white" : "bg-[#FAF9F6]"}`}>
+    <section id="chapter-intro" className={`relative py-16 sm:py-24 md:py-32 px-4 sm:px-6 overflow-hidden border-b border-neutral-200 ${tripId === "general" ? "bg-white" : "bg-[#FAF9F6]"}`}>
       {/* Visual glowing geometric background element */}
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-brand-sand/[0.08] rounded-full filter blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-stretch">
+      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-stretch">
         
         {/* Left Side: Bold Storytelling Narrative */}
-        <div className="flex flex-col justify-center space-y-8">
+        <div className="flex flex-col justify-center space-y-6 sm:space-y-8">
           <div className="space-y-4">
             <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-brand-sand/15 border border-brand-sand/30 rounded-full">
               {tripName ? `${tripName} Philosophy` : "TRAVO PHILOSOPHY"}
             </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-neutral-900 tracking-tight leading-tight font-display">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-neutral-900 tracking-tight leading-tight font-display">
               Not just a trip.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800 font-display">
                 A mountain story.
@@ -115,10 +115,10 @@ export default function StoryIntro({ chapters, tripId, tripName }: StoryIntroPro
           {displayChapters.map((ch, idx) => (
             <div 
               key={idx} 
-              className="relative flex items-start gap-4 sm:gap-6 p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 hover:border-[#9C753B]/30 hover:bg-neutral-50 hover:shadow-lg transition-all duration-300 text-left group"
+              className="relative flex items-start gap-3 sm:gap-6 p-4 sm:p-6 rounded-3xl bg-white border border-neutral-200 hover:border-[#9C753B]/30 hover:bg-neutral-50 hover:shadow-lg transition-all duration-300 text-left group"
             >
               {/* Timeline marker node */}
-              <div className={`w-12 h-12 rounded-full border flex items-center justify-center flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110 ${ch.color} shadow-md`}>
+              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center flex-shrink-0 relative z-10 transition-transform duration-300 group-hover:scale-110 ${ch.color} shadow-md`}>
                 {ch.icon}
               </div>
 

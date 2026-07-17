@@ -198,7 +198,7 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
   };
 
   return (
-    <section id="route-explorer" className="relative bg-[#F2EFE9] py-24 px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
+    <section id="route-explorer" className="relative bg-[#F2EFE9] py-16 sm:py-24 px-4 sm:px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
       {/* Dynamic ambient backdrop glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[300px] bg-gradient-to-b from-brand-sand/[0.08] to-transparent blur-3xl pointer-events-none" />
 
@@ -212,7 +212,7 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
             </span>
             <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-wider font-mono">Interactive Planner</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight uppercase font-display text-neutral-900">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight uppercase font-display text-neutral-900">
             Himalayan Route <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
               Explorer
@@ -227,7 +227,7 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Map Container (7 Columns) */}
-          <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-3xl p-4 sm:p-10 relative overflow-hidden h-[450px] sm:h-[550px] shadow-sm">
+          <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-3xl p-2 sm:p-10 relative overflow-hidden h-[430px] sm:h-[550px] shadow-sm">
             
             {/* Subtle Decorative Mountains Background */}
             <div className="absolute inset-0 opacity-[0.05] pointer-events-none select-none">
@@ -378,22 +378,20 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
             </div>
 
             {/* Quick Stats Banner Overlay inside Map */}
-            <div className="absolute bottom-4 right-4 left-16 bg-neutral-50/95 backdrop-blur-md border border-neutral-200 p-3.5 rounded-2xl shadow-lg flex justify-between items-center gap-3 z-20">
-              <div>
+            <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 left-12 sm:left-16 bg-neutral-50/95 backdrop-blur-md border border-neutral-200 p-2.5 sm:p-3.5 rounded-2xl shadow-lg grid grid-cols-3 items-center gap-2 sm:gap-3 z-20">
+              <div className="text-center sm:text-left min-w-0">
                 <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">Trek Path Difficulty</p>
                 <p className="text-[10px] font-semibold text-[#9C753B] flex items-center gap-1 mt-0.5">
                   🏆 {isManali ? "Easy to Moderate" : "Moderate Alpine Trails"}
                 </p>
               </div>
-              <div className="hidden sm:block h-6 w-[1px] bg-neutral-200" />
-              <div>
+              <div className="text-center sm:text-left min-w-0 border-l border-neutral-200 pl-2 sm:pl-3">
                 <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">Total Trek Distance</p>
                 <p className="text-[10px] font-semibold text-neutral-800 mt-0.5">
                   {isManali ? "14 km (Roundtrip)" : "24 km (Roundtrip)"}
                 </p>
               </div>
-              <div className="hidden sm:block h-6 w-[1px] bg-neutral-200" />
-              <div>
+              <div className="text-center sm:text-left min-w-0 border-l border-neutral-200 pl-2 sm:pl-3">
                 <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">Peak Elevation</p>
                 <p className="text-[10px] font-semibold text-sky-600 mt-0.5 font-mono">
                   {isManali ? "13,058 ft" : "14,203 ft"}

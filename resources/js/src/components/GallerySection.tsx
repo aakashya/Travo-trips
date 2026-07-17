@@ -152,7 +152,7 @@ export default function GallerySection() {
   }, [selectedImageIndex, filteredImages]);
 
   return (
-    <section id="gallery" className="relative bg-[#FAF9F6] py-24 px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
+    <section id="gallery" className="relative bg-[#FAF9F6] py-16 sm:py-24 px-4 sm:px-6 border-t border-b border-neutral-200 overflow-hidden text-neutral-900">
       {/* Absolute Ambient Glows */}
       <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-brand-sand/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-brand-sand/10 rounded-full blur-[160px] pointer-events-none" />
@@ -201,7 +201,7 @@ export default function GallerySection() {
         {/* Dynamic Photo Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6"
         >
           <AnimatePresence mode="popLayout">
             {filteredImages.map((img, index) => (
@@ -213,7 +213,7 @@ export default function GallerySection() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
                 onClick={FULLSCREEN_GALLERY_ENABLED ? () => setSelectedImageIndex(index) : undefined}
-                className={`group relative rounded-2xl overflow-hidden bg-white border border-neutral-200 hover:border-[#9C753B] hover:shadow-lg transition-all duration-500 min-h-[360px] flex flex-col justify-between shadow-sm ${FULLSCREEN_GALLERY_ENABLED ? "cursor-pointer" : "cursor-default"}`}
+                className={`group relative rounded-2xl overflow-hidden bg-white border border-neutral-200 hover:border-[#9C753B] hover:shadow-lg transition-all duration-500 min-h-[320px] sm:min-h-[360px] flex flex-col justify-between shadow-sm ${FULLSCREEN_GALLERY_ENABLED ? "cursor-pointer" : "cursor-default"}`}
               >
                 {/* Background Image */}
                 <div 
@@ -250,12 +250,12 @@ export default function GallerySection() {
                   <h3 className="text-base font-display font-black tracking-tight text-white group-hover:text-brand-sand transition-colors">
                     {img.title}
                   </h3>
-                  <p className="text-[11px] text-gray-300 font-medium line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-[11px] text-gray-300 font-medium line-clamp-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                     {img.description}
                   </p>
                   
                   {/* Subtle Camera settings ribbon */}
-                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[9px] font-mono text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 select-none">
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[9px] font-mono text-gray-400 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 select-none">
                     <span className="truncate">{img.photographer}</span>
                     <span>EXIF DATA</span>
                   </div>

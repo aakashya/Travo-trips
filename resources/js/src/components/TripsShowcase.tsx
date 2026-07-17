@@ -102,8 +102,8 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
   };
 
   return (
-    <section id="all-trips-showcase" className="py-24 px-6 bg-[#F9F8F6] border-b border-neutral-200 scroll-mt-20">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <section id="all-trips-showcase" className="py-16 sm:py-24 px-4 sm:px-6 bg-[#F9F8F6] border-b border-neutral-200 scroll-mt-20">
+      <div className="max-w-7xl mx-auto space-y-8 sm:space-y-12">
         
         {isHomePage && (
           <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -207,7 +207,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
         </div>
 
         {/* Trips Grid Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
           <AnimatePresence mode="popLayout">
             {visibleTrips.map((trip) => (
               <motion.div
@@ -257,9 +257,9 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
                 </div>
 
                 {/* Content body */}
-                <div className="p-6 text-left space-y-4 flex-grow flex flex-col justify-between">
+                <div className="p-5 sm:p-6 text-left space-y-4 flex-grow flex flex-col justify-between">
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center text-[10px] uppercase font-black tracking-widest text-[#9C753B]">
+                    <div className="flex flex-wrap justify-between items-center gap-2 text-[10px] uppercase font-black tracking-widest text-[#9C753B]">
                       <span>Departing: {trip.upcomingDeparture}</span>
                       <span className="bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded font-mono text-[9px]">{trip.startPoint}</span>
                     </div>
@@ -351,7 +351,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
       {/* Modal / drawer for compact trip detail previews */}
       <AnimatePresence>
         {selectedDetailedTrip && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
             
             {/* Backdrop blur overlay */}
             <motion.div 
@@ -368,10 +368,10 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ type: "spring", damping: 25 }}
-              className="relative w-full max-w-3xl bg-white border border-neutral-200 rounded-3xl shadow-2xl z-10 overflow-hidden max-h-[85vh] flex flex-col text-left"
+              className="relative w-full max-w-3xl bg-white border border-neutral-200 rounded-t-3xl sm:rounded-3xl shadow-2xl z-10 overflow-hidden max-h-[96dvh] sm:max-h-[85vh] flex flex-col text-left"
             >
               {/* Image banner header with close trigger */}
-              <div className="relative h-60 sm:h-72 shrink-0">
+              <div className="relative h-48 sm:h-72 shrink-0">
                 <img 
                   src={selectedDetailedTrip.image} 
                   alt={selectedDetailedTrip.name} 
@@ -381,7 +381,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 
                 {/* Header Overlay metadata */}
-                <div className="absolute bottom-6 left-6 right-6 space-y-2">
+                <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 space-y-2">
                   <span className="px-3 py-1 bg-[#9C753B] text-white text-[9px] font-black uppercase tracking-widest rounded-full">
                     {selectedDetailedTrip.badge || "FEATURED ADVENTURE"}
                   </span>
@@ -403,7 +403,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
               </div>
 
               {/* Scrollable details area */}
-              <div className="p-6 overflow-y-auto space-y-6 flex-grow">
+              <div className="p-4 sm:p-6 overflow-y-auto overscroll-contain space-y-6 flex-grow">
                 
                 {/* Grid Metadata columns */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-[#FAF9F6] border border-neutral-200 rounded-2xl text-xs">
@@ -485,7 +485,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
               </div>
 
               {/* Sticky bottom checkout / action row */}
-              <div className="p-6 border-t border-neutral-200 bg-[#FAF9F6] flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+              <div className="p-4 sm:p-6 border-t border-neutral-200 bg-[#FAF9F6] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <div>
                   <p className="text-[9px] uppercase text-neutral-400 font-bold">Upcoming Batch Departure</p>
                   <p className="text-sm font-black text-[#9C753B] font-mono mt-0.5">

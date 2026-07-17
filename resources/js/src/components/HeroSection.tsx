@@ -33,12 +33,34 @@ export default function HeroSection({
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileMenuOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isMobileMenuOpen]);
+
   const trips = TRIPS_LIST;
   const isSubPage = ["trips", "team", "about", "contact", "book-now"].includes(currentView);
   const currentTrip = (currentView === "home" || isSubPage) ? trips[0] : TRIPS_DATA[currentView];
+  const heroHeightClass = isSubPage
+    ? "h-[46svh] min-h-[360px] sm:h-[45vh]"
+    : currentView === "home"
+      ? "h-[100svh] min-h-[520px]"
+      : "h-auto min-h-[100svh] lg:h-screen";
 
   return (
-    <section className={`relative w-full overflow-hidden bg-[#FAF9F6] flex flex-col justify-between text-white transition-all duration-700 ${isSubPage ? 'h-[45vh] min-h-[350px]' : 'h-screen'}`}>
+    <section className={`relative w-full overflow-hidden bg-[#FAF9F6] flex flex-col justify-between text-white transition-all duration-700 ${heroHeightClass}`}>
       {currentView === "home" ? (
         <video
           className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none"
@@ -75,12 +97,12 @@ export default function HeroSection({
       </div>
 
       {/* Main Top Header Navigation inside section */}
-      <header className="relative z-30 w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between pointer-events-auto">
+      <header className="relative z-30 w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between pointer-events-auto">
         <button 
           onClick={() => { setIsMobileMenuOpen(false); onNavigate("home"); }} 
           className="flex items-center group focus:outline-none"
         >
-          <div className="h-14 w-40 md:w-48 overflow-hidden transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center">
+          <div className="h-12 w-32 sm:h-14 sm:w-40 md:w-48 overflow-hidden transition-transform group-hover:scale-105 active:scale-95 flex items-center justify-center">
             <img
               src="/images/logo/travo-logo-white.png"
               alt="TRAVO logo"
@@ -136,63 +158,112 @@ export default function HeroSection({
           {/* Mobile hamburger menu toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2.5 text-white bg-black/25 hover:bg-black/45 rounded-xl border border-white/25 transition-all active:scale-90"
-            aria-label="Toggle mobile menu"
+            className="md:hidden w-11 h-11 text-white bg-black/30 hover:bg-black/50 rounded-xl border border-white/30 transition-all active:scale-90 flex items-center justify-center"
+            aria-label="Open navigation menu"
+            aria-expanded={isMobileMenuOpen}
           >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <Menu className="w-5 h-5" />
           </button>
         </div>
       </header>
 
-      {/* Mobile Menu Dropdown Panel */}
+      {/* Full-screen Mobile Navigation */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="absolute top-[76px] left-0 right-0 z-40 bg-[#FAF9F6] border-b border-neutral-200 text-neutral-900 shadow-xl overflow-hidden md:hidden flex flex-col pointer-events-auto"
+          <motion.nav
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 260 }}
+            className="fixed inset-0 z-[100] min-h-[100dvh] overflow-y-auto bg-[#0B0D11] text-white md:hidden pointer-events-auto"
+            aria-label="Mobile navigation"
+            aria-modal="true"
+            role="dialog"
           >
-            <div className="px-6 py-6 space-y-4 text-left flex flex-col font-display">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-[#9C753B]/25 blur-3xl" />
+              <div className="absolute -bottom-32 -left-24 w-80 h-80 rounded-full bg-brand-sand/10 blur-3xl" />
+            </div>
+
+            <div className="relative min-h-[100dvh] px-5 sm:px-8 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))] flex flex-col">
+              <div className="flex items-center justify-between py-3 border-b border-white/10">
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); onNavigate("home"); }}
+                  className="h-12 w-36 overflow-hidden flex items-center justify-center"
+                  aria-label="Go to TRAVO home"
+                >
+                  <img
+                    src="/images/logo/travo-logo-white.png"
+                    alt="TRAVO logo"
+                    className="h-full w-full scale-125 object-cover object-center"
+                  />
+                </button>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-12 h-12 rounded-full border border-white/20 bg-white/10 flex items-center justify-center active:scale-90 transition-transform"
+                  aria-label="Close navigation menu"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="flex-1 flex flex-col justify-center py-8">
+                <p className="mb-5 text-[10px] uppercase tracking-[0.3em] font-black text-brand-sand">Explore TRAVO</p>
+                <div className="divide-y divide-white/10 border-y border-white/10">
               {[
-                { name: "🏠 HOME", view: "home" },
-                { name: "🗺️ TRIP CATALOGUE", view: "trips" },
-                { name: "🏔️ EXPEDITION TEAM", view: "team" },
-                { name: "📖 OUR STORY", view: "about" },
-                { name: "📞 CONTACT US", view: "contact" }
-              ].map((item) => (
+                    { name: "Home", detail: "Start your journey", view: "home" },
+                    { name: "Trips", detail: "Browse departures", view: "trips" },
+                    { name: "Team", detail: "Meet the people", view: "team" },
+                    { name: "About Us", detail: "Read our story", view: "about" },
+                    { name: "Contact Us", detail: "Talk to our team", view: "contact" }
+                  ].map((item, index) => (
                 <button
                   key={item.view}
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     onNavigate(item.view as any);
                   }}
-                  className={`text-xs uppercase font-black tracking-widest py-3 border-b border-neutral-100 flex items-center justify-between text-left ${
-                    currentView === item.view ? "text-[#9C753B]" : "text-neutral-700 hover:text-[#9C753B]"
+                      className={`w-full min-h-16 py-3 flex items-center justify-between gap-4 text-left transition-colors ${
+                    currentView === item.view ? "text-brand-sand" : "text-white hover:text-brand-sand"
                   }`}
                 >
-                  <span>{item.name}</span>
-                  <ChevronRight className="w-4 h-4 text-neutral-400" />
+                      <span className="flex items-center gap-4 min-w-0">
+                        <span className="text-[10px] font-mono text-white/35">0{index + 1}</span>
+                        <span>
+                          <span className="block text-2xl font-black uppercase tracking-tight font-display leading-none">{item.name}</span>
+                          <span className="block mt-1 text-[10px] uppercase tracking-widest text-white/45">{item.detail}</span>
+                        </span>
+                      </span>
+                  <ChevronRight className="w-5 h-5 shrink-0 text-brand-sand" />
                 </button>
               ))}
-              
+
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-5 border-t border-white/10">
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   onOpenBooking("manali");
                 }}
-                className="w-full py-4 text-center bg-[#9C753B] text-white font-black uppercase text-xs tracking-widest rounded-xl shadow-md mt-2"
+                  className="w-full min-h-14 py-4 text-center bg-[#9C753B] text-white font-black uppercase text-xs tracking-[0.18em] rounded-2xl shadow-lg active:scale-[0.98] transition-transform"
               >
-                Book Expeditions Now
+                  Book Your Journey
               </button>
+                <div className="flex items-center justify-between gap-4 text-[10px] uppercase tracking-wider text-white/45">
+                  <a href="tel:+919996965697" className="py-2">+91 9996965697</a>
+                  <a href="mailto:expeditions@travotrips.com" className="py-2">Email Us</a>
+                </div>
+              </div>
             </div>
-          </motion.div>
+          </motion.nav>
         )}
       </AnimatePresence>
 
       {/* Center Body & Glassmorphism Booking Card */}
       {currentView === "home" ? (
-        <div className="relative z-10 flex w-full flex-grow items-center justify-center px-6 pb-20 pt-10 text-center">
+        <div className="relative z-10 flex w-full flex-grow items-center justify-center px-4 sm:px-6 pb-16 sm:pb-20 pt-8 sm:pt-10 text-center">
           <div className="max-w-4xl animate-[fadeIn_0.8s_ease-out]">
             <h1 className="font-display text-3xl font-bold leading-tight tracking-tight text-white drop-shadow-2xl sm:text-4xl lg:text-5xl">
               <span className="block">Go beyond the map.</span>
@@ -201,7 +272,7 @@ export default function HeroSection({
           </div>
         </div>
       ) : isSubPage ? (
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center space-y-4 my-auto py-12 animate-[fadeIn_0.5s_ease-out]">
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-3 sm:space-y-4 my-auto py-8 sm:py-12 animate-[fadeIn_0.5s_ease-out]">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/25 text-[10px] font-black uppercase tracking-widest text-brand-sand">
             <Sparkles className="w-3.5 h-3.5 text-brand-sand animate-pulse" /> 
             {currentView === "trips" && "Active Group Journeys"}
@@ -228,23 +299,23 @@ export default function HeroSection({
           </p>
         </div>
       ) : (
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-12 flex-grow mb-12 my-auto">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-0 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 flex-grow mb-8 lg:mb-12 my-auto">
           
           {/* Left Side: Dramatic Typography Hero Text */}
-          <div className="w-full lg:w-3/5 text-left space-y-6">
+          <div className="w-full lg:w-3/5 text-left space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/25 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest text-brand-sand">
               <Sparkles className="w-3.5 h-3.5 text-brand-sand" /> 
               {currentView === "home" ? "ACTIVE HIMALAYAN EXPEDITIONS" : "HIGH-ALTITUDE GROUP BATCH"}
             </div>
             
-            <h1 className="text-4xl md:text-6xl xl:text-7xl font-black tracking-tight leading-tight select-none uppercase font-display drop-shadow-lg text-white">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl xl:text-7xl font-black tracking-tight leading-tight select-none uppercase font-display drop-shadow-lg text-white">
               {currentTrip.name.split(" ").slice(0, 2).join(" ")} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-sand via-white to-gray-200">
                 {currentTrip.name.split(" ").slice(2).join(" ") || "EXPEDITION"}
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl font-bold text-white border-l-4 border-brand-sand pl-4 py-1 italic drop-shadow-md">
+            <p className="text-base sm:text-lg md:text-xl font-bold text-white border-l-4 border-brand-sand pl-4 py-1 italic drop-shadow-md">
               "{currentTrip.subtitle}"
             </p>
 
@@ -255,11 +326,11 @@ export default function HeroSection({
             </p>
 
             {/* Action buttons */}
-            <div className="pt-4 flex flex-wrap gap-4 items-center">
+            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
               {currentView === "home" ? (
                 <button
                   onClick={() => onNavigate(currentTrip.id as any)}
-                  className="px-8 py-4 bg-[#9C753B] hover:bg-[#7C552B] text-white font-black uppercase text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#9C753B] hover:bg-[#7C552B] text-white font-black uppercase text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2"
                 >
                   <span>Explore Full Details</span>
                   <ChevronRight className="w-4 h-4 text-white" />
@@ -267,14 +338,14 @@ export default function HeroSection({
               ) : (
                 <button
                   onClick={() => onOpenBooking(currentTrip.id)}
-                  className="px-8 py-4 bg-[#9C753B] hover:bg-[#7C552B] text-white font-black uppercase text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-all"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#9C753B] hover:bg-[#7C552B] text-white font-black uppercase text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-all"
                 >
                   Secure Your Seat
                 </button>
               )}
               <button
                 onClick={onExploreClick}
-                className="px-6 py-4 border border-white/40 bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all flex items-center gap-2 shadow"
+                className="w-full sm:w-auto px-6 py-4 border border-white/40 bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all flex items-center justify-center gap-2 shadow"
               >
                 <span>Scroll to Story</span>
               </button>
@@ -283,7 +354,7 @@ export default function HeroSection({
 
           {/* Right Side: Floating Frosted Light Glassmorphism Summary Card */}
           <div className="w-full sm:w-4/5 lg:w-[380px] p-[1px] rounded-3xl bg-gradient-to-b from-white/60 via-white/20 to-transparent shadow-2xl backdrop-blur-xl">
-            <div className="p-6 rounded-3xl bg-white/90 text-left space-y-5 border border-white/40">
+            <div className="p-4 sm:p-6 rounded-3xl bg-white/90 text-left space-y-4 sm:space-y-5 border border-white/40">
               <div className="flex justify-between items-center pb-2 border-b border-neutral-200">
                 <span className="text-[10px] font-black text-neutral-500 uppercase tracking-widest">
                   Trip Specifications

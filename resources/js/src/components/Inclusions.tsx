@@ -30,19 +30,19 @@ function renderInclusionIcon(name?: string) {
 
 export default function Inclusions({ inclusions, exclusions }: InclusionsProps) {
   return (
-    <section id="whats-included" className="relative bg-white py-24 px-6 overflow-hidden text-neutral-900 border-t border-b border-neutral-200">
+    <section id="whats-included" className="relative bg-white py-16 sm:py-24 px-4 sm:px-6 overflow-hidden text-neutral-900 border-t border-b border-neutral-200">
       {/* Background ambient noise patterns */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[500px] bg-[radial-gradient(circle,rgba(156,117,59,0.04)_0%,transparent_70%)] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto space-y-16">
+      <div className="relative z-10 max-w-7xl mx-auto space-y-10 sm:space-y-16">
         
         {/* Section double-headings */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-end pb-4 border-b border-neutral-200">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12 lg:gap-20 items-end pb-4 border-b border-neutral-200">
           <div className="space-y-4">
             <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-brand-sand/15 border border-brand-sand/30 rounded-full">
               TRANSPARENCY & BUDGETS
             </span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight font-display text-neutral-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight font-display text-neutral-900">
               Everything Covered for <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
                 a Smooth Escape
@@ -59,7 +59,7 @@ export default function Inclusions({ inclusions, exclusions }: InclusionsProps) 
           
           {/* Left Panel: Inclusions (7 columns) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <span className="px-3.5 py-1.5 rounded bg-brand-sand/15 text-[#9C753B] border border-brand-sand/30 text-[9px] font-black uppercase font-mono tracking-widest">
                 INCLUDED PASS PERKS
               </span>
@@ -70,7 +70,7 @@ export default function Inclusions({ inclusions, exclusions }: InclusionsProps) 
               {inclusions.map((item, i) => (
                 <div 
                   key={i} 
-                  className="p-5 rounded-2xl bg-[#FAF9F6] border border-neutral-200 hover:border-[#9C753B]/40 hover:bg-[#FAF9F6]/50 transition-all duration-300 flex items-start gap-4 shadow-sm"
+                  className="p-4 sm:p-5 rounded-2xl bg-[#FAF9F6] border border-neutral-200 hover:border-[#9C753B]/40 hover:bg-[#FAF9F6]/50 transition-all duration-300 flex items-start gap-3 sm:gap-4 shadow-sm"
                 >
                   <div className="p-3 bg-white rounded-xl border border-neutral-200 flex-shrink-0 shadow-sm">
                     {renderInclusionIcon(item.icon)}
