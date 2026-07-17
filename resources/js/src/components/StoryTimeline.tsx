@@ -367,7 +367,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
 
                 {/* 4a. Milestone Column: alternate order */}
                 <div 
-                  className={`col-span-12 md:col-span-3 lg:col-span-4 flex justify-center items-center relative py-6 md:py-12 z-20 ${
+                  className={`col-span-12 md:col-span-3 lg:col-span-4 flex justify-end md:justify-center items-center relative py-6 md:py-12 z-20 ${
                     isMilestoneOnLeft ? "order-1" : "order-1 md:order-2"
                   }`}
                 >
@@ -397,7 +397,7 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
                       </div>
                     </div>
 
-                    <div className="absolute top-12 sm:top-15 bg-white border border-neutral-200 px-2 py-0.5 rounded text-[8px] font-mono text-neutral-500 uppercase tracking-widest pointer-events-none whitespace-nowrap shadow-sm">
+                    <div className="absolute right-0 md:right-auto top-12 sm:top-15 bg-white border border-neutral-200 px-2 py-0.5 rounded text-[8px] font-mono text-neutral-500 uppercase tracking-widest pointer-events-none whitespace-nowrap shadow-sm">
                       Stage {index}
                     </div>
                   </div>
