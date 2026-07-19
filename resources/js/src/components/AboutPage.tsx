@@ -20,10 +20,10 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-[32px] pointer-events-none" />
             <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white space-y-2 text-left">
               <span className="text-[10px] uppercase tracking-widest bg-brand-sand text-neutral-900 px-3 py-1 font-black rounded-lg shadow-md">
-                KASOL CAMPFIRE, MAY 2025
+                ATAL TUNNEL, ROHTANG, MAY 2025
               </span>
               <p className="text-sm sm:text-lg font-black font-display uppercase leading-tight">
-                "Where three shivering solo backpackers decided to fix group tourism."
+                "A mountain moment captured together at the gateway to Lahaul."
               </p>
             </div>
           </div>
