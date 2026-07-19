@@ -71,11 +71,15 @@ export default function HeroSection({
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-hidden="true"
         >
+          <source
+            src="/images/hero/travo-hero-720p.m4v"
+            type="video/mp4"
+            media="(max-width: 1023px)"
+          />
           <source src="/images/hero/travo-hero.m4v" type="video/mp4" />
-          <source src="/images/hero/IMG_9301.MOV" type="video/quicktime" />
         </video>
       ) : (
         <div
