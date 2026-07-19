@@ -75,9 +75,14 @@ export default function HeroSection({
           aria-hidden="true"
         >
           <source
+            src="/images/hero/travo-hero-mobile-720p.mp4"
+            type="video/mp4"
+            media="(max-width: 767px)"
+          />
+          <source
             src="/images/hero/travo-hero-720p.m4v"
             type="video/mp4"
-            media="(max-width: 1023px)"
+            media="(min-width: 768px) and (max-width: 1023px)"
           />
           <source src="/images/hero/travo-hero.m4v" type="video/mp4" />
         </video>

@@ -27,7 +27,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
     <link rel="manifest" href="/favicon_io/site.webmanifest">
     @if (request()->is('/'))
-      <link rel="preload" as="video" type="video/mp4" href="/images/hero/travo-hero-720p.m4v" media="(max-width: 1023px)" fetchpriority="high">
+      <link rel="preload" as="video" type="video/mp4" href="/images/hero/travo-hero-mobile-720p.mp4" media="(max-width: 767px)" fetchpriority="high">
+      <link rel="preload" as="video" type="video/mp4" href="/images/hero/travo-hero-720p.m4v" media="(min-width: 768px) and (max-width: 1023px)" fetchpriority="high">
       <link rel="preload" as="video" type="video/mp4" href="/images/hero/travo-hero.m4v" media="(min-width: 1024px)" fetchpriority="high">
     @endif
     <title>TRAVO - Delhi to Manali Kasol Escape</title>
