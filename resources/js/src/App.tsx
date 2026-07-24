@@ -20,13 +20,14 @@ import { TRIPS_DATA, TRIPS_LIST } from "./data";
 import { PUBLISHED_CATALOGUE_TRIPS } from "./catalogueTrips";
 import { Flame, Compass, Calendar, Timer, ArrowRight, ShieldCheck, Star, Users, MapPin, Sparkles } from "lucide-react";
 
-export type AppView = "home" | "manali" | "valley-of-flowers" | "book-now" | "trips" | "team" | "about" | "contact";
+export type AppView = "home" | "manali" | "valley-of-flowers" | "udaipur-lakes" | "book-now" | "trips" | "team" | "about" | "contact";
 
 const VIEW_PATHS: Record<AppView, string> = {
   home: "/",
   trips: "/trips",
   manali: "/trips/manali",
   "valley-of-flowers": "/trips/valley-of-flowers",
+  "udaipur-lakes": "/trips/udaipur-lakes",
   "book-now": "/book-now",
   team: "/team",
   about: "/about-us",
@@ -38,6 +39,7 @@ const VIEW_TITLES: Record<AppView, string> = {
   trips: "Trips | TRAVO",
   manali: "Manali Kasol Escape | TRAVO",
   "valley-of-flowers": "Valley of Flowers | TRAVO",
+  "udaipur-lakes": "Udaipur Lakes & Palaces | TRAVO",
   "book-now": "Book Your Journey | TRAVO",
   team: "Our Team | TRAVO",
   about: "About Us | TRAVO",
@@ -129,7 +131,7 @@ export default function App() {
     }
   };
 
-  const activeTrip = ["manali", "valley-of-flowers"].includes(currentView) ? (TRIPS_DATA as any)[currentView] : null;
+  const activeTrip = ["manali", "valley-of-flowers", "udaipur-lakes"].includes(currentView) ? (TRIPS_DATA as any)[currentView] : null;
   const bookingTrip = TRIPS_DATA[selectedTripIdForBooking]
     || PUBLISHED_CATALOGUE_TRIPS.find((trip) => trip.id === selectedTripIdForBooking)
     || TRIPS_DATA["manali"];

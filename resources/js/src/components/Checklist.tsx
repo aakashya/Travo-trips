@@ -50,7 +50,9 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
               </span>
             </h2>
             <p className="text-xs md:text-sm text-neutral-600 max-w-xl font-light leading-relaxed">
-              Before hitting the highway, check this professional mountain checklist curated by our captains. Check off items as you pack them into your bag!
+              {tripId === "udaipur-lakes"
+                ? "Use this city-and-road-trip checklist to pack for sunny lake walks, temple visits, heritage sites, and the overnight coach journey."
+                : "Before hitting the highway, check this professional mountain checklist curated by our captains. Check off items as you pack them into your bag!"}
             </p>
           </div>
 
@@ -138,7 +140,10 @@ export default function Checklist({ packingChecklist, tripId }: ChecklistProps) 
         <div className="max-w-3xl mx-auto p-5 rounded-2xl bg-brand-sand/10 border border-dashed border-[#9C753B]/30 flex items-start gap-4">
           <Star className="w-5 h-5 text-[#9C753B] flex-shrink-0 mt-0.5 animate-pulse" />
           <p className="text-[11px] text-neutral-700 leading-relaxed font-light text-left">
-            <strong className="text-neutral-900 font-bold">Pro Tip:</strong> Packing light is always smart. Stick strictly to comfortable clothing options. Make sure to keep adequate hard cash during mountain strolls since cellular networks are erratic across high altitude streams.
+            <strong className="text-neutral-900 font-bold">Pro Tip:</strong>{" "}
+            {tripId === "udaipur-lakes"
+              ? "Pack light, choose comfortable walking shoes, carry sun protection, and keep a scarf or stole handy for temple visits."
+              : "Packing light is always smart. Stick strictly to comfortable clothing options. Make sure to keep adequate hard cash during mountain strolls since cellular networks are erratic across high altitude streams."}
           </p>
         </div>
 

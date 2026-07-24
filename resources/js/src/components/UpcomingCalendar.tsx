@@ -73,15 +73,15 @@ const UPCOMING_SCHEDULE: ScheduledTrip[] = [
     name: "Udaipur Lakes & Palaces",
     date: "2026-08-07",
     status: "open",
-    price: "₹7,999",
+    price: "₹10,499",
     duration: "3 Days / 2 Nights",
     slotsTotal: 40,
     slotsBooked: 16,
     departureTime: "9:00 PM",
     departurePoint: "IFFCO Chowk, Gurugram",
-    subtitle: "Palace walks, Lake Pichola sunset views, old-city cafes, and Rajasthan's folk culture.",
+    subtitle: "City Palace, Kumbhalgarh, Ranakpur, Lake Pichola, and an Aravalli sunset finale.",
     badge: "BOOKING OPEN",
-    image: "https://unsplash.com/photos/t2x2R0ZpXpw/download?force=true&w=1200"
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20view%20of%20City%20Palace%20%28Udaipur%29%2C%20Rajasthan%2C%20India%20-2.jpg?width=1200"
   }
 ];
 
@@ -539,10 +539,10 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                           {/* Quick CTA Actions */}
                           <div className="grid grid-cols-2 gap-3 pt-1">
                             <button
-                              onClick={() => onNavigate(trip.tripId === "udaipur-lakes" ? "trips" : trip.tripId as AppView)}
+                              onClick={() => onNavigate(trip.tripId as AppView)}
                               className="px-4 py-3 border border-neutral-200 hover:bg-neutral-50 text-neutral-800 font-black uppercase text-[10px] tracking-widest rounded-xl transition-all text-center flex items-center justify-center gap-1.5"
                             >
-                              <span>{trip.tripId === "udaipur-lakes" ? "Explore Trip" : "Itinerary"}</span>
+                              <span>Itinerary</span>
                               <Compass className="w-3.5 h-3.5 text-[#9C753B]" />
                             </button>
                             <button

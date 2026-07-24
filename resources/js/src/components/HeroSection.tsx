@@ -7,8 +7,8 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 
 interface HeroSectionProps {
-  currentView: "home" | "manali" | "valley-of-flowers" | "book-now" | "trips" | "team" | "about" | "contact";
-  onNavigate: (view: "home" | "manali" | "valley-of-flowers" | "book-now" | "trips" | "team" | "about" | "contact") => void;
+  currentView: "home" | "manali" | "valley-of-flowers" | "udaipur-lakes" | "book-now" | "trips" | "team" | "about" | "contact";
+  onNavigate: (view: "home" | "manali" | "valley-of-flowers" | "udaipur-lakes" | "book-now" | "trips" | "team" | "about" | "contact") => void;
   onOpenBooking: (tripId: string) => void;
   onExploreClick: () => void;
 }
@@ -317,7 +317,7 @@ export default function HeroSection({
           <div className="w-full lg:w-3/5 text-left space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/25 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest text-brand-sand">
               <Sparkles className="w-3.5 h-3.5 text-brand-sand" /> 
-              {currentView === "home" ? "ACTIVE HIMALAYAN EXPEDITIONS" : "HIGH-ALTITUDE GROUP BATCH"}
+              {currentView === "home" ? "ACTIVE GROUP JOURNEYS" : currentTrip.id === "udaipur-lakes" ? "ROYAL RAJASTHAN ESCAPE" : "HIGH-ALTITUDE GROUP BATCH"}
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-6xl xl:text-7xl font-black tracking-tight leading-tight select-none uppercase font-display drop-shadow-lg text-white">
@@ -332,9 +332,11 @@ export default function HeroSection({
             </p>
 
             <p className="text-xs md:text-sm text-gray-100 max-w-lg leading-relaxed font-normal drop-shadow">
-              {currentTrip.id === "manali" 
+              {currentTrip.id === "manali"
                 ? "Snow adventures, Old Manali café hopping, riverside dome camping beside Parvati River, DJ dancing night under star systems, and spiritual hot spring baths."
-                : "Explore the UNESCO World Heritage floral meadows, climb to 14,203 ft to the world's highest Gurudwara, pay devotions at Badrinath Temple, and plunge in Tapt Kund hot springs."}
+                : currentTrip.id === "udaipur-lakes"
+                  ? "Walk through royal palaces and marble temples, trace Mewar history at Kumbhalgarh, drift beside Lake Pichola, and close the journey with an Aravalli sunset."
+                  : "Explore the UNESCO World Heritage floral meadows, climb to 14,203 ft to the world's highest Gurudwara, pay devotions at Badrinath Temple, and plunge in Tapt Kund hot springs."}
             </p>
 
             {/* Action buttons */}
@@ -384,7 +386,11 @@ export default function HeroSection({
                 <div>
                   <p className="text-[9px] uppercase font-black tracking-wider text-neutral-400">Expedition Highway</p>
                   <p className="text-sm font-extrabold text-neutral-900">
-                    {currentTrip.id === "manali" ? "Delhi to Manikaran Loop" : "Delhi to Hemkund Route"}
+                    {currentTrip.id === "manali"
+                      ? "Delhi to Manikaran Loop"
+                      : currentTrip.id === "udaipur-lakes"
+                        ? "Gurugram to Udaipur Loop"
+                        : "Delhi to Hemkund Route"}
                   </p>
                 </div>
               </div>

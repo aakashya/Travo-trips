@@ -19,6 +19,15 @@ export const FLOWERS_STREAM_IMAGE = "https://commons.wikimedia.org/wiki/Special:
 export const FLOWERS_CLOSEUP_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Flowers%20at%20Valley%20Of%20Flowers%20National%20Park.jpg?width=1800";
 export const HEMKUND_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Hemkund%20sahib.jpg?width=1800";
 export const BADRINATH_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Badrinath%20Temple%20Closeup%20View.jpg?width=1800";
+export const UDAIPUR_CITY_PALACE_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20view%20of%20City%20Palace%20%28Udaipur%29%2C%20Rajasthan%2C%20India%20-2.jpg?width=1800";
+export const UDAIPUR_PICHOLA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20Palace%2C%20Lake%20Pichola%2C%20Udaipur.jpg?width=1800";
+export const UDAIPUR_FATEH_SAGAR_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Fateh%20Sagar%20Lake%2C%20Udaipur%2C%20Rajasthan.jpg?width=1800";
+export const UDAIPUR_SAHELIYON_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Sahelion%20Ki%20Bari%2C%20Udaipur.jpg?width=1800";
+export const UDAIPUR_KUMBHALGARH_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Kumbalgarh%20Fort%2C%20Aravali%20Hills.jpg?width=1800";
+export const UDAIPUR_RANAKPUR_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Ranakpur%20Jain%20Temple%2C%20Rajasthan.jpg?width=1800";
+export const UDAIPUR_KARNI_MATA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Karni%20Mata%20Ropeway%20Udaipur%20%281%29.jpg?width=1800";
+export const UDAIPUR_GANGAUR_GHAT_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Entrance%20Gate%20of%20the%20Gangaur%20Ghat.jpg?width=1800";
+export const UDAIPUR_BADI_LAKE_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Badi%20Lake%20Udaipur.jpg?width=1800";
 
 export const TRIPS_DATA: Record<string, TripDetails> = {
   "manali": {
@@ -236,6 +245,130 @@ export const TRIPS_DATA: Record<string, TripDetails> = {
       { title: "5. Payment, Booking, and Refunds", content: "Valley of Flowers expedition spots are non-refundable and non-transferable. Please clear dues before journey start in Delhi." },
     ],
   },
+  "udaipur-lakes": {
+    id: "udaipur-lakes",
+    name: "Udaipur Lakes & Palaces",
+    subtitle: "The City of Lakes, royal forts, marble temples, and timeless old-city streets",
+    price: "Rs. 10,499/-",
+    duration: "3 Days / 2 Nights",
+    upcomingDeparture: "7th August 2026",
+    bannerImage: UDAIPUR_PICHOLA_IMAGE,
+    heroImage: UDAIPUR_CITY_PALACE_IMAGE,
+    routeStops: [
+      { id: "gurugram", name: "IFFCO Chowk, Gurugram", tag: "DEPARTURE", coords: { x: 50, y: 92 }, description: "Meet the trip captain and your fellow travelers before the 9:00 PM overnight premium AC coach departure." },
+      { id: "jaipur", name: "Jaipur", tag: "OVERNIGHT STOP", coords: { x: 48, y: 72 }, description: "A short en-route pickup and refreshment halt before continuing across Rajasthan toward the City of Lakes." },
+      { id: "udaipur", name: "Udaipur", tag: "DAY 1 ARRIVAL", coords: { x: 52, y: 55 }, description: "Check in, unwind, and begin with Fateh Sagar Lake, Saheliyon Ki Bari, and the colorful lanes of Hathi Pol." },
+      { id: "kumbhalgarh", name: "Kumbhalgarh Fort", tag: "DAY 2", coords: { x: 44, y: 30 }, description: "Explore the monumental hill fort and its sweeping Aravalli views before continuing to Ranakpur." },
+      { id: "ranakpur", name: "Ranakpur Jain Temple", tag: "DAY 2", coords: { x: 30, y: 22 }, description: "Walk through the peaceful marble temple celebrated for its detailed pillars and remarkable craftsmanship." },
+      { id: "karni-mata", name: "Karni Mata Ropeway", tag: "DAY 2", coords: { x: 58, y: 18 }, description: "Rise above Udaipur for panoramic views across the lakes and city before sunset." },
+      { id: "old-city", name: "City Palace & Old City", tag: "DAY 3", coords: { x: 50, y: 42 }, description: "Discover City Palace, Jagdish Temple, Lake Pichola, Gangaur Ghat, and Bagore Ki Haveli." },
+      { id: "badi-lake", name: "Badi Lake & Bahubali Hills", tag: "DAY 3 FINALE", coords: { x: 62, y: 34 }, description: "Close the journey with a peaceful lake escape and a final sunset over the Aravalli Hills." },
+    ],
+    timelineItems: [
+      {
+        day: "Day 0",
+        title: "The Journey Begins",
+        quote: "Every unforgettable journey begins with one shared departure.",
+        image: UDAIPUR_PICHOLA_IMAGE,
+        highlights: [
+          "8:30 PM: Assemble at IFFCO Chowk, Gurugram for check-in and seat allocation",
+          "9:00 PM: Meet the trip captain and board the premium AC coach",
+          "Welcome briefing, introductions, and an easy first evening with the group",
+          "Overnight road journey toward Udaipur with an en-route Jaipur pickup",
+        ],
+        telemetry: { loc: "IFFCO CHOWK, GURUGRAM", icon: "START", alt: "217m Alt", temp: "Night Drive", distance: "0 KM", iconType: "Clock" },
+      },
+      {
+        day: "Day 1",
+        title: "Welcome to Udaipur",
+        quote: "Arrive, slow down, and let every lakeside corner begin a new story.",
+        image: UDAIPUR_FATEH_SAGAR_IMAGE,
+        highlights: [
+          "Morning arrival in Udaipur, hotel check-in, and time to unwind",
+          "Late morning beside the calm waters of Fateh Sagar Lake",
+          "Afternoon walk through the fountains and gardens of Saheliyon Ki Bari",
+          "Evening shopping for handicrafts and souvenirs at Hathi Pol Market",
+          "Dinner and overnight stay at the hotel",
+        ],
+        telemetry: { loc: "FATEH SAGAR & OLD UDAIPUR", icon: "LAKE", alt: "598m Alt", temp: "Warm & Breezy", distance: "665 KM", iconType: "Waves" },
+      },
+      {
+        day: "Day 2",
+        title: "Forts, Temples & Aravalli Views",
+        quote: "A day where Mewar's history, quiet marble halls, and golden horizons meet.",
+        image: UDAIPUR_KUMBHALGARH_IMAGE,
+        highlights: [
+          "7:30 AM: Breakfast at the hotel",
+          "9:00 AM: Excursion to UNESCO-listed Kumbhalgarh Fort",
+          "12:00 PM: Visit the intricately carved Ranakpur Jain Temple",
+          "2:00 PM: Self-sponsored lunch at a local restaurant on the return route",
+          "5:00 PM: Karni Mata Ropeway for panoramic views over Udaipur",
+          "6:30 PM: Sunset viewpoint, followed by hotel return, dinner, and overnight stay",
+        ],
+        telemetry: { loc: "KUMBHALGARH & RANAKPUR", icon: "FORT", alt: "1,100m Peak", temp: "Aravalli Air", distance: "835 KM", iconType: "Compass" },
+      },
+      {
+        day: "Day 3",
+        title: "Royal Udaipur Farewell",
+        quote: "One last day of palaces and lakes; countless memories for the road home.",
+        image: UDAIPUR_CITY_PALACE_IMAGE,
+        highlights: [
+          "7:30 AM: Breakfast at the hotel and check-out",
+          "9:00 AM: Explore City Palace and its Rajasthani-Mughal architecture",
+          "11:00 AM: Visit Jagdish Temple, followed by a self-sponsored old-city lunch",
+          "2:30 PM: Optional Lake Pichola boat ride with palace and Jag Mandir views",
+          "4:00 PM: Gangaur Ghat, then Bagore Ki Haveli without the evening show",
+          "5:45 PM: Badi Lake and 6:15 PM Bahubali Hills sunset finale",
+          "7:30 PM onwards: Board the AC vehicle for the overnight return to Gurugram",
+        ],
+        telemetry: { loc: "CITY PALACE TO BAHUBALI HILLS", icon: "ROYAL", alt: "800m View", temp: "Golden Hour", distance: "920 KM", iconType: "Sun" },
+      },
+    ],
+    experienceMoments: [
+      { id: "city-palace", title: "City Palace", tag: "MEWAR ROYAL HERITAGE", image: UDAIPUR_CITY_PALACE_IMAGE, icon: "Home" },
+      { id: "lake-pichola", title: "Lake Pichola", tag: "THE CITY OF LAKES", image: UDAIPUR_PICHOLA_IMAGE, icon: "Waves" },
+      { id: "fateh-sagar", title: "Fateh Sagar Lake", tag: "LAKESIDE MORNING", image: UDAIPUR_FATEH_SAGAR_IMAGE, icon: "Waves" },
+      { id: "saheliyon", title: "Saheliyon Ki Bari", tag: "ROYAL GARDENS", image: UDAIPUR_SAHELIYON_IMAGE, icon: "Flower" },
+      { id: "kumbhalgarh", title: "Kumbhalgarh Fort", tag: "UNESCO HILL FORT", image: UDAIPUR_KUMBHALGARH_IMAGE, icon: "Compass" },
+      { id: "ranakpur", title: "Ranakpur Jain Temple", tag: "MARBLE MASTERPIECE", image: UDAIPUR_RANAKPUR_IMAGE, icon: "Sparkles" },
+      { id: "gangaur-ghat", title: "Gangaur Ghat", tag: "OLD CITY WATERFRONT", image: UDAIPUR_GANGAUR_GHAT_IMAGE, icon: "Footprints" },
+      { id: "badi-lake", title: "Badi Lake", tag: "BAHUBALI SUNSET", image: UDAIPUR_BADI_LAKE_IMAGE, icon: "Sun" },
+    ],
+    inclusions: [
+      { text: "Gurugram to Udaipur and return travel by premium AC coach", icon: "Bus" },
+      { text: "2 nights in a comfortable Udaipur hotel on sharing basis", icon: "Hotel" },
+      { text: "2 breakfasts and 2 dinners during the stay", icon: "Utensils" },
+      { text: "Sightseeing transfers listed in the day-wise itinerary", icon: "MapPin" },
+      { text: "Experienced trip captain throughout the journey", icon: "UserCheck" },
+      { text: "Basic first-aid support during the trip", icon: "ShieldCheck" },
+    ],
+    exclusions: [
+      { text: "Entry tickets for monuments and paid attractions" },
+      { text: "Lake Pichola boat ride and Karni Mata Ropeway tickets" },
+      { text: "Lunches, snacks, beverages, and personal meal orders" },
+      { text: "Shopping, souvenirs, tips, porterage, and other personal expenses" },
+      { text: "Travel or health insurance and personal medical expenses" },
+      { text: "Early hotel check-in, late check-out, room service, and hotel extras" },
+      { text: "5% GST and anything not explicitly listed under inclusions" },
+    ],
+    packingChecklist: [
+      { category: "Clothing", items: ["Comfortable cotton clothes", "Light jacket or hoodie", "Sun hat or cap", "Scarf or stole for temple visits", "Comfortable walking shoes", "Slippers or sandals"] },
+      { category: "Toiletries", items: ["Toothbrush and toothpaste", "Face wash and moisturizer", "SPF 30+ sunscreen", "Lip balm", "Hand sanitizer and wet wipes", "Quick-dry towel"] },
+      { category: "Travel Essentials", items: ["Backpack or day bag", "Reusable water bottle", "Power bank", "Phone charger and cable", "Original government ID", "Cash in small denominations"] },
+      { category: "Health & Safety", items: ["Personal medication", "Basic pain-relief balm", "Bandages", "Motion-sickness tablets", "ORS or electrolyte sachets"] },
+      { category: "Camera & Gadgets", items: ["Camera or GoPro", "Extra batteries or memory cards", "Tripod or selfie stick", "Earphones"] },
+      { category: "Good to Have", items: ["Road snacks", "Small umbrella or seasonal raincoat", "Travel pillow", "Tissues", "Notebook and pen"] },
+    ],
+    termsAccordion: [
+      { title: "1. Booking and Payment", content: "A booking is confirmed only after the advance is received. Full payment must be completed before departure, and bookings made within 7 days of departure require 100% payment." },
+      { title: "2. Cancellation Policy", content: "Cancellations 30 or more days before departure receive a 90% refund after the booking amount is deducted. Cancellations 15–30 days before departure receive a 50% refund; cancellations within 15 days are non-refundable." },
+      { title: "3. Itinerary and Trip Changes", content: "TRAVO may modify, alter, or cancel parts of the itinerary due to weather, road conditions, closures, or circumstances outside operational control, with the best practical alternative arranged where possible." },
+      { title: "4. Hotel Check-in and Check-out", content: "Standard hotel check-in is between 12:00 PM and 2:00 PM, and check-out is between 10:00 AM and 11:00 AM. Early check-in or late check-out remains subject to availability and hotel policy." },
+      { title: "5. Traveler Conduct and Safety", content: "Travelers must respect local culture, fellow travelers, and the crew. Medical conditions must be disclosed in advance, prescribed medication must be carried, and all captain safety instructions must be followed." },
+      { title: "6. Travel Responsibility", content: "TRAVO acts as a facilitator for travel, sightseeing, and accommodation services and cannot accept responsibility for delays, accidents, theft, loss, or damage to personal belongings." },
+      { title: "7. Identity, Media, and Jurisdiction", content: "A valid government ID is mandatory. Trip photographs and videos may be used for TRAVO promotions unless you notify the team otherwise. Disputes are subject to Gurugram jurisdiction." },
+    ],
+  },
 };
 
-export const TRIPS_LIST = [TRIPS_DATA["manali"], TRIPS_DATA["valley-of-flowers"]];
+export const TRIPS_LIST = [TRIPS_DATA["manali"], TRIPS_DATA["valley-of-flowers"], TRIPS_DATA["udaipur-lakes"]];

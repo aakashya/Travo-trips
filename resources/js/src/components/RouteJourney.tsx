@@ -20,6 +20,13 @@ import {
   RISHIKESH_IMAGE,
   ROHTANG_IMAGE,
   SOLANG_IMAGE,
+  UDAIPUR_BADI_LAKE_IMAGE,
+  UDAIPUR_CITY_PALACE_IMAGE,
+  UDAIPUR_FATEH_SAGAR_IMAGE,
+  UDAIPUR_KARNI_MATA_IMAGE,
+  UDAIPUR_KUMBHALGARH_IMAGE,
+  UDAIPUR_PICHOLA_IMAGE,
+  UDAIPUR_RANAKPUR_IMAGE,
 } from "../data";
 
 interface RouteJourneyProps {
@@ -161,18 +168,88 @@ const MANALI_DESTINATIONS: DestinationNode[] = [
   }
 ];
 
+const UDAIPUR_DESTINATIONS: DestinationNode[] = [
+  {
+    id: 'gurugram', name: 'IFFCO Chowk', type: 'pickup', dayNum: 0, altitude: '712 ft',
+    coordinates: { x: 50, y: 92 }, distanceToNext: '240 km', durationToNext: '4-5 hrs', icon: '📍',
+    imageUrl: DELHI_IMAGE,
+    description: 'Meet the trip captain and fellow travelers at IFFCO Chowk before the 9:00 PM premium AC coach departure.',
+    keyAttractions: ['Trip Briefing', 'Seat Allocation', 'Overnight Coach']
+  },
+  {
+    id: 'jaipur', name: 'Jaipur Stop', type: 'stopover', dayNum: 0, altitude: '1,414 ft',
+    coordinates: { x: 48, y: 72 }, distanceToNext: '395 km', durationToNext: '6-7 hrs', icon: '🚌',
+    imageUrl: UDAIPUR_PICHOLA_IMAGE,
+    description: 'A short overnight pickup and refreshment halt before the journey continues south through Rajasthan.',
+    keyAttractions: ['En-route Pickup', 'Refreshment Halt', 'Rajasthan Highway']
+  },
+  {
+    id: 'udaipur', name: 'Udaipur Arrival', type: 'base', dayNum: 1, altitude: '1,962 ft',
+    coordinates: { x: 52, y: 55 }, distanceToNext: 'Local circuit', durationToNext: 'Full day', icon: '🌊',
+    imageUrl: UDAIPUR_FATEH_SAGAR_IMAGE,
+    description: 'Check in and ease into the City of Lakes with Fateh Sagar, the royal gardens, and colorful old-city markets.',
+    keyAttractions: ['Fateh Sagar Lake', 'Saheliyon Ki Bari', 'Hathi Pol']
+  },
+  {
+    id: 'old-city', name: 'Royal Old City', type: 'trailhead', dayNum: 3, altitude: '1,962 ft',
+    coordinates: { x: 50, y: 42 }, distanceToNext: '12 km', durationToNext: '30-40 mins', icon: '🏰',
+    imageUrl: UDAIPUR_CITY_PALACE_IMAGE,
+    description: 'A walk through Udaipur’s royal core, from City Palace and Jagdish Temple to Lake Pichola and Gangaur Ghat.',
+    keyAttractions: ['City Palace', 'Jagdish Temple', 'Lake Pichola']
+  },
+  {
+    id: 'kumbhalgarh', name: 'Kumbhalgarh Fort', type: 'destination', dayNum: 2, altitude: '3,600 ft',
+    coordinates: { x: 44, y: 30 }, distanceToNext: '35 km', durationToNext: '1 hr', icon: '🏯',
+    imageUrl: UDAIPUR_KUMBHALGARH_IMAGE,
+    description: 'A UNESCO-listed Mewar hill fort wrapped in the Aravallis and protected by one of the world’s great historic walls.',
+    keyAttractions: ['UNESCO Hill Fort', 'Mewar History', 'Aravalli Panorama']
+  },
+  {
+    id: 'ranakpur', name: 'Ranakpur Temple', type: 'destination', dayNum: 2, altitude: '1,595 ft',
+    coordinates: { x: 30, y: 22 }, distanceToNext: '95 km', durationToNext: '2-3 hrs', icon: '🛕',
+    imageUrl: UDAIPUR_RANAKPUR_IMAGE,
+    description: 'An atmosphere of quiet devotion and remarkable marble craftsmanship, with intricately carved pillars throughout the temple.',
+    keyAttractions: ['Marble Architecture', 'Jain Heritage', 'Carved Pillars']
+  },
+  {
+    id: 'karni-mata', name: 'Karni Mata Ropeway', type: 'destination', dayNum: 2, altitude: '2,100 ft',
+    coordinates: { x: 58, y: 18 }, distanceToNext: 'Hotel return', durationToNext: '30 mins', icon: '🚡',
+    imageUrl: UDAIPUR_KARNI_MATA_IMAGE,
+    description: 'Ride above the old city for wide-open views of Lake Pichola, City Palace, and Udaipur’s surrounding hills.',
+    keyAttractions: ['Ropeway Ride', 'Panoramic Lakes', 'Sunset Views']
+  },
+  {
+    id: 'badi-lake', name: 'Badi Lake', type: 'destination', dayNum: 3, altitude: '2,625 ft',
+    coordinates: { x: 62, y: 34 }, distanceToNext: 'Return journey', durationToNext: 'Overnight', icon: '🌅',
+    imageUrl: UDAIPUR_BADI_LAKE_IMAGE,
+    description: 'The final peaceful escape: Badi Lake below and the Aravalli horizon glowing from Bahubali Hills.',
+    keyAttractions: ['Bahubali Hills', 'Badi Lake', 'Farewell Sunset']
+  }
+];
+
 export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
   // Use appropriate destinations list based on active trip
   const isManali = tripId === "manali";
-  const destinations = isManali ? MANALI_DESTINATIONS : VALLEY_OF_FLOWERS_DESTINATIONS;
+  const isUdaipur = tripId === "udaipur-lakes";
+  const destinations = isManali
+    ? MANALI_DESTINATIONS
+    : isUdaipur
+      ? UDAIPUR_DESTINATIONS
+      : VALLEY_OF_FLOWERS_DESTINATIONS;
 
   const [selectedNode, setSelectedNode] = useState<DestinationNode>(destinations[4] || destinations[0]); // Default Ghangaria/Solang
   const [hoveredNode, setHoveredNode] = useState<DestinationNode | null>(null);
 
   // Sync selected node when tripId changes
   useEffect(() => {
-    setSelectedNode(isManali ? MANALI_DESTINATIONS[4] : VALLEY_OF_FLOWERS_DESTINATIONS[4]);
-  }, [tripId, isManali]);
+    setSelectedNode(
+      isManali
+        ? MANALI_DESTINATIONS[4]
+        : isUdaipur
+          ? UDAIPUR_DESTINATIONS[4]
+          : VALLEY_OF_FLOWERS_DESTINATIONS[4],
+    );
+  }, [tripId, isManali, isUdaipur]);
 
   const getNodeIcon = (id: string) => {
     switch (id) {
@@ -192,6 +269,18 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
         return <Snowflake className="w-4 h-4 text-blue-300" />;
       case 'badrinath':
         return isManali ? <Flame className="w-4 h-4 text-orange-400" /> : <Landmark className="w-4 h-4 text-orange-400" />;
+      case 'gurugram':
+      case 'jaipur':
+        return <MapPin className="w-4 h-4 text-rose-400" />;
+      case 'udaipur':
+      case 'badi-lake':
+        return <Droplets className="w-4 h-4 text-sky-500" />;
+      case 'old-city':
+      case 'kumbhalgarh':
+      case 'ranakpur':
+        return <Landmark className="w-4 h-4 text-amber-600" />;
+      case 'karni-mata':
+        return <Sparkles className="w-4 h-4 text-orange-500" />;
       default:
         return <MapPin className="w-4 h-4 text-gray-400" />;
     }
@@ -213,13 +302,15 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
             <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-wider font-mono">Interactive Planner</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight uppercase font-display text-neutral-900">
-            Himalayan Route <br />
+            {isUdaipur ? "Royal Rajasthan Route" : "Himalayan Route"} <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
               Explorer
             </span>
           </h2>
           <p className="text-xs sm:text-sm text-neutral-600 max-w-2xl font-light leading-relaxed">
-            Click on any destination node along the mountain trail to inspect key altitude metrics, travel times, photo summaries, and quick itinerary links.
+            {isUdaipur
+              ? "Follow the overnight road journey into Udaipur, then explore the forts, temples, lakes, ghats, and sunset viewpoints included in your itinerary."
+              : "Click on any destination node along the mountain trail to inspect key altitude metrics, travel times, photo summaries, and quick itinerary links."}
           </p>
         </div>
 
@@ -239,7 +330,30 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
 
             {/* Altitude Reference Lines */}
             <div className="absolute left-4 top-4 bottom-4 flex flex-col justify-between text-[8px] sm:text-[10px] font-mono text-neutral-500 pointer-events-none border-l border-neutral-200 pl-2 z-10">
-              {isManali ? (
+              {isUdaipur ? (
+                <>
+                  <div>
+                    <p className="font-bold text-[#9C753B]">3,600 ft</p>
+                    <p>Kumbhalgarh Fort</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#9C753B]">2,625 ft</p>
+                    <p>Bahubali Hills</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#9C753B]">2,100 ft</p>
+                    <p>Karni Mata</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#9C753B]">1,962 ft</p>
+                    <p>Udaipur</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#9C753B]">712 ft</p>
+                    <p>Gurugram</p>
+                  </div>
+                </>
+              ) : isManali ? (
                 <>
                   <div>
                     <p className="font-bold text-[#9C753B]">13,058 ft</p>
@@ -380,21 +494,21 @@ export default function RouteJourney({ tripId, tripName }: RouteJourneyProps) {
             {/* Quick Stats Banner Overlay inside Map */}
             <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 left-12 sm:left-16 bg-neutral-50/95 backdrop-blur-md border border-neutral-200 p-2.5 sm:p-3.5 rounded-2xl shadow-lg grid grid-cols-3 items-center gap-2 sm:gap-3 z-20">
               <div className="text-center sm:text-left min-w-0">
-                <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">Trek Path Difficulty</p>
+                <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">{isUdaipur ? "Journey Style" : "Trek Path Difficulty"}</p>
                 <p className="text-[10px] font-semibold text-[#9C753B] flex items-center gap-1 mt-0.5">
-                  🏆 {isManali ? "Easy to Moderate" : "Moderate Alpine Trails"}
+                  🏆 {isUdaipur ? "Easy Heritage Escape" : isManali ? "Easy to Moderate" : "Moderate Alpine Trails"}
                 </p>
               </div>
               <div className="text-center sm:text-left min-w-0 border-l border-neutral-200 pl-2 sm:pl-3">
-                <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">Total Trek Distance</p>
+                <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">{isUdaipur ? "Road Journey" : "Total Trek Distance"}</p>
                 <p className="text-[10px] font-semibold text-neutral-800 mt-0.5">
-                  {isManali ? "14 km (Roundtrip)" : "24 km (Roundtrip)"}
+                  {isUdaipur ? "Gurugram Roundtrip" : isManali ? "14 km (Roundtrip)" : "24 km (Roundtrip)"}
                 </p>
               </div>
               <div className="text-center sm:text-left min-w-0 border-l border-neutral-200 pl-2 sm:pl-3">
                 <p className="text-[8px] uppercase font-bold tracking-wider text-neutral-500">Peak Elevation</p>
                 <p className="text-[10px] font-semibold text-sky-600 mt-0.5 font-mono">
-                  {isManali ? "13,058 ft" : "14,203 ft"}
+                  {isUdaipur ? "3,600 ft" : isManali ? "13,058 ft" : "14,203 ft"}
                 </p>
               </div>
             </div>

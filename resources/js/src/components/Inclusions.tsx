@@ -50,7 +50,7 @@ export default function Inclusions({ inclusions, exclusions }: InclusionsProps) 
             </h2>
           </div>
           <p className="text-xs md:text-sm text-neutral-600 max-w-lg font-light leading-relaxed">
-            We value honest travel. Every major logistical coordinate from comfortable AC transportation to hygienic campsite meals is fully bundled, so you have zero surprise fees.
+            We value honest travel. Transportation, stays, meals, and on-trip support are listed clearly so you know exactly what your package covers before booking.
           </p>
         </div>
 

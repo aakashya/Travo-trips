@@ -11,6 +11,6 @@ return [
     ],
     'udaipur-lakes' => [
         'name' => 'Udaipur Lakes & Palaces',
-        'price' => 7999,
+        'price' => 10499,
     ],
 ];

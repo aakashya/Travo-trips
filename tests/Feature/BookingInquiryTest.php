@@ -23,9 +23,9 @@ class BookingInquiryTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonPath('subtotal', 15998)
-            ->assertJsonPath('discount_amount', 1600)
-            ->assertJsonPath('total_amount', 14398);
+            ->assertJsonPath('subtotal', 20998)
+            ->assertJsonPath('discount_amount', 2100)
+            ->assertJsonPath('total_amount', 18898);
 
         $this->assertStringStartsWith('TRV-UDR-', $response->json('reference_code'));
         $this->assertDatabaseHas('booking_inquiries', [
@@ -33,7 +33,7 @@ class BookingInquiryTest extends TestCase
             'trip_name' => 'Udaipur Lakes & Palaces',
             'email' => 'traveler@example.com',
             'seats' => 2,
-            'fare_per_seat' => 7999,
+            'fare_per_seat' => 10499,
             'promo_code' => 'MOUNTAINLOVE',
             'status' => 'pending',
         ]);

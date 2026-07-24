@@ -19,7 +19,7 @@ export default function TermsAccordion({ termsAccordion, tripName }: TermsAccord
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-neutral-900 tracking-tight font-display uppercase">Before You Travel</h2>
           <p className="text-xs sm:text-sm text-neutral-600 max-w-xl mx-auto font-light leading-relaxed">
-            Review our simple regulations on bookings, refunds, safety, and mountain guidelines.
+            Review the booking, refund, safety, conduct, and itinerary guidelines for your journey.
           </p>
         </div>
 

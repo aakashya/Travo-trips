@@ -330,11 +330,13 @@ export default function StoryTimeline({ items, tripId }: StoryTimelineProps) {
           <h2 className="text-3xl sm:text-6xl lg:text-7xl font-black text-neutral-900 tracking-tight leading-none text-center font-display">
             A Day-by-Day<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
-              Interactive Chronicle
+              {tripId === "udaipur-lakes" ? "Royal Udaipur Chronicle" : "Interactive Chronicle"}
             </span>
           </h2>
           <p className="text-xs sm:text-sm text-neutral-600 font-light max-w-xl mx-auto leading-relaxed text-center">
-            Scroll down to watch our vintage traveler van cruise through snowcapped peaks, ancient valleys, and pristine glaciers.
+            {tripId === "udaipur-lakes"
+              ? "Follow the journey from the overnight departure to Udaipur’s lakes, forts, temples, old-city streets, and final Aravalli sunset."
+              : "Scroll down to watch our vintage traveler van cruise through snowcapped peaks, ancient valleys, and pristine glaciers."}
           </p>
         </div>
 

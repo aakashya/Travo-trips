@@ -266,25 +266,27 @@ export const ALL_SHOWCASE_TRIPS: ShowcaseTrip[] = [
   },
   {
     id: "udaipur-lakes",
+    hasFullItinerary: true,
     name: "Udaipur Lakes & Palaces",
-    subtitle: "Royal Lake City, Heritage Havelis & Sunset Views",
+    subtitle: "The City of Lakes, Royal Forts & Timeless Streets",
     category: "escapes",
-    price: "₹7,999",
+    price: "₹10,499",
     duration: "3 Days / 2 Nights",
     difficulty: "Easy",
     rating: 4.8,
     reviewsCount: 176,
-    image: "https://unsplash.com/photos/t2x2R0ZpXpw/download?force=true&w=1200",
-    badge: "New Royal Escape",
-    startPoint: "Udaipur Station / Airport",
-    upcomingDeparture: "Every Friday",
-    shortDesc: "Slow down in Rajasthan's City of Lakes with palace walks, a Lake Pichola sunset boat ride, old-city cafés, folk culture, and panoramic views from the Monsoon Palace.",
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20view%20of%20City%20Palace%20%28Udaipur%29%2C%20Rajasthan%2C%20India%20-2.jpg?width=1600",
+    badge: "Booking Open",
+    startPoint: "IFFCO Chowk, Gurugram",
+    upcomingDeparture: "7th August 2026",
+    shortDesc: "Discover Rajasthan's City of Lakes through royal palaces, serene gardens, Kumbhalgarh Fort, Ranakpur's marble temple, old-city ghats, and a final Aravalli sunset.",
     itinerarySummary: [
-      "Day 1: Udaipur arrival, hotel check-in, City Palace and Jagdish Temple walk, sunset boat ride on Lake Pichola",
-      "Day 2: Saheliyon Ki Bari, Fateh Sagar Lake, Monsoon Palace sunset, Bagore Ki Haveli folk show and old-city dinner",
-      "Day 3: Local market and café morning, optional vintage car museum visit, station or airport drop"
+      "Day 0: 9:00 PM departure from IFFCO Chowk, Gurugram; overnight premium AC coach journey to Udaipur",
+      "Day 1: Arrival and hotel check-in, Fateh Sagar Lake, Saheliyon Ki Bari, Hathi Pol Market, dinner and overnight stay",
+      "Day 2: Breakfast, Kumbhalgarh Fort, Ranakpur Jain Temple, Karni Mata Ropeway, sunset viewpoint, dinner and overnight stay",
+      "Day 3: City Palace, Jagdish Temple, Lake Pichola boat ride, Gangaur Ghat, Bagore Ki Haveli, Badi Lake and Bahubali Hills before the return journey"
     ],
-    inclusions: ["2 nights boutique hotel stay", "Local sightseeing transfers", "Lake Pichola boat ride", "Daily breakfast and trip coordinator"]
+    inclusions: ["Gurugram to Udaipur AC transportation", "2 nights comfortable hotel stay", "Daily breakfast and dinner", "Sightseeing and experienced trip captain"]
   },
   {
     id: "shimla-retreat",

@@ -48,7 +48,7 @@ export default function ExperienceCards({ experienceMoments }: ExperienceCardsPr
             </h2>
           </div>
           <p className="text-xs md:text-sm text-neutral-600 max-w-lg font-light leading-relaxed">
-            Himalayan travel isn't measured in miles, but in experiences. From the crunch of snow under boots to sharing local delicacies by a blazing fire.
+            Great travel isn't measured only in miles, but in the places, people, flavors, and stories that stay with you long after the road ends.
           </p>
         </div>
 
