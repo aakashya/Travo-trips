@@ -12,15 +12,6 @@ class StoreBookingInquiryRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'promo_code' => $this->filled('promo_code')
-                ? strtoupper(trim((string) $this->input('promo_code')))
-                : null,
-        ]);
-    }
-
     public function rules(): array
     {
         return [
@@ -29,7 +20,6 @@ class StoreBookingInquiryRequest extends FormRequest
             'phone' => ['required', 'string', 'regex:/^[0-9+()\-\s]{8,30}$/'],
             'email' => ['required', 'email:rfc', 'max:255'],
             'seats' => ['required', 'integer', 'min:1', 'max:10'],
-            'promo_code' => ['nullable', 'string', Rule::in(['TRAVO1000', 'MOUNTAINLOVE'])],
             'special_requests' => ['nullable', 'string', 'max:2000'],
         ];
     }

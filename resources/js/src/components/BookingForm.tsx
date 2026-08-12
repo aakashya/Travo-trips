@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Ticket, Plus, Minus, Gift, Sparkles, CheckCircle2, ShieldAlert } from "lucide-react";
+import { X, Ticket, Plus, Minus, Sparkles, CheckCircle2, ShieldAlert } from "lucide-react";
 import { BookingDetails } from "../types";
 import { TRIPS_DATA } from "../data";
 import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
@@ -27,13 +27,9 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
     phoneNumber: "",
     email: "",
     seats: 1,
-    promoCode: "",
     specialRequests: ""
   });
 
-  const [appliedPromo, setAppliedPromo] = useState<string>("");
-  const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [promoError, setPromoError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [generatedPass, setGeneratedPass] = useState("");
@@ -43,16 +39,12 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
   useEffect(() => {
     if (isOpen) {
       setIsSuccess(false);
-      setAppliedPromo("");
-      setDiscountAmount(0);
-      setPromoError("");
       setFormError("");
       setDetails({
         fullName: "",
         phoneNumber: "",
         email: "",
         seats: 1,
-        promoCode: "",
         specialRequests: ""
       });
     }
@@ -63,34 +55,6 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
   const handleSeatsChange = (val: number) => {
     const nextVal = Math.max(1, Math.min(10, details.seats + val));
     setDetails((prev) => ({ ...prev, seats: nextVal }));
-    setPromoError("");
-    
-    // Recalculate discount if coupon applied
-    if (appliedPromo === "TRAVO1000") {
-      setDiscountAmount(nextVal * 1000);
-    } else if (appliedPromo === "MOUNTAINLOVE") {
-      setDiscountAmount(Math.round(nextVal * FARE_PER_SEAT * 0.1));
-    }
-  };
-
-  const handleApplyPromo = () => {
-    const code = details.promoCode?.trim().toUpperCase();
-    setPromoError("");
-    
-    if (!code) {
-      setPromoError("Enter a code first.");
-      return;
-    }
-
-    if (code === "TRAVO1000") {
-      setAppliedPromo("TRAVO1000");
-      setDiscountAmount(details.seats * 1000);
-    } else if (code === "MOUNTAINLOVE") {
-      setAppliedPromo("MOUNTAINLOVE");
-      setDiscountAmount(Math.round(details.seats * FARE_PER_SEAT * 0.1));
-    } else {
-      setPromoError("Invalid code. Try 'TRAVO1000' or 'MOUNTAINLOVE'!");
-    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -115,7 +79,6 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
         phone: details.phoneNumber,
         email: details.email,
         seats: details.seats,
-        promo_code: appliedPromo || null,
         special_requests: details.specialRequests || null,
       });
 
@@ -129,7 +92,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
   };
 
   const subTotal = details.seats * FARE_PER_SEAT;
-  const netTotal = Math.max(1, subTotal - discountAmount);
+  const netTotal = subTotal;
 
   const assemblyPoint = selectedTripId.startsWith("andaman-")
     ? "Veer Savarkar International Airport, Port Blair (IXZ)"
@@ -249,36 +212,6 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                 </div>
               </div>
 
-              {/* Promo Code area */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                  Have a Promo Code? (Try: <strong className="text-[#9C753B]">TRAVO1000</strong> or <strong className="text-[#9C753B]">MOUNTAINLOVE</strong>)
-                </label>
-                <div className="flex flex-col min-[380px]:flex-row gap-2">
-                  <input
-                    type="text"
-                    name="promoCode"
-                    value={details.promoCode}
-                    onChange={handleInputChange}
-                    placeholder="PROMOCODE"
-                    className="w-full min-w-0 flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleApplyPromo}
-                    className="w-full min-[380px]:w-auto px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
-                  >
-                    Apply
-                  </button>
-                </div>
-                {promoError && <p className="text-[10px] text-rose-600 font-bold mt-1">{promoError}</p>}
-                {appliedPromo && (
-                  <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Coupon Applied! Saved ₹{discountAmount.toLocaleString()}!
-                  </p>
-                )}
-              </div>
-
               {/* Special Requests */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
@@ -300,12 +233,6 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                   <span className="text-neutral-500">Seat Fare ({details.seats} seats)</span>
                   <span className="font-mono text-neutral-800">₹{subTotal.toLocaleString()}</span>
                 </div>
-                {discountAmount > 0 && (
-                  <div className="flex justify-between items-center text-xs text-emerald-600">
-                    <span>Applied Coupon Saving</span>
-                    <span className="font-mono">-₹{discountAmount.toLocaleString()}</span>
-                  </div>
-                )}
                 <div className="flex justify-between items-center text-xs text-neutral-500">
                   <span>Tolls, Taxes & Permits</span>
                   <span className="text-emerald-600 uppercase font-black text-[9px] bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">Included</span>

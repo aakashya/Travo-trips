@@ -15,12 +15,6 @@ class BookingInquiryController extends Controller
         $trip = config("trips.{$validated['trip_id']}");
         $seats = (int) $validated['seats'];
         $subtotal = $trip['price'] * $seats;
-        $promoCode = $validated['promo_code'] ?? null;
-        $discountAmount = match ($promoCode) {
-            'TRAVO1000' => 1000 * $seats,
-            'MOUNTAINLOVE' => (int) round($subtotal * 0.10),
-            default => 0,
-        };
 
         $inquiry = BookingInquiry::create([
             'reference_code' => $this->uniqueReference($validated['trip_id']),
@@ -32,9 +26,9 @@ class BookingInquiryController extends Controller
             'seats' => $seats,
             'fare_per_seat' => $trip['price'],
             'subtotal' => $subtotal,
-            'discount_amount' => $discountAmount,
-            'total_amount' => max(1, $subtotal - $discountAmount),
-            'promo_code' => $promoCode,
+            'discount_amount' => 0,
+            'total_amount' => $subtotal,
+            'promo_code' => null,
             'special_requests' => $validated['special_requests'] ?? null,
             'status' => 'pending',
             'ip_address' => $request->ip(),
@@ -45,7 +39,7 @@ class BookingInquiryController extends Controller
             'message' => 'Booking inquiry submitted successfully.',
             'reference_code' => $inquiry->reference_code,
             'subtotal' => $inquiry->subtotal,
-            'discount_amount' => $inquiry->discount_amount,
+            'discount_amount' => 0,
             'total_amount' => $inquiry->total_amount,
         ], 201);
     }

@@ -49,13 +49,9 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     phoneNumber: "",
     email: "",
     seats: 1,
-    promoCode: "",
     specialRequests: ""
   });
 
-  const [appliedPromo, setAppliedPromo] = useState<string>("");
-  const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [promoError, setPromoError] = useState<string>("");
   const [andamanPackageType, setAndamanPackageType] = useState<"standard" | "honeymoon">("standard");
   const [andamanMealPlan, setAndamanMealPlan] = useState<"CP" | "MAP">("CP");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,17 +70,6 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     }));
   }, [initialTripId]);
 
-  // Recalculate discount if trip or seats change
-  useEffect(() => {
-    if (appliedPromo === "TRAVO1000") {
-      setDiscountAmount(details.seats * 1000);
-    } else if (appliedPromo === "MOUNTAINLOVE") {
-      setDiscountAmount(Math.round(details.seats * FARE_PER_SEAT * 0.1));
-    } else {
-      setDiscountAmount(0);
-    }
-  }, [selectedTripId, details.seats, appliedPromo, FARE_PER_SEAT]);
-
   const handleSeatsChange = (val: number) => {
     const nextVal = Math.max(1, Math.min(10, details.seats + val));
     setDetails((prev) => ({ ...prev, seats: nextVal }));
@@ -94,33 +79,10 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     setSelectedTripId(tripId);
     setAndamanPackageType("standard");
     setAndamanMealPlan("CP");
-    setAppliedPromo("");
-    setPromoError("");
     setDetails((previous) => ({
       ...previous,
       seats: tripId.startsWith("andaman-") ? 2 : 1,
-      promoCode: "",
     }));
-  };
-
-  const handleApplyPromo = () => {
-    const code = details.promoCode.trim().toUpperCase();
-    setPromoError("");
-    
-    if (!code) {
-      setPromoError("Enter a code first.");
-      return;
-    }
-
-    if (code === "TRAVO1000") {
-      setAppliedPromo("TRAVO1000");
-      setPromoError("");
-    } else if (code === "MOUNTAINLOVE") {
-      setAppliedPromo("MOUNTAINLOVE");
-      setPromoError("");
-    } else {
-      setPromoError("Invalid code. Try 'TRAVO1000' or 'MOUNTAINLOVE'!");
-    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -151,7 +113,6 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
         phone: details.phoneNumber,
         email: details.email,
         seats: details.seats,
-        promo_code: appliedPromo || null,
         special_requests: specialRequests || null,
       });
 
@@ -171,7 +132,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
   };
 
   const subTotal = details.seats * FARE_PER_SEAT;
-  const netTotal = Math.max(1, subTotal - discountAmount);
+  const netTotal = subTotal;
   const tokenAmount = details.seats * 2000;
 
   const assemblyPoint = isAndamanPackage
@@ -210,7 +171,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
             </div>
             <div>
               <p className="text-[10px] font-black tracking-widest uppercase text-[#9C753B]">Need Instant Help?</p>
-              <p className="text-xs text-neutral-600 font-light mb-1.5">Chat with our coordinator for seat logs & discounts.</p>
+              <p className="text-xs text-neutral-600 font-light mb-1.5">Chat with our coordinator for availability and booking help.</p>
               <a
                 href={`https://wa.me/919996965697?text=${encodeURIComponent("Hi TRAVO! I'm on the Book Now page. I have a few questions regarding seat availability and booking steps.")}`}
                 target="_blank"
@@ -435,39 +396,6 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       </div>
                     )}
 
-                    {/* Promo Code area */}
-                    <div className="space-y-1.5">
-                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                        <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                          Have a Promo Code?
-                        </label>
-                        <span className="text-[9px] text-[#9C753B] font-bold font-mono">Try: TRAVO1000 or MOUNTAINLOVE</span>
-                      </div>
-                      <div className="flex flex-col min-[380px]:flex-row gap-2">
-                        <input
-                          type="text"
-                          name="promoCode"
-                          value={details.promoCode}
-                          onChange={handleInputChange}
-                          placeholder="PROMOCODE"
-                          className="w-full min-w-0 flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleApplyPromo}
-                          className="w-full min-[380px]:w-auto px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
-                        >
-                          Apply
-                        </button>
-                      </div>
-                      {promoError && <p className="text-[10px] text-rose-600 font-bold mt-1">{promoError}</p>}
-                      {appliedPromo && (
-                        <p className="text-[10px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Coupon Applied! Saved ₹{discountAmount.toLocaleString()}!
-                        </p>
-                      )}
-                    </div>
-
                     {/* Special Requests */}
                     <div className="space-y-1.5">
                       <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
@@ -507,12 +435,6 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                             <span className="text-neutral-500">Seat Fare ({details.seats} seats)</span>
                             <span className="font-mono text-neutral-800">₹{subTotal.toLocaleString()}</span>
                           </div>
-                          {discountAmount > 0 && (
-                            <div className="flex justify-between items-center text-xs text-emerald-600">
-                              <span>Applied Coupon Saving</span>
-                              <span className="font-mono">-₹{discountAmount.toLocaleString()}</span>
-                            </div>
-                          )}
                           <div className="flex justify-between items-center text-xs text-neutral-500">
                             <span>Tolls, Taxes & Permits</span>
                             <span className="text-emerald-600 uppercase font-black text-[9px] bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">Included</span>
@@ -650,11 +572,8 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                             phoneNumber: "",
                             email: "",
                             seats: 1,
-                            promoCode: "",
                             specialRequests: ""
                           });
-                          setAppliedPromo("");
-                          setDiscountAmount(0);
                           setAndamanPackageType("standard");
                           setAndamanMealPlan("CP");
                         }}
