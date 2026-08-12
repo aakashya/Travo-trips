@@ -13,14 +13,34 @@ import GallerySection from "./components/GallerySection";
 import UpcomingCalendar from "./components/UpcomingCalendar";
 import BookNowPage from "./components/BookNowPage";
 import TripsShowcase from "./components/TripsShowcase";
+import AndamanPackagePage from "./website/AndamanPackagePage";
 import TeamPage from "./components/TeamPage";
 import AboutPage from "./components/AboutPage";
 import ContactPage from "./components/ContactPage";
 import { TRIPS_DATA, TRIPS_LIST } from "./data";
 import { PUBLISHED_CATALOGUE_TRIPS } from "./catalogueTrips";
+import { ANDAMAN_SHOWCASE_TRIPS, findAndamanPackage } from "./andamanTrips";
 import { Flame, Compass, Calendar, Timer, ArrowRight, ShieldCheck, Star, Users, MapPin, Sparkles } from "lucide-react";
 
-export type AppView = "home" | "manali" | "valley-of-flowers" | "udaipur-lakes" | "book-now" | "trips" | "team" | "about" | "contact";
+export type AppView =
+  | "home"
+  | "manali"
+  | "valley-of-flowers"
+  | "udaipur-lakes"
+  | "andaman-rush-3d2n"
+  | "andaman-dream-4d3n"
+  | "andaman-exotic-5d4n"
+  | "andaman-exotic-6d5n"
+  | "andaman-exotic-7d6n"
+  | "andaman-exotic-8d7n"
+  | "andaman-exotic-9d8n"
+  | "andaman-exotic-10d9n"
+  | "andaman-exotic-11d10n"
+  | "book-now"
+  | "trips"
+  | "team"
+  | "about"
+  | "contact";
 
 const VIEW_PATHS: Record<AppView, string> = {
   home: "/",
@@ -28,6 +48,15 @@ const VIEW_PATHS: Record<AppView, string> = {
   manali: "/trips/manali",
   "valley-of-flowers": "/trips/valley-of-flowers",
   "udaipur-lakes": "/trips/udaipur-lakes",
+  "andaman-rush-3d2n": "/trips/andaman-rush-3d2n",
+  "andaman-dream-4d3n": "/trips/andaman-dream-4d3n",
+  "andaman-exotic-5d4n": "/trips/andaman-exotic-5d4n",
+  "andaman-exotic-6d5n": "/trips/andaman-exotic-6d5n",
+  "andaman-exotic-7d6n": "/trips/andaman-exotic-7d6n",
+  "andaman-exotic-8d7n": "/trips/andaman-exotic-8d7n",
+  "andaman-exotic-9d8n": "/trips/andaman-exotic-9d8n",
+  "andaman-exotic-10d9n": "/trips/andaman-exotic-10d9n",
+  "andaman-exotic-11d10n": "/trips/andaman-exotic-11d10n",
   "book-now": "/book-now",
   team: "/team",
   about: "/about-us",
@@ -40,6 +69,15 @@ const VIEW_TITLES: Record<AppView, string> = {
   manali: "Manali Kasol Escape | TRAVO",
   "valley-of-flowers": "Valley of Flowers | TRAVO",
   "udaipur-lakes": "Udaipur Lakes & Palaces | TRAVO",
+  "andaman-rush-3d2n": "Andaman Rush Expedition | TRAVO",
+  "andaman-dream-4d3n": "Andaman Dream Vacation | TRAVO",
+  "andaman-exotic-5d4n": "Andaman Island Triangle | TRAVO",
+  "andaman-exotic-6d5n": "Andaman Island Explorer | TRAVO",
+  "andaman-exotic-7d6n": "Andaman Grand Island & Baratang Caves | TRAVO",
+  "andaman-exotic-8d7n": "Andaman Island Circuit & Baratang | TRAVO",
+  "andaman-exotic-9d8n": "Andaman Island Odyssey & Sitapur | TRAVO",
+  "andaman-exotic-10d9n": "Andaman Full North-South Circuit | TRAVO",
+  "andaman-exotic-11d10n": "Andaman Ultimate Grand Archipelago | TRAVO",
   "book-now": "Book Your Journey | TRAVO",
   team: "Our Team | TRAVO",
   about: "About Us | TRAVO",
@@ -132,20 +170,25 @@ export default function App() {
   };
 
   const activeTrip = ["manali", "valley-of-flowers", "udaipur-lakes"].includes(currentView) ? (TRIPS_DATA as any)[currentView] : null;
+  const activeAndamanPackage = findAndamanPackage(currentView);
+  const isAndamanView = Boolean(activeAndamanPackage);
   const bookingTrip = TRIPS_DATA[selectedTripIdForBooking]
     || PUBLISHED_CATALOGUE_TRIPS.find((trip) => trip.id === selectedTripIdForBooking)
+    || ANDAMAN_SHOWCASE_TRIPS.find((trip) => trip.id === selectedTripIdForBooking)
     || TRIPS_DATA["manali"];
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand/30 selection:text-brand-charcoal antialiased overflow-x-hidden">
       
       {/* 1. Universal Cinematic Hero Section / Carousel */}
-      <HeroSection
-        currentView={currentView}
-        onNavigate={handleNavigate}
-        onOpenBooking={(tripId) => handleOpenBooking(tripId)}
-        onExploreClick={handleExploreClick}
-      />
+      {!isAndamanView && (
+        <HeroSection
+          currentView={currentView as any}
+          onNavigate={handleNavigate}
+          onOpenBooking={(tripId) => handleOpenBooking(tripId)}
+          onExploreClick={handleExploreClick}
+        />
+      )}
 
       {/* Render Homepage Content */}
       {currentView === "home" && (
@@ -249,6 +292,16 @@ export default function App() {
       )}
 
       {/* Render Trip-Specific Detail Pages */}
+      {isAndamanView && activeAndamanPackage && (
+        <div className="animate-[fadeIn_0.5s_ease-out]">
+          <AndamanPackagePage
+            packageId={activeAndamanPackage.id}
+            onNavigate={handleNavigate as (view: string) => void}
+            onOpenBooking={handleOpenBooking}
+          />
+        </div>
+      )}
+
       {currentView !== "home" && activeTrip && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
 

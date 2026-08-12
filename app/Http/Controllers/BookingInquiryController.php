@@ -52,10 +52,12 @@ class BookingInquiryController extends Controller
 
     private function uniqueReference(string $tripId): string
     {
-        $prefix = match ($tripId) {
-            'manali' => 'MNL',
-            'valley-of-flowers' => 'VOF',
-            'udaipur-lakes' => 'UDR',
+        $prefix = match (true) {
+            $tripId === 'manali' => 'MNL',
+            $tripId === 'valley-of-flowers' => 'VOF',
+            $tripId === 'udaipur-lakes' => 'UDR',
+            str_starts_with($tripId, 'andaman-') => 'AND',
+            default => 'TRV',
         };
 
         do {

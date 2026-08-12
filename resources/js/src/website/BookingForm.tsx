@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { X, Ticket, Plus, Minus, Gift, Sparkles, CheckCircle2, ShieldAlert } from "lucide-react";
 import { BookingDetails } from "../types";
 import { TRIPS_DATA } from "../data";
-import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
-import { ANDAMAN_SHOWCASE_TRIPS } from "../andamanTrips";
-import { postJson } from "../api";
 
 interface BookingFormProps {
   isOpen: boolean;
@@ -13,10 +10,7 @@ interface BookingFormProps {
 }
 
 export default function BookingForm({ isOpen, onClose, selectedTripId }: BookingFormProps) {
-  const trip = TRIPS_DATA[selectedTripId]
-    || PUBLISHED_CATALOGUE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
-    || ANDAMAN_SHOWCASE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
-    || TRIPS_DATA["manali"];
+  const trip = TRIPS_DATA[selectedTripId] || TRIPS_DATA["andaman-dream-4d3n"] || Object.values(TRIPS_DATA)[0];
   
   // Parse numeric fare per seat from the trip price (e.g. "₹9,999/-" -> 9999)
   const fareStr = trip.price.replace(/[^\d]/g, "");
@@ -98,7 +92,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
     setDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!details.fullName || !details.phoneNumber || !details.email) {
       setFormError("Please fill in all required fields!");
@@ -108,35 +102,21 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
 
     setIsSubmitting(true);
 
-    try {
-      const response = await postJson<{ reference_code: string }>("/forms/booking-inquiries", {
-        trip_id: selectedTripId,
-        full_name: details.fullName,
-        phone: details.phoneNumber,
-        email: details.email,
-        seats: details.seats,
-        promo_code: appliedPromo || null,
-        special_requests: details.specialRequests || null,
-      });
-
-      setGeneratedPass(response.reference_code);
-      setIsSuccess(true);
-    } catch (error) {
-      setFormError(error instanceof Error ? error.message : "Unable to submit your booking. Please try again.");
-    } finally {
+    // Simulate database write & boarding ticket production
+    setTimeout(() => {
       setIsSubmitting(false);
-    }
+      setIsSuccess(true);
+      const randomId = Math.floor(1000 + Math.random() * 9000);
+      setGeneratedPass(`TRV-AND-${randomId}`);
+    }, 1500);
   };
 
   const subTotal = details.seats * FARE_PER_SEAT;
   const netTotal = Math.max(1, subTotal - discountAmount);
 
-  const assemblyPoint = selectedTripId.startsWith("andaman-")
-    ? "Veer Savarkar International Airport, Port Blair (IXZ)"
-    : "IFFCO Chowk, Gurugram";
-
-  return (
-    <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
+  // Determine Assembly Point based on active trip
+  const assemblyPoint = "Veer Savarkar International Airport, Port Blair (IXZ)";  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background overlay screen click backdrop */}
       <div 
         className="absolute inset-0 bg-neutral-900/60 backdrop-blur-md"
@@ -144,8 +124,8 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
       />
 
       {/* Main glass card dialog frame */}
-      <div className="relative w-full max-w-xl p-[1px] rounded-t-3xl sm:rounded-3xl bg-white border border-neutral-200 shadow-2xl z-10 overflow-hidden max-h-[96dvh] sm:max-h-[90vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
-        <div className="p-4 sm:p-6 rounded-t-3xl sm:rounded-3xl bg-white text-left space-y-6 overflow-y-auto overscroll-contain flex-grow border border-neutral-100 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="relative w-full max-w-xl p-[1px] rounded-3xl bg-white border border-neutral-200 shadow-2xl z-10 overflow-hidden max-h-[90vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
+        <div className="p-6 rounded-3xl bg-white text-left space-y-6 overflow-y-auto flex-grow border border-neutral-100">
           
           {/* Header row */}
           <div className="flex justify-between items-start pb-4 border-b border-neutral-200">
@@ -204,7 +184,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                     required
                     value={details.phoneNumber}
                     onChange={handleInputChange}
-                    placeholder="e.g. +91 9996965697"
+                    placeholder="e.g. +91 98765 43210"
                     className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 shadow-sm"
                   />
                 </div>
@@ -225,7 +205,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               </div>
 
               {/* Seats selector */}
-              <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-3 p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
                 <div className="space-y-1">
                   <p className="text-xs font-bold text-neutral-800 uppercase">Number of Seats</p>
                   <p className="text-[10px] text-neutral-500">Book up to 10 travelers in one ticket</p>
@@ -254,19 +234,19 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                 <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
                   Have a Promo Code? (Try: <strong className="text-[#9C753B]">TRAVO1000</strong> or <strong className="text-[#9C753B]">MOUNTAINLOVE</strong>)
                 </label>
-                <div className="flex flex-col min-[380px]:flex-row gap-2">
+                <div className="flex gap-2">
                   <input
                     type="text"
                     name="promoCode"
                     value={details.promoCode}
                     onChange={handleInputChange}
                     placeholder="PROMOCODE"
-                    className="w-full min-w-0 flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
+                    className="flex-grow bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-mono uppercase tracking-widest placeholder-neutral-400"
                   />
                   <button
                     type="button"
                     onClick={handleApplyPromo}
-                    className="w-full min-[380px]:w-auto px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
+                    className="px-5 py-3 bg-[#9C753B] text-white hover:bg-[#7C552B] transition-colors text-xs font-black uppercase tracking-widest rounded-xl shadow-sm"
                   >
                     Apply
                   </button>
@@ -328,7 +308,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                 disabled={isSubmitting}
                 className="w-full py-4 text-center bg-[#9C753B] hover:bg-[#7C552B] text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
               >
-                {isSubmitting ? "Saving Booking Inquiry..." : `Authorize Boarding Booking`}
+                {isSubmitting ? "Generating Boarding Token..." : `Authorize Boarding Booking`}
               </button>
 
             </form>
@@ -350,7 +330,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               {/* Elegant Boarding Ticket Receipt */}
               <div className="p-1 rounded-2xl bg-gradient-to-br from-[#9C753B] via-[#E5E1D6] to-transparent border border-neutral-200 shadow-xl">
                 <div className="p-5 rounded-2xl bg-white text-left space-y-4">
-                  <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-2 pb-3 border-b border-neutral-200">
+                  <div className="flex justify-between items-center pb-3 border-b border-neutral-200">
                     <span className="text-[10px] font-black text-[#9C753B] uppercase tracking-widest font-display">
                       TRAVO Official Boarding Ticket
                     </span>
@@ -359,7 +339,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-4 text-xs">
+                  <div className="grid grid-cols-2 gap-4 text-xs">
                     <div>
                       <p className="text-[9px] uppercase text-neutral-400 font-bold">Primary Traveler</p>
                       <p className="font-black text-neutral-800 truncate">{details.fullName}</p>
@@ -386,8 +366,8 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-dashed border-neutral-200 flex flex-wrap justify-between items-center gap-2">
-                    <div className="min-w-0">
+                  <div className="pt-3 border-t border-dashed border-neutral-200 flex justify-between items-center">
+                    <div>
                       <p className="text-[9px] uppercase text-neutral-400 font-bold">Assembly Point</p>
                       <p className="text-[10px] text-neutral-600 leading-tight">{assemblyPoint}</p>
                     </div>
@@ -401,7 +381,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               <div className="space-y-3 w-full">
                 {/* Redirecting to WhatsApp with prefilled parameters code details */}
                 <a
-                  href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I just reserved ${details.seats} seats for the ${trip.name} starting on ${trip.upcomingDeparture} under ticket code ${generatedPass}. Please verify my reservation!`)}`}
+                  href={`https://wa.me/911234567890?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I just reserved ${details.seats} seats for the ${trip.name} starting on ${trip.upcomingDeparture} under ticket code ${generatedPass}. Please verify my reservation!`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-4 bg-[#25D366] hover:bg-[#20ba56] transition-all font-black text-xs uppercase tracking-widest text-white rounded-xl inline-flex items-center justify-center gap-2 shadow hover:scale-[1.02] active:scale-95"

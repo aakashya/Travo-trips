@@ -5,6 +5,7 @@ import {
   ArrowRight, Star, Heart, Check, X, Shield
 } from "lucide-react";
 import { PUBLISHED_CATALOGUE_TRIPS, type ShowcaseTrip } from "../catalogueTrips";
+import { ANDAMAN_SHOWCASE_TRIPS } from "../andamanTrips";
 
 
 interface TripsShowcaseProps {
@@ -15,6 +16,7 @@ interface TripsShowcaseProps {
 
 
 const HOME_TRIPS_PER_PAGE = 6;
+const DISPLAYED_TRIPS = [...PUBLISHED_CATALOGUE_TRIPS, ...ANDAMAN_SHOWCASE_TRIPS];
 
 export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = false }: TripsShowcaseProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -28,7 +30,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
 
   // Filter and Sort Trips
   const filteredAndSortedTrips = useMemo(() => {
-    let result = [...PUBLISHED_CATALOGUE_TRIPS];
+    let result = [...DISPLAYED_TRIPS];
 
     // Filter by Category
     if (activeCategory !== "all") {
@@ -75,12 +77,13 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
   }, [activeCategory, searchQuery, difficultyFilter, sortBy]);
 
   const categories = [
-    { id: "all", name: "✨ All Expeditions", count: PUBLISHED_CATALOGUE_TRIPS.length },
-    { id: "treks", name: "🏔️ Himalayan Treks", count: PUBLISHED_CATALOGUE_TRIPS.filter(t => t.category === "treks").length },
-    { id: "escapes", name: "🎒 Weekend Escapes", count: PUBLISHED_CATALOGUE_TRIPS.filter(t => t.category === "escapes").length },
-    { id: "backpacking", name: "🗺️ Backpacking Tours", count: PUBLISHED_CATALOGUE_TRIPS.filter(t => t.category === "backpacking").length },
-    { id: "spiritual", name: "🛕 Spiritual Journeys", count: PUBLISHED_CATALOGUE_TRIPS.filter(t => t.category === "spiritual").length },
-    { id: "leisure", name: "🌿 Leisure & Nature", count: PUBLISHED_CATALOGUE_TRIPS.filter(t => t.category === "leisure").length },
+    { id: "all", name: "✨ All Expeditions", count: DISPLAYED_TRIPS.length },
+    { id: "treks", name: "🏔️ Himalayan Treks", count: DISPLAYED_TRIPS.filter(t => t.category === "treks").length },
+    { id: "escapes", name: "🎒 Weekend Escapes", count: DISPLAYED_TRIPS.filter(t => t.category === "escapes").length },
+    { id: "islands", name: "🏝️ Andaman Islands", count: DISPLAYED_TRIPS.filter(t => t.category === "islands").length },
+    { id: "backpacking", name: "🗺️ Backpacking Tours", count: DISPLAYED_TRIPS.filter(t => t.category === "backpacking").length },
+    { id: "spiritual", name: "🛕 Spiritual Journeys", count: DISPLAYED_TRIPS.filter(t => t.category === "spiritual").length },
+    { id: "leisure", name: "🌿 Leisure & Nature", count: DISPLAYED_TRIPS.filter(t => t.category === "leisure").length },
   ].filter((category) => category.id === "all" || category.count > 0);
 
   const homePageCount = Math.ceil(filteredAndSortedTrips.length / HOME_TRIPS_PER_PAGE);
@@ -249,11 +252,13 @@ export default function TripsShowcase({ onNavigate, onOpenBooking, isHomePage = 
                   </button>
 
                   {/* Rating Badge at bottom right of image */}
-                  <div className="absolute bottom-3 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-md px-2 py-0.5 rounded-lg text-[10px] font-black text-neutral-900 border border-neutral-200">
-                    <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                    <span>{trip.rating}</span>
-                    <span className="text-neutral-400 font-normal">({trip.reviewsCount})</span>
-                  </div>
+                  {trip.reviewsCount > 0 && (
+                    <div className="absolute bottom-3 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-md px-2 py-0.5 rounded-lg text-[10px] font-black text-neutral-900 border border-neutral-200">
+                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                      <span>{trip.rating}</span>
+                      <span className="text-neutral-400 font-normal">({trip.reviewsCount})</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Content body */}

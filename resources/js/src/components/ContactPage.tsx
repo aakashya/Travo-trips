@@ -236,6 +236,7 @@ export default function ContactPage() {
                         <option value="manali">🏔️ Manali Kasol Escape</option>
                         <option value="valley-of-flowers">🌸 Valley of Flowers Expedition</option>
                         <option value="udaipur-lakes">🏰 Udaipur Lakes & Palaces</option>
+                        <option value="andaman">🏝️ Andaman Island Packages</option>
                         <option value="corporate">💼 Corporate Custom Group Tour</option>
                       </select>
                     </div>

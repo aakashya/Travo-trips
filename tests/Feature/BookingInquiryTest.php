@@ -51,4 +51,28 @@ class BookingInquiryTest extends TestCase
 
         $this->assertDatabaseCount('booking_inquiries', 0);
     }
+
+    public function test_andaman_package_inquiry_is_priced_and_saved(): void
+    {
+        $response = $this->postJson('/forms/booking-inquiries', [
+            'trip_id' => 'andaman-dream-4d3n',
+            'full_name' => 'Island Traveler',
+            'phone' => '+91 9876543210',
+            'email' => 'island@example.com',
+            'seats' => 2,
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('subtotal', 37050)
+            ->assertJsonPath('total_amount', 37050);
+
+        $this->assertStringStartsWith('TRV-AND-', $response->json('reference_code'));
+        $this->assertDatabaseHas('booking_inquiries', [
+            'trip_id' => 'andaman-dream-4d3n',
+            'trip_name' => 'Andaman Dream Vacation',
+            'fare_per_seat' => 18525,
+            'seats' => 2,
+        ]);
+    }
 }

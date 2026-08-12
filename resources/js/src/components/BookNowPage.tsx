@@ -23,7 +23,10 @@ import {
 } from "lucide-react";
 import { TRIPS_DATA } from "../data";
 import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
+import { ANDAMAN_SHOWCASE_TRIPS } from "../andamanTrips";
 import { postJson } from "../api";
+
+const BOOKABLE_TRIPS = [...PUBLISHED_CATALOGUE_TRIPS, ...ANDAMAN_SHOWCASE_TRIPS];
 
 interface BookNowPageProps {
   onNavigate: (view: "home" | "manali" | "valley-of-flowers" | "book-now") => void;
@@ -33,8 +36,9 @@ interface BookNowPageProps {
 export default function BookNowPage({ onNavigate, initialTripId = "manali" }: BookNowPageProps) {
   const [selectedTripId, setSelectedTripId] = useState<string>(initialTripId);
   const trip = TRIPS_DATA[selectedTripId]
-    || PUBLISHED_CATALOGUE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
+    || BOOKABLE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
     || TRIPS_DATA["manali"];
+  const isAndamanPackage = selectedTripId.startsWith("andaman-");
 
   // Parse numeric fare per seat from the trip price (e.g. "₹9,999/-" -> 9999)
   const fareStr = trip.price.replace(/[^\d]/g, "");
@@ -52,11 +56,23 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
   const [appliedPromo, setAppliedPromo] = useState<string>("");
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [promoError, setPromoError] = useState<string>("");
+  const [andamanPackageType, setAndamanPackageType] = useState<"standard" | "honeymoon">("standard");
+  const [andamanMealPlan, setAndamanMealPlan] = useState<"CP" | "MAP">("CP");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [generatedPass, setGeneratedPass] = useState("");
   const [formError, setFormError] = useState("");
   const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSelectedTripId(initialTripId);
+    setAndamanPackageType("standard");
+    setAndamanMealPlan("CP");
+    setDetails((previous) => ({
+      ...previous,
+      seats: initialTripId.startsWith("andaman-") ? 2 : 1,
+    }));
+  }, [initialTripId]);
 
   // Recalculate discount if trip or seats change
   useEffect(() => {
@@ -72,6 +88,19 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
   const handleSeatsChange = (val: number) => {
     const nextVal = Math.max(1, Math.min(10, details.seats + val));
     setDetails((prev) => ({ ...prev, seats: nextVal }));
+  };
+
+  const handleTripSelection = (tripId: string) => {
+    setSelectedTripId(tripId);
+    setAndamanPackageType("standard");
+    setAndamanMealPlan("CP");
+    setAppliedPromo("");
+    setPromoError("");
+    setDetails((previous) => ({
+      ...previous,
+      seats: tripId.startsWith("andaman-") ? 2 : 1,
+      promoCode: "",
+    }));
   };
 
   const handleApplyPromo = () => {
@@ -109,6 +138,13 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     setIsSubmitting(true);
 
     try {
+      const andamanPreferences = isAndamanPackage
+        ? `Andaman package preferences: ${andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"}; ${details.seats} pax; ${andamanMealPlan === "MAP" ? "MAP (breakfast and dinner)" : "CP (breakfast)"}.`
+        : "";
+      const specialRequests = [andamanPreferences, details.specialRequests.trim()]
+        .filter(Boolean)
+        .join("\n");
+
       const response = await postJson<{ reference_code: string }>("/forms/booking-inquiries", {
         trip_id: selectedTripId,
         full_name: details.fullName,
@@ -116,7 +152,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
         email: details.email,
         seats: details.seats,
         promo_code: appliedPromo || null,
-        special_requests: details.specialRequests || null,
+        special_requests: specialRequests || null,
       });
 
       setGeneratedPass(response.reference_code);
@@ -138,7 +174,9 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
   const netTotal = Math.max(1, subTotal - discountAmount);
   const tokenAmount = details.seats * 2000;
 
-  const assemblyPoint = "IFFCO Chowk, Gurugram";
+  const assemblyPoint = isAndamanPackage
+    ? "Veer Savarkar International Airport, Port Blair (IXZ)"
+    : "IFFCO Chowk, Gurugram";
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand selection:text-neutral-900 antialiased pb-24">
@@ -155,11 +193,13 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight uppercase text-neutral-900">
               Secure Your <br className="sm:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
-                Himalayan Slot
+                {isAndamanPackage ? "Island Package" : "Himalayan Slot"}
               </span>
             </h1>
             <p className="text-sm text-neutral-600 font-light max-w-2xl">
-              Fill out your group details below to instantly reserve your boarding seats, review our transparent payment structure, and confirm your booking.
+              {isAndamanPackage
+                ? "Share your group details to register the package inquiry. Our coordinator will confirm your dates, hotel category, meal plan, ferries, and final quotation."
+                : "Fill out your group details below to instantly reserve your boarding seats, review our transparent payment structure, and confirm your booking."}
             </p>
           </div>
 
@@ -201,24 +241,31 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                   </h2>
                   
                   {!isSuccess && (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                      {PUBLISHED_CATALOGUE_TRIPS.map((t) => (
-                        <button
-                          key={t.id}
-                          type="button"
-                          onClick={() => setSelectedTripId(t.id)}
-                          className={`p-3.5 rounded-xl border text-left transition-all relative overflow-hidden ${
-                            selectedTripId === t.id 
-                              ? "bg-brand-sand/20 border-[#9C753B] text-neutral-900 font-extrabold shadow" 
-                              : "bg-[#FAF9F6] border-neutral-200 text-neutral-600 hover:border-neutral-300"
-                          }`}
-                        >
-                          <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-emerald-500 opacity-0" />
-                          <p className="text-[9px] uppercase tracking-wider font-bold text-neutral-400">Expedition</p>
-                          <p className="text-xs font-black truncate">{t.name.split(" ")[0]} Escape</p>
-                          <p className="text-[10px] text-[#9C753B] font-mono font-black mt-1">{t.price}</p>
-                        </button>
-                      ))}
+                    <div className="space-y-1.5 pt-2">
+                      <label htmlFor="booking-trip" className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
+                        Choose Trip or Package
+                      </label>
+                      <select
+                        id="booking-trip"
+                        value={selectedTripId}
+                        onChange={(event) => handleTripSelection(event.target.value)}
+                        className="w-full appearance-none bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3.5 text-sm font-bold text-neutral-900 focus:outline-none focus:border-[#9C753B] focus:ring-2 focus:ring-[#9C753B]/10 transition-colors shadow-sm"
+                      >
+                        <optgroup label="Current Group Trips">
+                          {PUBLISHED_CATALOGUE_TRIPS.map((catalogueTrip) => (
+                            <option key={catalogueTrip.id} value={catalogueTrip.id}>
+                              {catalogueTrip.name} — {catalogueTrip.price}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="Andaman Island Packages">
+                          {ANDAMAN_SHOWCASE_TRIPS.map((catalogueTrip) => (
+                            <option key={catalogueTrip.id} value={catalogueTrip.id}>
+                              {catalogueTrip.name} — from {catalogueTrip.price} per adult
+                            </option>
+                          ))}
+                        </optgroup>
+                      </select>
                     </div>
                   )}
                 </div>
@@ -234,11 +281,19 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                         <p className="text-[10px] text-neutral-600 font-light mt-0.5">Departing: <strong className="text-[#9C753B] font-bold">{trip.upcomingDeparture}</strong></p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Price per Seat</p>
+                        <p className="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">
+                          {isAndamanPackage ? "Starting Price per Adult" : "Price per Seat"}
+                        </p>
                         <p className="text-sm font-black text-[#9C753B] font-mono">{trip.price}</p>
                         <p className="text-[9px] text-emerald-600 font-mono font-black">All Taxes Incl.</p>
                       </div>
                     </div>
+
+                    {isAndamanPackage && (
+                      <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-200 text-[11px] text-sky-900 leading-relaxed">
+                        The shown amount is the starting Standard-package estimate for two adults. The final quote is confirmed after we review your package type, group size, meal plan, and travel dates.
+                      </div>
+                    )}
 
                     {/* Full Name */}
                     <div className="space-y-1.5">
@@ -288,30 +343,97 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       </div>
                     </div>
 
-                    {/* Seats selector */}
-                    <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
-                      <div className="space-y-1">
-                        <p className="text-xs font-bold text-neutral-800 uppercase">Number of Seats</p>
-                        <p className="text-[10px] text-neutral-500">Book up to 10 travelers in one ticket</p>
+                    {isAndamanPackage ? (
+                      <div className="p-4 sm:p-5 bg-sky-50/70 border border-sky-200 rounded-2xl space-y-5">
+                        <div>
+                          <p className="text-xs font-black uppercase tracking-wider text-neutral-900">Customize Your Andaman Package</p>
+                          <p className="text-[10px] text-neutral-600 mt-1">Choose the package style, number of travelers, and preferred meal plan.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <p className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Package Type</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setAndamanPackageType("standard")}
+                              className={`p-3 rounded-xl border text-left transition-all ${andamanPackageType === "standard" ? "bg-neutral-900 border-neutral-900 text-white shadow" : "bg-white border-neutral-200 text-neutral-700 hover:border-neutral-300"}`}
+                            >
+                              <span className="text-xs font-black block">Standard</span>
+                              <span className="text-[9px] opacity-75">Solo, family or group</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAndamanPackageType("honeymoon");
+                                setAndamanMealPlan("CP");
+                                setDetails((previous) => ({ ...previous, seats: 2 }));
+                              }}
+                              className={`p-3 rounded-xl border text-left transition-all ${andamanPackageType === "honeymoon" ? "bg-rose-900 border-rose-900 text-white shadow" : "bg-white border-rose-200 text-rose-900 hover:bg-rose-50"}`}
+                            >
+                              <span className="text-xs font-black block">Honeymoon</span>
+                              <span className="text-[9px] opacity-75">Couple package</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label htmlFor="andaman-pax" className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Travelers (Pax)</label>
+                            <select
+                              id="andaman-pax"
+                              value={details.seats}
+                              disabled={andamanPackageType === "honeymoon"}
+                              onChange={(event) => setDetails((previous) => ({ ...previous, seats: Number(event.target.value) }))}
+                              className="w-full bg-white border border-neutral-200 rounded-xl px-3.5 py-3 text-xs font-black text-neutral-900 focus:outline-none focus:border-[#9C753B] disabled:bg-neutral-100 disabled:text-neutral-500"
+                            >
+                              {Array.from({ length: 10 }, (_, index) => index + 1).map((pax) => (
+                                <option key={pax} value={pax}>{pax} {pax === 1 ? "Traveler" : "Travelers"}</option>
+                              ))}
+                            </select>
+                            {andamanPackageType === "honeymoon" && <p className="text-[9px] text-rose-700 font-bold">Honeymoon packages are fixed for two travelers.</p>}
+                          </div>
+
+                          <div className="space-y-2">
+                            <p className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Meal Plan</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setAndamanMealPlan("CP")}
+                                className={`p-3 rounded-xl border text-left transition-all ${andamanMealPlan === "CP" ? "bg-[#9C753B] border-[#9C753B] text-white" : "bg-white border-neutral-200 text-neutral-700"}`}
+                              >
+                                <span className="text-xs font-black block">CP</span>
+                                <span className="text-[9px] opacity-75">Breakfast</span>
+                              </button>
+                              <button
+                                type="button"
+                                disabled={andamanPackageType === "honeymoon"}
+                                onClick={() => setAndamanMealPlan("MAP")}
+                                className={`p-3 rounded-xl border text-left transition-all ${andamanPackageType === "honeymoon" ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed" : andamanMealPlan === "MAP" ? "bg-[#9C753B] border-[#9C753B] text-white" : "bg-white border-neutral-200 text-neutral-700"}`}
+                              >
+                                <span className="text-xs font-black block">MAP</span>
+                                <span className="text-[9px] opacity-75">Breakfast + Dinner</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4 bg-white border border-neutral-200 p-1.5 rounded-xl shadow-sm">
-                        <button
-                          type="button"
-                          onClick={() => handleSeatsChange(-1)}
-                          className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="text-sm font-black font-mono text-neutral-900 w-5 text-center">{details.seats}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleSeatsChange(1)}
-                          className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
+                    ) : (
+                      <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-neutral-800 uppercase">Number of Seats</p>
+                          <p className="text-[10px] text-neutral-500">Book up to 10 travelers in one ticket</p>
+                        </div>
+                        <div className="flex items-center gap-4 bg-white border border-neutral-200 p-1.5 rounded-xl shadow-sm">
+                          <button type="button" onClick={() => handleSeatsChange(-1)} className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors">
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="text-sm font-black font-mono text-neutral-900 w-5 text-center">{details.seats}</span>
+                          <button type="button" onClick={() => handleSeatsChange(1)} className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors">
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Promo Code area */}
                     <div className="space-y-1.5">
@@ -363,34 +485,54 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
 
                     {/* Dynamic Cost breakdown */}
                     <div className="bg-[#FAF9F6] p-4 rounded-xl border border-neutral-200 space-y-3 shadow-sm">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-neutral-500">Seat Fare ({details.seats} seats)</span>
-                        <span className="font-mono text-neutral-800">₹{subTotal.toLocaleString()}</span>
-                      </div>
-                      {discountAmount > 0 && (
-                        <div className="flex justify-between items-center text-xs text-emerald-600">
-                          <span>Applied Coupon Saving</span>
-                          <span className="font-mono">-₹{discountAmount.toLocaleString()}</span>
-                        </div>
+                      {isAndamanPackage ? (
+                        <>
+                          <div className="flex justify-between items-center gap-4">
+                            <div>
+                              <span className="text-xs font-bold text-neutral-900 uppercase block">Starting Package Estimate</span>
+                              <span className="text-[9px] text-neutral-500">For {details.seats} pax · {andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"} · {andamanMealPlan}</span>
+                            </div>
+                            <span className="text-lg font-black text-[#9C753B] font-mono shrink-0">₹{netTotal.toLocaleString()}</span>
+                          </div>
+                          <div className="p-3 bg-sky-50 border border-sky-200 rounded-lg flex items-start gap-2">
+                            <Info className="w-3.5 h-3.5 text-sky-700 shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-sky-900 leading-normal">
+                              This is a starting estimate, not a price breakup. Our coordinator will confirm the final package fare after checking your dates and preferences.
+                            </p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-neutral-500">Seat Fare ({details.seats} seats)</span>
+                            <span className="font-mono text-neutral-800">₹{subTotal.toLocaleString()}</span>
+                          </div>
+                          {discountAmount > 0 && (
+                            <div className="flex justify-between items-center text-xs text-emerald-600">
+                              <span>Applied Coupon Saving</span>
+                              <span className="font-mono">-₹{discountAmount.toLocaleString()}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-center text-xs text-neutral-500">
+                            <span>Tolls, Taxes & Permits</span>
+                            <span className="text-emerald-600 uppercase font-black text-[9px] bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">Included</span>
+                          </div>
+
+                          <div className="pt-2.5 border-t border-neutral-200 space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-bold text-neutral-900 uppercase">Net Travel Investment</span>
+                              <span className="text-lg font-black text-[#9C753B] font-mono">₹{netTotal.toLocaleString()}</span>
+                            </div>
+
+                            <div className="p-3 bg-brand-sand/15 border border-brand-sand/30 rounded-lg flex items-start gap-2">
+                              <Info className="w-3.5 h-3.5 text-[#9C753B] shrink-0 mt-0.5" />
+                              <p className="text-[10px] text-neutral-700 leading-normal">
+                                You can choose to pay only the <strong className="text-[#9C753B]">₹2,000 per seat (Total: ₹{tokenAmount.toLocaleString()})</strong> advance slot booking fee today to lock your ticket, and pay the rest before boarding!
+                              </p>
+                            </div>
+                          </div>
+                        </>
                       )}
-                      <div className="flex justify-between items-center text-xs text-neutral-500">
-                        <span>Tolls, Taxes & Permits</span>
-                        <span className="text-emerald-600 uppercase font-black text-[9px] bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">Included</span>
-                      </div>
-                      
-                      <div className="pt-2.5 border-t border-neutral-200 space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-neutral-900 uppercase">Net Travel Investment</span>
-                          <span className="text-lg font-black text-[#9C753B] font-mono">₹{netTotal.toLocaleString()}</span>
-                        </div>
-                        
-                        <div className="p-3 bg-brand-sand/15 border border-brand-sand/30 rounded-lg flex items-start gap-2">
-                          <Info className="w-3.5 h-3.5 text-[#9C753B] shrink-0 mt-0.5" />
-                          <p className="text-[10px] text-neutral-700 leading-normal">
-                            You can choose to pay only the <strong className="text-[#9C753B]">₹2,000 per seat (Total: ₹{tokenAmount.toLocaleString()})</strong> advance slot booking fee today to lock your ticket, and pay the rest before boarding!
-                          </p>
-                        </div>
-                      </div>
                     </div>
 
                     {formError && (
@@ -405,7 +547,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       disabled={isSubmitting}
                       className="w-full py-4 text-center bg-[#9C753B] hover:bg-[#7C552B] text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
                     >
-                      {isSubmitting ? "Saving Booking Inquiry..." : `Authorize Boarding Booking`}
+                      {isSubmitting ? "Saving Booking Inquiry..." : isAndamanPackage ? "Submit Package Inquiry" : "Authorize Boarding Booking"}
                     </button>
 
                   </form>
@@ -450,13 +592,20 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                             <p className="font-black text-neutral-800 truncate">{trip.name}</p>
                           </div>
                           <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">Seats Reserved</p>
-                            <p className="font-black text-neutral-800 font-mono">{details.seats} Seats</p>
+                            <p className="text-[9px] uppercase text-neutral-400 font-bold">{isAndamanPackage ? "Travelers" : "Seats Reserved"}</p>
+                            <p className="font-black text-neutral-800 font-mono">{details.seats} {isAndamanPackage ? "Pax" : "Seats"}</p>
                           </div>
-                          <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">Advance Deposit</p>
-                            <p className="font-black text-emerald-600 font-mono">₹{tokenAmount.toLocaleString()} <span className="text-[9px] text-neutral-500 font-light">({details.seats} x ₹2K)</span></p>
-                          </div>
+                          {isAndamanPackage ? (
+                            <div>
+                              <p className="text-[9px] uppercase text-neutral-400 font-bold">Package Preferences</p>
+                              <p className="font-black text-neutral-800">{andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"} · {andamanMealPlan}</p>
+                            </div>
+                          ) : (
+                            <div>
+                              <p className="text-[9px] uppercase text-neutral-400 font-bold">Advance Deposit</p>
+                              <p className="font-black text-emerald-600 font-mono">₹{tokenAmount.toLocaleString()} <span className="text-[9px] text-neutral-500 font-light">({details.seats} x ₹2K)</span></p>
+                            </div>
+                          )}
                           <div>
                             <p className="text-[9px] uppercase text-neutral-400 font-bold">Departure Date</p>
                             <p className="font-black text-neutral-800">{trip.upcomingDeparture}</p>
@@ -477,7 +626,7 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                       </p>
                       
                       <a
-                        href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I've submitted a Booking Inquiry on your page for the ${trip.name} starting on ${trip.upcomingDeparture}. Here is my Boarding Pass Ticket Code: ${generatedPass}. I am ready to complete the booking!`)}`}
+                        href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I've submitted a Booking Inquiry on your page for the ${trip.name} starting on ${trip.upcomingDeparture}.${isAndamanPackage ? ` My preferences are: ${andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"} package, ${details.seats} pax, ${andamanMealPlan} meal plan.` : ""} Here is my Boarding Pass Ticket Code: ${generatedPass}. I am ready to complete the booking!`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full py-4 bg-[#25D366] hover:bg-[#20ba56] transition-all font-black text-xs uppercase tracking-widest text-white rounded-xl inline-flex items-center justify-center gap-2 shadow hover:scale-[1.02] active:scale-95"
@@ -506,6 +655,8 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                           });
                           setAppliedPromo("");
                           setDiscountAmount(0);
+                          setAndamanPackageType("standard");
+                          setAndamanMealPlan("CP");
                         }}
                         className="flex-1 py-3 bg-neutral-100 hover:bg-neutral-200 rounded-xl text-xs uppercase tracking-widest font-black text-neutral-800 transition-colors"
                       >
@@ -535,7 +686,11 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
                     Payment Information
                   </h2>
                   <p className="text-xs text-neutral-600 font-light leading-relaxed">
-                    To secure your seat, you may pay either the <strong>Full Trip Fare</strong> or just a <strong>₹2,000/- per seat token advance</strong> today. The remaining balance can be cleared on departure.
+                    {isAndamanPackage ? (
+                      <>After your dates and package preferences are confirmed, our coordinator will share the <strong>final quotation and booking advance</strong> for payment.</>
+                    ) : (
+                      <>To secure your seat, you may pay either the <strong>Full Trip Fare</strong> or just a <strong>₹2,000/- per seat token advance</strong> today. The remaining balance can be cleared on departure.</>
+                    )}
                   </p>
                 </div>
 

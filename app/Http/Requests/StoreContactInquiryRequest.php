@@ -21,7 +21,7 @@ class StoreContactInquiryRequest extends FormRequest
             'trip_interest' => [
                 'required',
                 'string',
-                Rule::in(['general', 'manali', 'valley-of-flowers', 'udaipur-lakes', 'corporate']),
+                Rule::in(['general', 'manali', 'valley-of-flowers', 'udaipur-lakes', 'andaman', 'corporate']),
             ],
             'message' => ['required', 'string', 'min:5', 'max:5000'],
         ];

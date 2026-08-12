@@ -5,7 +5,7 @@ export interface ShowcaseTrip {
   id: string;
   name: string;
   subtitle: string;
-  category: "treks" | "escapes" | "backpacking" | "spiritual" | "leisure";
+  category: "treks" | "escapes" | "backpacking" | "spiritual" | "leisure" | "islands";
   price: string;
   duration: string;
   difficulty: "Easy" | "Moderate" | "Challenging";
