@@ -422,6 +422,9 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
       if (city && selectedCountry !== "all" && city.country !== selectedCountry) {
         setSelectedCountry(city.country);
       }
+      // Carry the traveler straight to the filtered packages below, rather than leaving them
+      // to notice the results changed further down the page on their own.
+      document.getElementById("trip-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -809,7 +812,7 @@ export default function TripsShowcase({ onNavigate, onOpenBooking }: TripsShowca
         {/* ========================================================================= */}
         {/* 4. RESULTS BAR: Active Filter Badges & Count */}
         {/* ========================================================================= */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2 border-b border-neutral-200">
+        <div id="trip-results" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2 border-b border-neutral-200 scroll-mt-6">
           
           {/* Left: Active filters */}
           <div className="flex flex-wrap items-center gap-2">

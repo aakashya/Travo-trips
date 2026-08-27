@@ -1,55 +1,55 @@
 {
-  "_arrow-left-BEeJkFeV.js": {
-    "file": "assets/arrow-left-BEeJkFeV.js",
+  "_arrow-left-DO19BGW7.js": {
+    "file": "assets/arrow-left-DO19BGW7.js",
     "name": "arrow-left",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
-  "_car-CfON-sP5.js": {
-    "file": "assets/car-CfON-sP5.js",
+  "_car-CPws6ucT.js": {
+    "file": "assets/car-CPws6ucT.js",
     "name": "car",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
-  "_chevron-up-hB-dB8I1.js": {
-    "file": "assets/chevron-up-hB-dB8I1.js",
+  "_chevron-up-Co0EZdEc.js": {
+    "file": "assets/chevron-up-Co0EZdEc.js",
     "name": "chevron-up",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
-  "_file-text-D6BdP513.js": {
-    "file": "assets/file-text-D6BdP513.js",
+  "_file-text-ea1aJ1dB.js": {
+    "file": "assets/file-text-ea1aJ1dB.js",
     "name": "file-text",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
-  "_phone-call-bSz3187X.js": {
-    "file": "assets/phone-call-bSz3187X.js",
+  "_phone-call-DmFdsxIf.js": {
+    "file": "assets/phone-call-DmFdsxIf.js",
     "name": "phone-call",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
-  "_qr-code-Drvm50-G.js": {
-    "file": "assets/qr-code-Drvm50-G.js",
+  "_qr-code-Lf8kRPkh.js": {
+    "file": "assets/qr-code-Lf8kRPkh.js",
     "name": "qr-code",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
-  "_ship-DMBkigJx.js": {
-    "file": "assets/ship-DMBkigJx.js",
+  "_ship-D2Midsdo.js": {
+    "file": "assets/ship-D2Midsdo.js",
     "name": "ship",
     "imports": [
       "resources/js/src/main.tsx"
     ]
   },
   "resources/js/src/components/AboutPage.tsx": {
-    "file": "assets/AboutPage-ClK43yPz.js",
+    "file": "assets/AboutPage-B2HxnmF4.js",
     "name": "AboutPage",
     "src": "resources/js/src/components/AboutPage.tsx",
     "isDynamicEntry": true,
@@ -58,43 +58,43 @@
     ]
   },
   "resources/js/src/components/AndamanPackagePage.tsx": {
-    "file": "assets/AndamanPackagePage-D1TAj1n3.js",
+    "file": "assets/AndamanPackagePage-CRO5Uwqj.js",
     "name": "AndamanPackagePage",
     "src": "resources/js/src/components/AndamanPackagePage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_ship-DMBkigJx.js",
-      "_chevron-up-hB-dB8I1.js",
-      "_file-text-D6BdP513.js",
-      "_phone-call-bSz3187X.js"
+      "_ship-D2Midsdo.js",
+      "_chevron-up-Co0EZdEc.js",
+      "_file-text-ea1aJ1dB.js",
+      "_phone-call-DmFdsxIf.js"
     ]
   },
   "resources/js/src/components/BhutanPackagePage.tsx": {
-    "file": "assets/BhutanPackagePage-CqDB7ZFz.js",
+    "file": "assets/BhutanPackagePage-0RwSF0xk.js",
     "name": "BhutanPackagePage",
     "src": "resources/js/src/components/BhutanPackagePage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_chevron-up-hB-dB8I1.js",
-      "_car-CfON-sP5.js",
-      "_phone-call-bSz3187X.js"
+      "_chevron-up-Co0EZdEc.js",
+      "_car-CPws6ucT.js",
+      "_phone-call-DmFdsxIf.js"
     ]
   },
   "resources/js/src/components/BookNowPage.tsx": {
-    "file": "assets/BookNowPage-ZlIl6nMG.js",
+    "file": "assets/BookNowPage-CH1arWRw.js",
     "name": "BookNowPage",
     "src": "resources/js/src/components/BookNowPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_arrow-left-BEeJkFeV.js",
-      "_qr-code-Drvm50-G.js"
+      "_arrow-left-DO19BGW7.js",
+      "_qr-code-Lf8kRPkh.js"
     ]
   },
   "resources/js/src/components/ContactPage.tsx": {
-    "file": "assets/ContactPage-CHKLQKF1.js",
+    "file": "assets/ContactPage-BZxxceFZ.js",
     "name": "ContactPage",
     "src": "resources/js/src/components/ContactPage.tsx",
     "isDynamicEntry": true,
@@ -103,56 +103,56 @@
     ]
   },
   "resources/js/src/components/CustomerDashboard.tsx": {
-    "file": "assets/CustomerDashboard-gRsdibxY.js",
+    "file": "assets/CustomerDashboard-DVvs_d0k.js",
     "name": "CustomerDashboard",
     "src": "resources/js/src/components/CustomerDashboard.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_phone-call-bSz3187X.js",
-      "_qr-code-Drvm50-G.js",
-      "_file-text-D6BdP513.js"
+      "_phone-call-DmFdsxIf.js",
+      "_qr-code-Lf8kRPkh.js",
+      "_file-text-ea1aJ1dB.js"
     ]
   },
   "resources/js/src/components/GoaPackagePage.tsx": {
-    "file": "assets/GoaPackagePage-A289x_xn.js",
+    "file": "assets/GoaPackagePage-Drw4k0M0.js",
     "name": "GoaPackagePage",
     "src": "resources/js/src/components/GoaPackagePage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_car-CfON-sP5.js",
-      "_chevron-up-hB-dB8I1.js",
-      "_phone-call-bSz3187X.js"
+      "_car-CPws6ucT.js",
+      "_chevron-up-Co0EZdEc.js",
+      "_phone-call-DmFdsxIf.js"
     ]
   },
   "resources/js/src/components/KeralaPackagePage.tsx": {
-    "file": "assets/KeralaPackagePage-DFwXKL49.js",
+    "file": "assets/KeralaPackagePage-CbfYKWFI.js",
     "name": "KeralaPackagePage",
     "src": "resources/js/src/components/KeralaPackagePage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_ship-DMBkigJx.js",
-      "_car-CfON-sP5.js",
-      "_chevron-up-hB-dB8I1.js",
-      "_phone-call-bSz3187X.js"
+      "_ship-D2Midsdo.js",
+      "_car-CPws6ucT.js",
+      "_chevron-up-Co0EZdEc.js",
+      "_phone-call-DmFdsxIf.js"
     ]
   },
   "resources/js/src/components/NepalPackagePage.tsx": {
-    "file": "assets/NepalPackagePage-B2Q8Xvsd.js",
+    "file": "assets/NepalPackagePage-BZkhfISu.js",
     "name": "NepalPackagePage",
     "src": "resources/js/src/components/NepalPackagePage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_car-CfON-sP5.js",
-      "_chevron-up-hB-dB8I1.js",
-      "_phone-call-bSz3187X.js"
+      "_car-CPws6ucT.js",
+      "_chevron-up-Co0EZdEc.js",
+      "_phone-call-DmFdsxIf.js"
     ]
   },
   "resources/js/src/components/NotFoundPage.tsx": {
-    "file": "assets/NotFoundPage-CKa7OojX.js",
+    "file": "assets/NotFoundPage-COx6tBNu.js",
     "name": "NotFoundPage",
     "src": "resources/js/src/components/NotFoundPage.tsx",
     "isDynamicEntry": true,
@@ -161,29 +161,29 @@
     ]
   },
   "resources/js/src/components/ResetPasswordPage.tsx": {
-    "file": "assets/ResetPasswordPage-BB2OCLDj.js",
+    "file": "assets/ResetPasswordPage-DGcOiNhW.js",
     "name": "ResetPasswordPage",
     "src": "resources/js/src/components/ResetPasswordPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_arrow-left-BEeJkFeV.js"
+      "_arrow-left-DO19BGW7.js"
     ]
   },
   "resources/js/src/components/SikkimPackagePage.tsx": {
-    "file": "assets/SikkimPackagePage-CoS6m9L4.js",
+    "file": "assets/SikkimPackagePage-BY9dS2WH.js",
     "name": "SikkimPackagePage",
     "src": "resources/js/src/components/SikkimPackagePage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_car-CfON-sP5.js",
-      "_chevron-up-hB-dB8I1.js",
-      "_phone-call-bSz3187X.js"
+      "_car-CPws6ucT.js",
+      "_chevron-up-Co0EZdEc.js",
+      "_phone-call-DmFdsxIf.js"
     ]
   },
   "resources/js/src/components/TeamPage.tsx": {
-    "file": "assets/TeamPage-Dzs1X4Th.js",
+    "file": "assets/TeamPage-CNbHjys6.js",
     "name": "TeamPage",
     "src": "resources/js/src/components/TeamPage.tsx",
     "isDynamicEntry": true,
@@ -192,17 +192,17 @@
     ]
   },
   "resources/js/src/components/TripsShowcase.tsx": {
-    "file": "assets/TripsShowcase-NzH38qhO.js",
+    "file": "assets/TripsShowcase-Cu9vFrhs.js",
     "name": "TripsShowcase",
     "src": "resources/js/src/components/TripsShowcase.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/src/main.tsx",
-      "_car-CfON-sP5.js"
+      "_car-CPws6ucT.js"
     ]
   },
   "resources/js/src/main.tsx": {
-    "file": "assets/main-Dk8TSNW0.js",
+    "file": "assets/main-CMVEkZPa.js",
     "name": "main",
     "src": "resources/js/src/main.tsx",
     "isEntry": true,
@@ -223,7 +223,7 @@
       "resources/js/src/components/NotFoundPage.tsx"
     ],
     "css": [
-      "assets/main-DDIBPstM.css"
+      "assets/main-BxwjdF6S.css"
     ]
   }
 }
