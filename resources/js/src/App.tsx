@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import HeroSection from "./components/HeroSection";
 import StoryIntro from "./components/StoryIntro";
 import RouteJourney from "./components/RouteJourney";
@@ -11,77 +11,75 @@ import FooterCTA from "./components/FooterCTA";
 import BookingForm from "./components/BookingForm";
 import GallerySection from "./components/GallerySection";
 import UpcomingCalendar from "./components/UpcomingCalendar";
-import BookNowPage from "./components/BookNowPage";
-import TripsShowcase from "./components/TripsShowcase";
-import AndamanPackagePage from "./website/AndamanPackagePage";
-import TeamPage from "./components/TeamPage";
-import AboutPage from "./components/AboutPage";
-import ContactPage from "./components/ContactPage";
-import { TRIPS_DATA, TRIPS_LIST } from "./data";
-import { PUBLISHED_CATALOGUE_TRIPS } from "./catalogueTrips";
-import { ANDAMAN_SHOWCASE_TRIPS, findAndamanPackage } from "./andamanTrips";
-import { Flame, Compass, Calendar, Timer, ArrowRight, ShieldCheck, Star, Users, MapPin, Sparkles } from "lucide-react";
+import HomeTripsShowcase from "./components/HomeTripsShowcase";
+import CustomerAuthModal from "./components/CustomerAuthModal";
+import PageLoader from "./components/PageLoader";
+import { TRIPS_DATA } from "./data";
+import { BookingPrefill } from "./types";
+import { Compass, ShieldCheck, Star, Users, Sparkles } from "lucide-react";
 
-export type AppView =
-  | "home"
-  | "manali"
-  | "valley-of-flowers"
-  | "udaipur-lakes"
-  | "andaman-rush-3d2n"
-  | "andaman-dream-4d3n"
-  | "andaman-exotic-5d4n"
-  | "andaman-exotic-6d5n"
-  | "andaman-exotic-7d6n"
-  | "andaman-exotic-8d7n"
-  | "andaman-exotic-9d8n"
-  | "andaman-exotic-10d9n"
-  | "andaman-exotic-11d10n"
-  | "book-now"
-  | "trips"
-  | "team"
-  | "about"
-  | "contact";
+// Everything above renders on the homepage — the single most common first-time landing page —
+// so it stays in the main bundle. Everything below is its own route, only ever needed once a
+// visitor actually goes there, so it's split into its own on-demand chunk instead of making
+// every visitor download all of it (package pages, the dashboard, etc.) up front.
+const BookNowPage = lazy(() => import("./components/BookNowPage"));
+const TripsShowcase = lazy(() => import("./components/TripsShowcase"));
+const TeamPage = lazy(() => import("./components/TeamPage"));
+const AboutPage = lazy(() => import("./components/AboutPage"));
+const ContactPage = lazy(() => import("./components/ContactPage"));
+const AndamanPackagePage = lazy(() => import("./components/AndamanPackagePage"));
+const GoaPackagePage = lazy(() => import("./components/GoaPackagePage"));
+const NepalPackagePage = lazy(() => import("./components/NepalPackagePage"));
+const KeralaPackagePage = lazy(() => import("./components/KeralaPackagePage"));
+const BhutanPackagePage = lazy(() => import("./components/BhutanPackagePage"));
+const SikkimPackagePage = lazy(() => import("./components/SikkimPackagePage"));
+const CustomerDashboard = lazy(() => import("./components/CustomerDashboard"));
+const ResetPasswordPage = lazy(() => import("./components/ResetPasswordPage"));
+const NotFoundPage = lazy(() => import("./components/NotFoundPage"));
 
-const VIEW_PATHS: Record<AppView, string> = {
+// Trip ids are now data-driven (Manali/Valley/Udaipur plus every Andaman, Goa,
+// Nepal, Kerala, Bhutan, Sikkim, Kashmir & Ladakh package id from TRIPS_DATA),
+// so the view type is intentionally just `string` rather than a fixed union.
+export type AppView = string;
+
+// Destinations rendered with the dedicated "package" page layout (their own
+// pricing calculator + inline nav). Everything else in TRIPS_DATA that isn't
+// "home" falls back to the shared scenic-highway itinerary layout below —
+// that's what covers Manali, Valley of Flowers, Udaipur, Kashmir & Ladakh.
+const PACKAGE_PREFIXES = ["andaman-", "goa-", "nepal-", "kerala-", "bhutan-", "sikkim-"];
+const isPackageView = (view: string) => PACKAGE_PREFIXES.some((prefix) => view.startsWith(prefix));
+
+const FIXED_VIEW_PATHS: Record<string, string> = {
   home: "/",
   trips: "/trips",
-  manali: "/trips/manali",
-  "valley-of-flowers": "/trips/valley-of-flowers",
-  "udaipur-lakes": "/trips/udaipur-lakes",
-  "andaman-rush-3d2n": "/trips/andaman-rush-3d2n",
-  "andaman-dream-4d3n": "/trips/andaman-dream-4d3n",
-  "andaman-exotic-5d4n": "/trips/andaman-exotic-5d4n",
-  "andaman-exotic-6d5n": "/trips/andaman-exotic-6d5n",
-  "andaman-exotic-7d6n": "/trips/andaman-exotic-7d6n",
-  "andaman-exotic-8d7n": "/trips/andaman-exotic-8d7n",
-  "andaman-exotic-9d8n": "/trips/andaman-exotic-9d8n",
-  "andaman-exotic-10d9n": "/trips/andaman-exotic-10d9n",
-  "andaman-exotic-11d10n": "/trips/andaman-exotic-11d10n",
-  "book-now": "/book-now",
   team: "/team",
   about: "/about-us",
   contact: "/contact-us",
+  "book-now": "/book-now",
+  "reset-password": "/reset-password",
+  "customer-dashboard": "/account",
+  "customer-dashboard-bookings": "/account/bookings",
+  "customer-dashboard-wishlist": "/account/wishlist",
+  "customer-dashboard-wallet": "/account/wallet",
+  "customer-dashboard-profile": "/account/profile",
+  "customer-dashboard-support": "/account/support",
 };
 
-const VIEW_TITLES: Record<AppView, string> = {
+const FIXED_VIEW_TITLES: Record<string, string> = {
   home: "TRAVO | Curated Group Journeys",
   trips: "Trips | TRAVO",
-  manali: "Manali Kasol Escape | TRAVO",
-  "valley-of-flowers": "Valley of Flowers | TRAVO",
-  "udaipur-lakes": "Udaipur Lakes & Palaces | TRAVO",
-  "andaman-rush-3d2n": "Andaman Rush Expedition | TRAVO",
-  "andaman-dream-4d3n": "Andaman Dream Vacation | TRAVO",
-  "andaman-exotic-5d4n": "Andaman Island Triangle | TRAVO",
-  "andaman-exotic-6d5n": "Andaman Island Explorer | TRAVO",
-  "andaman-exotic-7d6n": "Andaman Grand Island & Baratang Caves | TRAVO",
-  "andaman-exotic-8d7n": "Andaman Island Circuit & Baratang | TRAVO",
-  "andaman-exotic-9d8n": "Andaman Island Odyssey & Sitapur | TRAVO",
-  "andaman-exotic-10d9n": "Andaman Full North-South Circuit | TRAVO",
-  "andaman-exotic-11d10n": "Andaman Ultimate Grand Archipelago | TRAVO",
-  "book-now": "Book Your Journey | TRAVO",
   team: "Our Team | TRAVO",
   about: "About Us | TRAVO",
   contact: "Contact Us | TRAVO",
+  "book-now": "Book Your Journey | TRAVO",
+  "reset-password": "Reset Password | TRAVO",
+  "customer-dashboard": "My Account | TRAVO",
+  "customer-dashboard-bookings": "My Bookings | TRAVO",
+  "customer-dashboard-wishlist": "Wishlist | TRAVO",
+  "customer-dashboard-wallet": "Travo Coins & Wallet | TRAVO",
+  "customer-dashboard-profile": "Traveler Profile | TRAVO",
+  "customer-dashboard-support": "Support | TRAVO",
+  "not-found": "Page Not Found | TRAVO",
 };
 
 const FOOTER_BG_IMAGE = "https://unsplash.com/photos/dgyl6znQ3Q4/download?force=true&w=1800";
@@ -91,13 +89,31 @@ const normalizePath = (pathname: string) => {
   return pathname.replace(/\/+$/, "");
 };
 
+// A path that matches nothing below resolves to "not-found" rather than silently standing in
+// for the homepage — see the NotFoundPage render block and routes/web.php, which gives these
+// the same verdict with a real HTTP 404 status.
 const getViewFromPath = (pathname: string): AppView => {
   const normalizedPath = normalizePath(pathname);
-  const matchingView = (Object.keys(VIEW_PATHS) as AppView[]).find(
-    (view) => VIEW_PATHS[view] === normalizedPath,
-  );
 
-  return matchingView || "home";
+  const fixedMatch = Object.keys(FIXED_VIEW_PATHS).find(
+    (view) => FIXED_VIEW_PATHS[view] === normalizedPath,
+  );
+  if (fixedMatch) return fixedMatch;
+
+  if (normalizedPath.startsWith("/trips/")) {
+    const tripId = normalizedPath.slice("/trips/".length);
+    return TRIPS_DATA[tripId] ? tripId : "not-found";
+  }
+
+  return "not-found";
+};
+
+const getViewPath = (view: AppView) => FIXED_VIEW_PATHS[view] || `/trips/${view}`;
+
+const getViewTitle = (view: AppView) => {
+  if (FIXED_VIEW_TITLES[view]) return FIXED_VIEW_TITLES[view];
+  const trip = TRIPS_DATA[view];
+  return trip ? `${trip.name} | TRAVO` : FIXED_VIEW_TITLES.home;
 };
 
 const getBookingTripFromUrl = () => {
@@ -108,6 +124,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState<AppView>(() => getViewFromPath(window.location.pathname));
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedTripIdForBooking, setSelectedTripIdForBooking] = useState<string>(() => getBookingTripFromUrl());
+  const [bookingPrefill, setBookingPrefill] = useState<BookingPrefill | undefined>(undefined);
 
   useEffect(() => {
     const syncViewWithUrl = () => {
@@ -121,27 +138,35 @@ export default function App() {
       window.scrollTo({ top: 0, behavior: "instant" });
     };
 
-    const normalizedPath = normalizePath(window.location.pathname);
-    const isKnownPath = Object.values(VIEW_PATHS).includes(normalizedPath);
-
-    if (!isKnownPath) {
-      window.history.replaceState({ view: "home" }, "", VIEW_PATHS.home);
-      setCurrentView("home");
-    }
-
     window.addEventListener("popstate", syncViewWithUrl);
     return () => window.removeEventListener("popstate", syncViewWithUrl);
   }, []);
 
   useEffect(() => {
-    document.title = VIEW_TITLES[currentView];
+    document.title = getViewTitle(currentView);
+
+    // Tell crawlers a not-found page isn't real content worth indexing — belt-and-braces
+    // alongside the real HTTP 404 status routes/web.php already sends for the same URLs.
+    const isNotFound = currentView === "not-found";
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (isNotFound) {
+      if (!metaRobots) {
+        metaRobots = document.createElement("meta");
+        metaRobots.setAttribute("name", "robots");
+        document.head.appendChild(metaRobots);
+      }
+      metaRobots.setAttribute("content", "noindex");
+    } else if (metaRobots) {
+      metaRobots.remove();
+    }
   }, [currentView]);
 
-  const handleOpenBooking = (tripId: string) => {
-    const selectedTripId = tripId || "manali";
-    const bookingUrl = `${VIEW_PATHS["book-now"]}?trip=${encodeURIComponent(selectedTripId)}`;
+  const handleOpenBooking = (tripIdOrObj: any, prefill?: BookingPrefill) => {
+    const selectedTripId = (typeof tripIdOrObj === "string" ? tripIdOrObj : tripIdOrObj?.id) || "manali";
+    const bookingUrl = `${FIXED_VIEW_PATHS["book-now"]}?trip=${encodeURIComponent(selectedTripId)}`;
 
     setSelectedTripIdForBooking(selectedTripId);
+    setBookingPrefill(prefill);
     window.history.pushState({ view: "book-now", tripId: selectedTripId }, "", bookingUrl);
     setCurrentView("book-now");
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -151,8 +176,8 @@ export default function App() {
     setIsBookingOpen(false);
   };
 
-  const handleNavigate = (view: AppView) => {
-    const targetPath = VIEW_PATHS[view];
+  const handleNavigate = (view: string) => {
+    const targetPath = getViewPath(view);
 
     if (`${window.location.pathname}${window.location.search}` !== targetPath) {
       window.history.pushState({ view }, "", targetPath);
@@ -169,37 +194,42 @@ export default function App() {
     }
   };
 
-  const activeTrip = ["manali", "valley-of-flowers", "udaipur-lakes"].includes(currentView) ? (TRIPS_DATA as any)[currentView] : null;
-  const activeAndamanPackage = findAndamanPackage(currentView);
-  const isAndamanView = Boolean(activeAndamanPackage);
-  const bookingTrip = TRIPS_DATA[selectedTripIdForBooking]
-    || PUBLISHED_CATALOGUE_TRIPS.find((trip) => trip.id === selectedTripIdForBooking)
-    || ANDAMAN_SHOWCASE_TRIPS.find((trip) => trip.id === selectedTripIdForBooking)
-    || TRIPS_DATA["manali"];
+  const activeTrip = TRIPS_DATA[currentView] || null;
+  const isPackage = isPackageView(currentView);
+  const isDashboardView = currentView.startsWith("customer-dashboard");
+  const isBookNowView = currentView === "book-now";
+  const isResetPasswordView = currentView === "reset-password";
+  const isNotFoundView = currentView === "not-found";
+  // Scenic Highway layout: any TRIPS_DATA entry that isn't one of the dedicated package pages —
+  // this is what naturally covers Manali, Valley of Flowers, Udaipur, Kashmir & Ladakh.
+  const isHighwayView = currentView !== "home" && !isPackage && !isDashboardView && !isBookNowView && !isResetPasswordView && !!activeTrip;
+
+  const bookingTrip = TRIPS_DATA[selectedTripIdForBooking] || TRIPS_DATA["manali"];
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand/30 selection:text-brand-charcoal antialiased overflow-x-hidden">
-      
-      {/* 1. Universal Cinematic Hero Section / Carousel */}
-      {!isAndamanView && (
+
+      {/* 1. Universal Cinematic Hero Section / Carousel — hidden on package pages, book-now, the account dashboard, reset-password, and not-found, which render their own nav */}
+      {!isPackage && !isBookNowView && !isDashboardView && !isResetPasswordView && !isNotFoundView && (
         <HeroSection
-          currentView={currentView as any}
+          currentView={currentView}
           onNavigate={handleNavigate}
           onOpenBooking={(tripId) => handleOpenBooking(tripId)}
           onExploreClick={handleExploreClick}
         />
       )}
 
+      <Suspense fallback={<PageLoader />}>
+
       {/* Render Homepage Content */}
       {currentView === "home" && (
         <div className="animate-[fadeIn_0.6s_ease-out]">
-          
+
           {/* A. Active Expeditions Catalogue */}
           <div id="explore-expeditions" className="scroll-mt-20">
-            <TripsShowcase 
+            <HomeTripsShowcase
               onNavigate={handleNavigate}
               onOpenBooking={handleOpenBooking}
-              isHomePage={true}
             />
           </div>
 
@@ -208,7 +238,7 @@ export default function App() {
             <div className="absolute top-1/2 left-0 w-80 h-80 bg-brand-sand/[0.05] rounded-full filter blur-3xl pointer-events-none" />
 
             <div className="max-w-7xl mx-auto space-y-16">
-              
+
               <div className="text-center max-w-2xl mx-auto space-y-4">
                 <span className="text-[10px] uppercase tracking-[0.2em] font-black text-white px-3.5 py-1.5 bg-[#9C753B] rounded-full inline-flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-white" /> THE TRAVO PROMISE
@@ -216,7 +246,7 @@ export default function App() {
                 <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-neutral-900">
                   Crafting Premium <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">
-                    Road-Trip Journeys
+                    Road, Island & Himalayan Journeys
                   </span>
                 </h2>
                 <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed">
@@ -233,8 +263,8 @@ export default function App() {
                     icon: <Users className="w-5 h-5 text-[#9C753B]" />
                   },
                   {
-                    title: "Comfort On Roads",
-                    desc: "Traverse high passes exclusively in sanitized, luxury AC Tempo Travellers with custom audio systems and pushback comfort.",
+                    title: "Comfort On Roads & Sea",
+                    desc: "Traverse high passes in sanitized, luxury AC Tempo Travellers and cross tropical seas in private high-speed catamarans.",
                     icon: <Compass className="w-5 h-5 text-[#9C753B] animate-spin" style={{ animationDuration: '30s' }} />
                   },
                   {
@@ -266,7 +296,7 @@ export default function App() {
           </section>
 
           {/* C. Upcoming Trips Calendar Section */}
-          <UpcomingCalendar 
+          <UpcomingCalendar
             onNavigate={handleNavigate}
             onOpenBooking={handleOpenBooking}
           />
@@ -277,8 +307,8 @@ export default function App() {
           {/* E. Interactive Cinematic Gallery Section */}
           <GallerySection />
 
-          {/* D. Shared General Footer CTA */}
-          <FooterCTA 
+          {/* F. Shared General Footer CTA */}
+          <FooterCTA
             onOpenBooking={() => handleOpenBooking("manali")}
             tripId="general"
             tripName="TRAVO Expeditions"
@@ -291,58 +321,72 @@ export default function App() {
         </div>
       )}
 
-      {/* Render Trip-Specific Detail Pages */}
-      {isAndamanView && activeAndamanPackage && (
+      {/* Render Destination Package Pages: Andaman, Goa, Nepal, Kerala, Bhutan & Sikkim */}
+      {isPackage && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
-          <AndamanPackagePage
-            packageId={activeAndamanPackage.id}
-            onNavigate={handleNavigate as (view: string) => void}
-            onOpenBooking={handleOpenBooking}
-          />
+          {currentView.startsWith("andaman-") && (
+            <AndamanPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
+          {currentView.startsWith("goa-") && (
+            <GoaPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
+          {currentView.startsWith("nepal-") && (
+            <NepalPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
+          {currentView.startsWith("kerala-") && (
+            <KeralaPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
+          {currentView.startsWith("bhutan-") && (
+            <BhutanPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
+          {currentView.startsWith("sikkim-") && (
+            <SikkimPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
         </div>
       )}
 
-      {currentView !== "home" && activeTrip && (
+      {/* Render Scenic Highway Trip-Detail Pages: Manali, Valley of Flowers, Udaipur, Kashmir & Ladakh */}
+      {isHighwayView && activeTrip && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
 
           {/* A. Interactive Road Route Map with traveling van */}
-          <RouteJourney 
+          <RouteJourney
             stops={activeTrip.routeStops}
             tripId={activeTrip.id}
             tripName={activeTrip.name}
           />
 
           {/* B. Day-Wise Story Timeline Serpentine road */}
-          <StoryTimeline 
+          <StoryTimeline
             items={activeTrip.timelineItems}
             tripId={activeTrip.id}
           />
 
           {/* C. Bento Moments Highlights panel */}
-          <ExperienceCards 
+          <ExperienceCards
             experienceMoments={activeTrip.experienceMoments}
           />
 
           {/* D. Inclusions and Exclusions panel */}
-          <Inclusions 
+          <Inclusions
             inclusions={activeTrip.inclusions}
             exclusions={activeTrip.exclusions}
           />
 
           {/* E. Packing Checklist interactive widget */}
-          <Checklist 
+          <Checklist
             packingChecklist={activeTrip.packingChecklist}
             tripId={activeTrip.id}
           />
 
           {/* F. Accordions FAQs travel charter */}
-          <TermsAccordion 
+          <TermsAccordion
             termsAccordion={activeTrip.termsAccordion}
             tripName={activeTrip.name}
           />
 
           {/* G. Specific trip footer starlit camp CTA */}
-          <FooterCTA 
+          <FooterCTA
             onOpenBooking={() => handleOpenBooking(activeTrip.id)}
             tripId={activeTrip.id}
             tripName={activeTrip.name}
@@ -358,11 +402,11 @@ export default function App() {
       {/* Render Standalone Trips Catalogue Page */}
       {currentView === "trips" && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
-          <TripsShowcase 
+          <TripsShowcase
             onNavigate={handleNavigate}
             onOpenBooking={handleOpenBooking}
           />
-          <FooterCTA 
+          <FooterCTA
             onOpenBooking={() => handleOpenBooking("manali")}
             tripId="general"
             tripName="TRAVO Expeditions"
@@ -377,7 +421,7 @@ export default function App() {
       {currentView === "team" && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
           <TeamPage />
-          <FooterCTA 
+          <FooterCTA
             onOpenBooking={() => handleOpenBooking("manali")}
             tripId="general"
             tripName="TRAVO Expeditions"
@@ -392,7 +436,7 @@ export default function App() {
       {currentView === "about" && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
           <AboutPage />
-          <FooterCTA 
+          <FooterCTA
             onOpenBooking={() => handleOpenBooking("manali")}
             tripId="general"
             tripName="TRAVO Expeditions"
@@ -407,7 +451,7 @@ export default function App() {
       {currentView === "contact" && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
           <ContactPage />
-          <FooterCTA 
+          <FooterCTA
             onOpenBooking={() => handleOpenBooking("manali")}
             tripId="general"
             tripName="TRAVO Expeditions"
@@ -419,11 +463,12 @@ export default function App() {
       )}
 
       {/* Render Book Now page */}
-      {currentView === "book-now" && (
+      {isBookNowView && (
         <div className="animate-[fadeIn_0.5s_ease-out]">
           <BookNowPage
             onNavigate={handleNavigate}
             initialTripId={selectedTripIdForBooking}
+            initialSelections={bookingPrefill}
           />
           <FooterCTA
             onOpenBooking={() => handleOpenBooking(bookingTrip.id)}
@@ -436,12 +481,44 @@ export default function App() {
         </div>
       )}
 
+      {/* Render Customer Account Dashboard Hub (Bookings, Wishlist, Wallet/Coins, Profile/Travel ID) — it renders its own WebsiteHeader */}
+      {isDashboardView && (
+        <div className="animate-[fadeIn_0.4s_ease-out]">
+          <CustomerDashboard
+            onNavigate={handleNavigate}
+            onOpenBooking={handleOpenBooking}
+            initialTab={
+              currentView === "customer-dashboard-wallet" ? "wallet" :
+              currentView === "customer-dashboard-profile" ? "profile" :
+              currentView === "customer-dashboard-wishlist" ? "wishlist" :
+              currentView === "customer-dashboard-support" ? "support" : "bookings"
+            }
+          />
+        </div>
+      )}
+
+      {/* Render Reset Password page */}
+      {isResetPasswordView && (
+        <ResetPasswordPage onNavigate={handleNavigate} />
+      )}
+
+      {/* Render Not Found page — any URL that didn't match a known route or trip id */}
+      {isNotFoundView && (
+        <NotFoundPage onNavigate={handleNavigate} />
+      )}
+
+      </Suspense>
+
       {/* Floating securing ticket booking form */}
-      <BookingForm 
+      <BookingForm
         isOpen={isBookingOpen}
         onClose={handleCloseBooking}
         selectedTripId={selectedTripIdForBooking}
+        onNavigateToDashboard={() => handleNavigate("customer-dashboard-bookings")}
       />
+
+      {/* Global Customer Auth Modal (Login / Sign Up / Quick Demo) */}
+      <CustomerAuthModal />
 
     </div>
   );

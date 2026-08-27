@@ -72,15 +72,15 @@ const UPCOMING_SCHEDULE: ScheduledTrip[] = [
     tripId: "udaipur-lakes",
     name: "Udaipur Lakes & Palaces",
     date: "2026-08-07",
-    status: "open",
+    status: "completed",
     price: "₹10,499",
     duration: "3 Days / 2 Nights",
     slotsTotal: 40,
-    slotsBooked: 16,
+    slotsBooked: 36,
     departureTime: "9:00 PM",
     departurePoint: "IFFCO Chowk, Gurugram",
     subtitle: "City Palace, Kumbhalgarh, Ranakpur, Lake Pichola, and an Aravalli sunset finale.",
-    badge: "BOOKING OPEN",
+    badge: "TRIP COMPLETED",
     image: "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20view%20of%20City%20Palace%20%28Udaipur%29%2C%20Rajasthan%2C%20India%20-2.jpg?width=1200"
   }
 ];

@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { X, Ticket, Plus, Minus, Sparkles, CheckCircle2, ShieldAlert } from "lucide-react";
+import { X, Plus, Minus, Sparkles, CheckCircle2, ShieldAlert, Download } from "lucide-react";
 import { BookingDetails } from "../types";
 import { TRIPS_DATA } from "../data";
-import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
-import { ANDAMAN_SHOWCASE_TRIPS } from "../andamanTrips";
 import { postJson } from "../api";
+import { useCustomerAuth } from "../context/CustomerAuthContext";
 
 interface BookingFormProps {
   isOpen: boolean;
   onClose: () => void;
   selectedTripId: string;
+  onNavigateToDashboard?: () => void;
 }
 
-export default function BookingForm({ isOpen, onClose, selectedTripId }: BookingFormProps) {
-  const trip = TRIPS_DATA[selectedTripId]
-    || PUBLISHED_CATALOGUE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
-    || ANDAMAN_SHOWCASE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
-    || TRIPS_DATA["manali"];
-  
+export default function BookingForm({ isOpen, onClose, selectedTripId, onNavigateToDashboard }: BookingFormProps) {
+  const { user, isLoggedIn, addBooking } = useCustomerAuth();
+  const trip = TRIPS_DATA[selectedTripId] || TRIPS_DATA["manali"];
+
   // Parse numeric fare per seat from the trip price (e.g. "₹9,999/-" -> 9999)
   const fareStr = trip.price.replace(/[^\d]/g, "");
   const FARE_PER_SEAT = parseInt(fareStr, 10) || 9999;
 
   const [details, setDetails] = useState<BookingDetails>({
-    fullName: "",
-    phoneNumber: "",
-    email: "",
+    fullName: user?.name || "",
+    phoneNumber: user?.phone || "",
+    email: user?.email || "",
     seats: 1,
     specialRequests: ""
   });
@@ -41,14 +39,14 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
       setIsSuccess(false);
       setFormError("");
       setDetails({
-        fullName: "",
-        phoneNumber: "",
-        email: "",
+        fullName: user?.name || "",
+        phoneNumber: user?.phone || "",
+        email: user?.email || "",
         seats: 1,
         specialRequests: ""
       });
     }
-  }, [isOpen, selectedTripId]);
+  }, [isOpen, selectedTripId, user]);
 
   if (!isOpen) return null;
 
@@ -69,7 +67,6 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
       return;
     }
     setFormError("");
-
     setIsSubmitting(true);
 
     try {
@@ -80,6 +77,31 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
         email: details.email,
         seats: details.seats,
         special_requests: details.specialRequests || null,
+      });
+
+      // Also save to the customer's account so it shows up in My Bookings
+      addBooking({
+        bookingRef: response.reference_code,
+        tripId: trip.id,
+        tripName: trip.name,
+        tripImage: trip.bannerImage || trip.heroImage,
+        destination: trip.routeStops?.[0]?.name || trip.name,
+        duration: trip.duration,
+        departureDate: trip.upcomingDeparture || "Upcoming Departure",
+        returnDate: "Flexible Return",
+        paxCount: details.seats,
+        totalPrice: details.seats * FARE_PER_SEAT,
+        paidAmount: 0,
+        dueAmount: details.seats * FARE_PER_SEAT,
+        leadPassenger: {
+          name: details.fullName,
+          email: details.email,
+          phone: details.phoneNumber
+        },
+        specialRequests: details.specialRequests,
+        status: "in_review",
+        paymentMethod: "Pay on confirmation",
+        paymentRef: response.reference_code
       });
 
       setGeneratedPass(response.reference_code);
@@ -101,7 +123,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
   return (
     <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Background overlay screen click backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-neutral-900/60 backdrop-blur-md"
         onClick={onClose}
       />
@@ -109,7 +131,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
       {/* Main glass card dialog frame */}
       <div className="relative w-full max-w-xl p-[1px] rounded-t-3xl sm:rounded-3xl bg-white border border-neutral-200 shadow-2xl z-10 overflow-hidden max-h-[96dvh] sm:max-h-[90vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
         <div className="p-4 sm:p-6 rounded-t-3xl sm:rounded-3xl bg-white text-left space-y-6 overflow-y-auto overscroll-contain flex-grow border border-neutral-100 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          
+
           {/* Header row */}
           <div className="flex justify-between items-start pb-4 border-b border-neutral-200">
             <div className="space-y-1">
@@ -120,7 +142,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
                 {isSuccess ? "Boarding Pass Ready" : `Book: ${trip.name}`}
               </h2>
             </div>
-            <button 
+            <button
               onClick={onClose}
               className="p-1.5 rounded-full bg-neutral-50 hover:bg-neutral-100 text-neutral-500 hover:text-neutral-800 transition-colors"
             >
@@ -130,7 +152,7 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
 
           {!isSuccess ? (
             <form onSubmit={handleSubmit} className="space-y-5">
-              
+
               {/* Simple warnings or info flags */}
               <div className="p-3.5 rounded-xl bg-brand-sand/15 border border-brand-sand/30 flex items-start gap-2.5">
                 <Sparkles className="w-4 h-4 text-[#9C753B] shrink-0 mt-0.5" />
@@ -326,6 +348,18 @@ export default function BookingForm({ isOpen, onClose, selectedTripId }: Booking
               </div>
 
               <div className="space-y-3 w-full">
+                {isLoggedIn && onNavigateToDashboard && (
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onNavigateToDashboard();
+                    }}
+                    className="w-full py-3.5 bg-[#9C753B] hover:bg-[#85632f] text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2 hover:scale-[1.01]"
+                  >
+                    <Download className="w-4 h-4" /> View in My Account & Get E-Ticket Voucher
+                  </button>
+                )}
+
                 {/* Redirecting to WhatsApp with prefilled parameters code details */}
                 <a
                   href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I just reserved ${details.seats} seats for the ${trip.name} starting on ${trip.upcomingDeparture} under ticket code ${generatedPass}. Please verify my reservation!`)}`}

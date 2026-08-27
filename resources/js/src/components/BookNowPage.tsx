@@ -1,89 +1,291 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { 
-  Compass, 
-  Calendar, 
-  Timer, 
-  MessageSquare, 
-  CreditCard, 
-  QrCode, 
-  Building2, 
-  CheckCircle2, 
-  ShieldAlert, 
-  Plus, 
-  Minus, 
-  Sparkles, 
-  ArrowLeft, 
-  Copy, 
-  Check, 
-  ShieldCheck, 
-  Wallet,
-  Coins,
-  ArrowRight,
-  Info
+  Compass, Calendar, Timer, MessageSquare, CreditCard, QrCode, Building2, 
+  CheckCircle2, ShieldAlert, Plus, Minus, Sparkles, ArrowLeft, Copy, Check, 
+  ShieldCheck, Wallet, Coins, ArrowRight, Info, Hotel, Users, Ship, CheckCircle,
+  Download, UserCheck, Lock, Gift
 } from "lucide-react";
-import { TRIPS_DATA } from "../data";
-import { PUBLISHED_CATALOGUE_TRIPS } from "../catalogueTrips";
-import { ANDAMAN_SHOWCASE_TRIPS } from "../andamanTrips";
+import {
+  TRIPS_DATA,
+  TRIPS_LIST,
+  ANDAMAN_PACKAGES,
+  GOA_PACKAGES,
+  NEPAL_PACKAGES,
+  KERALA_PACKAGES,
+  BHUTAN_PACKAGES,
+  SIKKIM_PACKAGES,
+  KASHMIR_PACKAGES,
+  LADAKH_PACKAGES
+} from "../data";
+import { buildPricingMap } from "../data/andamanPackages";
+import { useCustomerAuth } from "../context/CustomerAuthContext";
 import { postJson } from "../api";
-
-const BOOKABLE_TRIPS = [...PUBLISHED_CATALOGUE_TRIPS, ...ANDAMAN_SHOWCASE_TRIPS];
+import { BookingPrefill, CustomerBooking } from "../types";
+import { applyMarkup } from "../pricing";
+import TravoCoinIcon from "./TravoCoinIcon";
+import CustomDatePicker from "./CustomDatePicker";
 
 interface BookNowPageProps {
-  onNavigate: (view: "home" | "manali" | "valley-of-flowers" | "book-now") => void;
+  onNavigate: (view: any) => void;
   initialTripId?: string;
+  initialSelections?: BookingPrefill;
 }
 
-export default function BookNowPage({ onNavigate, initialTripId = "manali" }: BookNowPageProps) {
-  const [selectedTripId, setSelectedTripId] = useState<string>(initialTripId);
-  const trip = TRIPS_DATA[selectedTripId]
-    || BOOKABLE_TRIPS.find((catalogueTrip) => catalogueTrip.id === selectedTripId)
-    || TRIPS_DATA["manali"];
-  const isAndamanPackage = selectedTripId.startsWith("andaman-");
+export default function BookNowPage({ onNavigate, initialTripId = "andaman-dream-4d3n", initialSelections }: BookNowPageProps) {
+  const { user, isLoggedIn, addBooking, openAuthModal, redeemTravoCoins } = useCustomerAuth();
 
-  // Parse numeric fare per seat from the trip price (e.g. "₹9,999/-" -> 9999)
-  const fareStr = trip.price.replace(/[^\d]/g, "");
-  const FARE_PER_SEAT = parseInt(fareStr, 10) || 9999;
+  // The trip is fixed to whichever itinerary page "Book Now" was opened from — there is no
+  // trip picker here anymore, so this is a plain derived value, not state.
+  const selectedTripId = initialTripId;
+  const [selectedStarRating, setSelectedStarRating] = useState<number>(initialSelections?.starRating || 3);
+  const [selectedPaxCount, setSelectedPaxCount] = useState<number>(initialSelections?.paxCount || 2);
+  const [selectedPlanType, setSelectedPlanType] = useState<"CP" | "MAP">(initialSelections?.planType || "CP");
+  const [selectedSikkimTier, setSelectedSikkimTier] = useState<"SUPER_DELUXE" | "3_STAR">(initialSelections?.sikkimTier || "SUPER_DELUXE");
+  const [selectedSikkimSeason, setSelectedSikkimSeason] = useState<"season" | "offSeason">(initialSelections?.sikkimSeason || "offSeason");
+  const [selectedDepartureDate, setSelectedDepartureDate] = useState<string>(initialSelections?.departureDate || "");
 
+  // Re-sync every selection whenever a fresh booking is opened (this component stays mounted
+  // across different "Book Now" clicks, so a new trip/prefill wouldn't otherwise take effect).
+  useEffect(() => {
+    setSelectedStarRating(initialSelections?.starRating || 3);
+    setSelectedPaxCount(initialSelections?.paxCount || 2);
+    setSelectedPlanType(initialSelections?.planType || "CP");
+    setSelectedSikkimTier(initialSelections?.sikkimTier || "SUPER_DELUXE");
+    setSelectedSikkimSeason(initialSelections?.sikkimSeason || "offSeason");
+    setSelectedDepartureDate(initialSelections?.departureDate || "");
+  }, [initialTripId, initialSelections]);
+
+  // Travo Coins redemption state
+  const [useCoins, setUseCoins] = useState(false);
+
+  // Determine specific data object if applicable
+  const andamanPkg = useMemo(() => ANDAMAN_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const goaPkg = useMemo(() => GOA_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const nepalPkg = useMemo(() => NEPAL_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const keralaPkg = useMemo(() => KERALA_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const bhutanPkg = useMemo(() => BHUTAN_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const sikkimPkg = useMemo(() => SIKKIM_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const kashmirPkg = useMemo(() => KASHMIR_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const ladakhPkg = useMemo(() => LADAKH_PACKAGES.find(p => p.id === selectedTripId), [selectedTripId]);
+  const genericTrip = useMemo(() => TRIPS_DATA[selectedTripId] || TRIPS_LIST[0], [selectedTripId]);
+
+  // Bhutan's dropdown shows its first fixed departure as a default without the state itself
+  // being set until the customer actually touches it — this resolves that same default
+  // everywhere else (validation, summary, payload) so a Bhutan booking submitted without
+  // touching the dropdown still carries the date that was visibly selected on screen. For
+  // every other trip, the raw state is whatever the native <input type="date"> produced
+  // (YYYY-MM-DD), reformatted here into the same "DD Mon YYYY" style used across the rest of
+  // the app (e.g. booking history's bookedAt) instead of showing the raw ISO string.
+  const effectiveDepartureDate = useMemo(() => {
+    if (bhutanPkg) return selectedDepartureDate || bhutanPkg.fixedDepartures[0];
+    if (!selectedDepartureDate) return "";
+    const parsed = new Date(`${selectedDepartureDate}T00:00:00`);
+    return isNaN(parsed.getTime())
+      ? selectedDepartureDate
+      : parsed.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  }, [selectedDepartureDate, bhutanPkg]);
+
+  // Earliest selectable date for the free-choice picker (non-group trips) — tomorrow, so
+  // there's at least a day of lead time for logistics, and never a same-day/past booking.
+  const minSelectableDate = useMemo(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  }, []);
+
+  // Compute available PAX options based on trip type. Every branch here runs its raw per-person
+  // rate through applyMarkup() before it's shown or used — see resources/js/src/pricing.ts.
+  const availablePaxOptions = useMemo(() => {
+    if (kashmirPkg) {
+      return kashmirPkg.pricingByVehiclePax.map(p => {
+        const perPerson = applyMarkup(p.pricePerPerson, selectedTripId);
+        return {
+          count: p.minPax,
+          label: `${p.paxSlab} (${p.vehicleType}) — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * p.minPax).toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: perPerson * p.minPax
+        };
+      });
+    }
+
+    if (ladakhPkg) {
+      return ladakhPkg.pricingByPax.map(p => {
+        const perPerson = applyMarkup(p.pricePerPerson, selectedTripId);
+        return {
+          count: p.minPax,
+          label: `${p.paxSlab} (${p.vehicleType}) — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * p.minPax).toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: perPerson * p.minPax
+        };
+      });
+    }
+
+    if (andamanPkg) {
+      // Use the same universal pricing engine as the itinerary page (buildPricingMap covers
+      // 1–12 pax for every package via formula) rather than each package's own hardcoded
+      // categories[].pricing table, which was only ever filled in for a handful of pax counts
+      // on some packages — that mismatch was why this page could show fewer options than the
+      // itinerary page's own calculator for the same trip.
+      const computedPricingMap = buildPricingMap(andamanPkg.nightsCount, selectedStarRating as 2 | 3 | 4 | 5, selectedPlanType);
+      return Object.keys(computedPricingMap).map(k => {
+        const count = parseInt(k, 10);
+        const priceInfo = computedPricingMap[count];
+        const perPerson = applyMarkup(priceInfo.perPersonPrice, selectedTripId);
+        return {
+          count,
+          label: `${count} ${count === 1 ? 'Adult' : 'Adults'} — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * count).toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: perPerson * count
+        };
+      }).sort((a, b) => a.count - b.count);
+    }
+
+    if (nepalPkg) {
+      // Real tier ids look like "3star-std" / "3star-dlx" / "4star-std" / "4star-dlx" / "5star-std" / "5star-dlx"
+      const activeTier = nepalPkg.hotelTiers.find(t => t.tierId.startsWith(`${selectedStarRating}star`)) || nepalPkg.hotelTiers[0];
+      // pricingByPax only holds 5 rate slabs (2-3 / 4-5 / 10-12 / 17-20 / 26-30 PAX), but the
+      // itinerary page's own dropdown lets a customer pick any of these 13 individual head
+      // counts, each priced off whichever slab it falls into — mirror that exact mapping here
+      // so every count the itinerary page allows is also a valid, correctly-priced option on
+      // this page (previously only the 5 slabs' own minPax values — 2/4/10/17/26 — existed
+      // here, so picking e.g. 6 or 8 pax got silently reset once you reached Book Now).
+      const NEPAL_PAX_TO_SLAB_INDEX: Record<number, number> = {
+        1: 0, 2: 0, 3: 0, 4: 1, 5: 1, 6: 2, 8: 2, 10: 2, 12: 2, 15: 3, 20: 3, 25: 4, 30: 4
+      };
+      return Object.entries(NEPAL_PAX_TO_SLAB_INDEX).map(([countStr, slabIdx]) => {
+        const count = parseInt(countStr, 10);
+        const slab = activeTier.pricingByPax[slabIdx];
+        const perPerson = applyMarkup(slab?.pricePerPerson ?? 0, selectedTripId);
+        return {
+          count,
+          label: `${count} ${count === 1 ? 'Adult' : 'Adults'} (${slab?.paxSlab || ''}) — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * count).toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: perPerson * count
+        };
+      });
+    }
+
+    if (keralaPkg) {
+      // Real tier ids look like "3_STAR_STANDARD" / "3_STAR_DELUXE" / "4_STAR_CLASSIC" / etc.
+      const activeTier = keralaPkg.hotelTiers.find(t => t.tierId.startsWith(`${selectedStarRating}_STAR`)) || keralaPkg.hotelTiers[0];
+      return activeTier.pricingByPax.map(p => {
+        const perPerson = applyMarkup(p.pricePerPerson, selectedTripId);
+        return {
+          count: p.paxCount,
+          label: `${p.paxSlab} — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * p.paxCount).toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: perPerson * p.paxCount
+        };
+      });
+    }
+
+    if (sikkimPkg) {
+      const activeTier = sikkimPkg.hotelTiers.find(t => t.tierId === selectedSikkimTier) || sikkimPkg.hotelTiers[0];
+      return activeTier.seasonPricing.map(p => {
+        const rawPerPerson = selectedSikkimSeason === "season" ? p.seasonPerPerson : p.offSeasonPerPerson;
+        const rawTotal = selectedSikkimSeason === "season" ? p.seasonTotal : p.offSeasonTotal;
+        const perPerson = applyMarkup(rawPerPerson, selectedTripId);
+        const total = applyMarkup(rawTotal, selectedTripId);
+        return {
+          count: p.paxCount,
+          label: `${p.paxSlab} (${selectedSikkimSeason === "season" ? "On-Season" : "Off-Season"}) — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${total.toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: total
+        };
+      });
+    }
+
+    if (bhutanPkg) {
+      const perPerson = applyMarkup(bhutanPkg.pricePerPerson, selectedTripId);
+      // Matches the itinerary page's own dropdown exactly (it goes up to 25, not 15).
+      return [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25].map(count => ({
+        count,
+        label: `${count} ${count === 1 ? 'Adult' : 'Adults'} — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * count).toLocaleString('en-IN')})`,
+        perPersonPrice: perPerson,
+        totalPrice: perPerson * count
+      }));
+    }
+
+    if (goaPkg) {
+      // Goa's categories use non-integer star ratings (one tier is 3.5★), so match on the
+      // exact value carried over from the itinerary page rather than the shared 2/3/4/5
+      // selector used by other trips. Previously this branch ignored the category entirely
+      // and showed a single hardcoded ₹4,200 rate for every pax count, regardless of which
+      // hotel tier (or even which package) was actually selected.
+      const activeCategory = goaPkg.categories.find(c => c.starRating === selectedStarRating) || goaPkg.categories[0];
+      return activeCategory.pricingByPax.map(p => {
+        const perPerson = applyMarkup(p.perPersonPrice, selectedTripId);
+        return {
+          count: p.paxMin,
+          label: `${p.sharingType} — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * p.paxMin).toLocaleString('en-IN')})`,
+          perPersonPrice: perPerson,
+          totalPrice: perPerson * p.paxMin
+        };
+      }).sort((a, b) => a.count - b.count);
+    }
+
+    // Default Himalayan generic (Manali / Valley of Flowers)
+    const baseFare = parseInt(genericTrip.price.replace(/[^\d]/g, ""), 10) || 9999;
+    return [1, 2, 3, 4, 5, 6, 8, 10, 12].map(count => ({
+      count,
+      label: `${count} ${count === 1 ? 'Adult' : 'Adults'} — ₹${baseFare.toLocaleString('en-IN')} / person (Total ₹${(baseFare * count).toLocaleString('en-IN')})`,
+      perPersonPrice: baseFare,
+      totalPrice: baseFare * count
+    }));
+  }, [kashmirPkg, ladakhPkg, andamanPkg, nepalPkg, keralaPkg, sikkimPkg, bhutanPkg, goaPkg, genericTrip, selectedStarRating, selectedPlanType, selectedSikkimTier, selectedSikkimSeason]);
+
+  // Ensure selected PAX exists in available options
+  useEffect(() => {
+    if (availablePaxOptions.length > 0) {
+      const exists = availablePaxOptions.find(o => o.count === selectedPaxCount);
+      if (!exists) {
+        setSelectedPaxCount(availablePaxOptions[0].count);
+      }
+    }
+  }, [availablePaxOptions, selectedPaxCount]);
+
+  // Compute Active Pricing Object
+  const currentPricing = useMemo(() => {
+    const matched = availablePaxOptions.find(o => o.count === selectedPaxCount);
+    if (matched) return matched;
+    if (availablePaxOptions.length > 0) return availablePaxOptions[0];
+    return { count: 2, perPersonPrice: 9999, totalPrice: 19998, label: "" };
+  }, [availablePaxOptions, selectedPaxCount]);
+
+  const BASE_TOTAL_FARE = currentPricing.totalPrice;
+  const PER_PERSON_FARE = currentPricing.perPersonPrice;
+
+  // Form input details
   const [details, setDetails] = useState({
-    fullName: "",
-    phoneNumber: "",
-    email: "",
-    seats: 1,
-    specialRequests: ""
+    fullName: user?.name || "",
+    phoneNumber: user?.phone || "",
+    email: user?.email || "",
+    specialRequests: "",
+    paymentMethod: "upi" as "upi" | "card" | "netbanking" | "bank"
   });
 
-  const [andamanPackageType, setAndamanPackageType] = useState<"standard" | "honeymoon">("standard");
-  const [andamanMealPlan, setAndamanMealPlan] = useState<"CP" | "MAP">("CP");
+  // Sync user details if logged in
+  useEffect(() => {
+    if (user) {
+      setDetails(prev => ({
+        ...prev,
+        fullName: prev.fullName || user.name,
+        phoneNumber: prev.phoneNumber || user.phone,
+        email: prev.email || user.email
+      }));
+    }
+  }, [user]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [generatedPass, setGeneratedPass] = useState("");
   const [formError, setFormError] = useState("");
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
-  useEffect(() => {
-    setSelectedTripId(initialTripId);
-    setAndamanPackageType("standard");
-    setAndamanMealPlan("CP");
-    setDetails((previous) => ({
-      ...previous,
-      seats: initialTripId.startsWith("andaman-") ? 2 : 1,
-    }));
-  }, [initialTripId]);
-
-  const handleSeatsChange = (val: number) => {
-    const nextVal = Math.max(1, Math.min(10, details.seats + val));
-    setDetails((prev) => ({ ...prev, seats: nextVal }));
-  };
-
-  const handleTripSelection = (tripId: string) => {
-    setSelectedTripId(tripId);
-    setAndamanPackageType("standard");
-    setAndamanMealPlan("CP");
-    setDetails((previous) => ({
-      ...previous,
-      seats: tripId.startsWith("andaman-") ? 2 : 1,
-    }));
-  };
+  const userCoins = user?.travoCoins || 0;
+  const coinsDiscount = useCoins && isLoggedIn ? Math.min(userCoins, BASE_TOTAL_FARE) : 0;
+  const finalPayable = Math.max(0, BASE_TOTAL_FARE - coinsDiscount);
+  const potentialEarnedCoins = Math.floor((finalPayable / 100) * 5); // 5 Coins per ₹100 spent
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -92,29 +294,59 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!details.fullName || !details.phoneNumber || !details.email) {
-      setFormError("Please fill in all required fields!");
+      setFormError("Please fill in all required fields (Full Name, Phone & Email)!");
+      return;
+    }
+    if (!effectiveDepartureDate) {
+      setFormError("Please select your preferred departure date!");
       return;
     }
     setFormError("");
     setIsSubmitting(true);
 
     try {
-      const andamanPreferences = isAndamanPackage
-        ? `Andaman package preferences: ${andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"}; ${details.seats} pax; ${andamanMealPlan === "MAP" ? "MAP (breakfast and dinner)" : "CP (breakfast)"}.`
-        : "";
-      const specialRequests = [andamanPreferences, details.specialRequests.trim()]
-        .filter(Boolean)
-        .join("\n");
+      const packageTier = sikkimPkg
+        ? `${selectedSikkimTier} (${selectedSikkimSeason === "season" ? "Peak Season" : "Off-Season"})`
+        : (andamanPkg || keralaPkg || nepalPkg)
+          ? `${selectedStarRating}★ Deluxe`
+          : null;
+      const selectionSummary = [
+        `Selected package: ${genericTrip.name}`,
+        `Group size: ${selectedPaxCount} ${selectedPaxCount === 1 ? "adult" : "adults"}`,
+        packageTier ? `Category tier: ${packageTier}` : null,
+        `Preferred departure date: ${effectiveDepartureDate}`,
+        `Preferred payment method: ${details.paymentMethod.toUpperCase()}`,
+      ].filter(Boolean).join("\n");
+      const specialRequests = [selectionSummary, details.specialRequests.trim()].filter(Boolean).join("\n\n");
 
-      const response = await postJson<{ reference_code: string }>("/forms/booking-inquiries", {
-        trip_id: selectedTripId,
+      const response = await postJson<{
+        reference_code: string;
+        booking: CustomerBooking | null;
+        travoCoins?: number;
+      }>("/forms/booking-inquiries", {
+        trip_id: genericTrip.id,
         full_name: details.fullName,
         phone: details.phoneNumber,
         email: details.email,
-        seats: details.seats,
+        seats: Math.min(selectedPaxCount, 20),
         special_requests: specialRequests || null,
+        departure_date: effectiveDepartureDate || genericTrip.upcomingDeparture || "Upcoming Departure",
+        return_date: "Flexible Return",
+        duration: genericTrip.duration,
+        hotel_tier: sikkimPkg ? selectedSikkimTier : `${selectedStarRating}★ Deluxe Accommodations`,
+        co_travelers: selectedPaxCount > 1 ? [`Traveler 2 (${details.fullName} Party)`] : [],
+        payment_method: details.paymentMethod.toUpperCase(),
+        coins_redeemed: coinsDiscount,
       });
+
+      // The server is the source of truth for pricing/coins — it already returns the full
+      // booking record (with the redemption applied and coins computed) when the requester
+      // is signed in, so this just reflects that into the dashboard's local state.
+      if (response.booking) {
+        addBooking(response.booking, response.travoCoins);
+      }
 
       setGeneratedPass(response.reference_code);
       setIsSuccess(true);
@@ -131,642 +363,573 @@ export default function BookNowPage({ onNavigate, initialTripId = "manali" }: Bo
     setTimeout(() => setCopiedText(null), 2000);
   };
 
-  const subTotal = details.seats * FARE_PER_SEAT;
-  const netTotal = subTotal;
-  const tokenAmount = details.seats * 2000;
-
-  const assemblyPoint = isAndamanPackage
-    ? "Veer Savarkar International Airport, Port Blair (IXZ)"
-    : "IFFCO Chowk, Gurugram";
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 selection:bg-brand-sand selection:text-neutral-900 antialiased pb-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 space-y-8 sm:space-y-12">
-        {/* Back Button & Title */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-neutral-200 pb-8">
-          <div className="space-y-3">
-            <button
-              onClick={() => onNavigate("home")}
-              className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-[#9C753B] hover:text-[#7C552B] transition-colors uppercase"
-            >
-              <ArrowLeft className="w-4 h-4" /> Return to Home
-            </button>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight uppercase text-neutral-900">
-              Secure Your <br className="sm:hidden" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-700">
-                {isAndamanPackage ? "Island Package" : "Himalayan Slot"}
-              </span>
-            </h1>
-            <p className="text-sm text-neutral-600 font-light max-w-2xl">
-              {isAndamanPackage
-                ? "Share your group details to register the package inquiry. Our coordinator will confirm your dates, hotel category, meal plan, ferries, and final quotation."
-                : "Fill out your group details below to instantly reserve your boarding seats, review our transparent payment structure, and confirm your booking."}
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#FAF9F6] text-neutral-900 py-12 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto space-y-8">
+        
+        {/* Back Navigation Button */}
+        <button
+          onClick={() => onNavigate(selectedTripId)}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-neutral-200 hover:border-[#9C753B] rounded-xl text-xs font-bold text-neutral-700 hover:text-neutral-900 transition-all shadow-sm"
+        >
+          <ArrowLeft className="w-4 h-4 text-[#9C753B]" /> Back to Itinerary
+        </button>
 
-          {/* Quick WhatsApp CTA Card */}
-          <div className="w-full md:w-auto p-4 rounded-2xl bg-brand-sand/15 border border-brand-sand/30 flex items-center gap-4 max-w-sm md:self-end shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] shrink-0 animate-pulse">
-              <MessageSquare className="w-5 h-5 fill-current" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black tracking-widest uppercase text-[#9C753B]">Need Instant Help?</p>
-              <p className="text-xs text-neutral-600 font-light mb-1.5">Chat with our coordinator for availability and booking help.</p>
-              <a
-                href={`https://wa.me/919996965697?text=${encodeURIComponent("Hi TRAVO! I'm on the Book Now page. I have a few questions regarding seat availability and booking steps.")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] uppercase font-black tracking-wider text-[#9C753B] hover:text-[#7C552B] transition-colors flex items-center gap-1"
-              >
-                Chat on WhatsApp <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
+        {/* Page Header */}
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9C753B]/10 border border-[#9C753B]/30 rounded-full text-neutral-900 text-[11px] font-bold uppercase tracking-wider">
+            <ShieldCheck className="w-4 h-4 text-[#9C753B]" /> TRAVO VERIFIED BOOKING & RESERVATION PORTAL
           </div>
+          <h1 className="text-3xl sm:text-4xl font-black font-display uppercase tracking-tight text-neutral-900">
+            Complete Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9C753B] to-neutral-800">Booking & Group PAX</span>
+          </h1>
+          <p className="text-xs text-neutral-600 font-light max-w-2xl">
+            Confirm your group size, hotel tier, and any remaining details for <strong className="text-neutral-900">{genericTrip.name}</strong>, then lock in guaranteed 100% tax-inclusive group pricing.
+          </p>
         </div>
 
-        {/* Dual Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* LEFT: Booking Inquiry Form Component (7 Cols) */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="p-1 rounded-3xl bg-white border border-neutral-200 shadow-sm">
-              <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-white text-left space-y-6">
-                
-                {/* Switcher & Form Title */}
-                <div className="space-y-4 pb-4 border-b border-neutral-200">
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3 py-1 bg-brand-sand/15 border border-brand-sand/30 rounded-full inline-block">
-                    STEP 1: SUBMIT BOOKING INQUIRY
-                  </span>
-                  <h2 className="text-xl font-black text-neutral-900 uppercase font-display">
-                    {isSuccess ? "Reservation Success" : "Traveler & Group Details"}
-                  </h2>
-                  
-                  {!isSuccess && (
-                    <div className="space-y-1.5 pt-2">
-                      <label htmlFor="booking-trip" className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                        Choose Trip or Package
-                      </label>
-                      <select
-                        id="booking-trip"
-                        value={selectedTripId}
-                        onChange={(event) => handleTripSelection(event.target.value)}
-                        className="w-full appearance-none bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3.5 text-sm font-bold text-neutral-900 focus:outline-none focus:border-[#9C753B] focus:ring-2 focus:ring-[#9C753B]/10 transition-colors shadow-sm"
-                      >
-                        <optgroup label="Current Group Trips">
-                          {PUBLISHED_CATALOGUE_TRIPS.map((catalogueTrip) => (
-                            <option key={catalogueTrip.id} value={catalogueTrip.id}>
-                              {catalogueTrip.name} — {catalogueTrip.price}
-                            </option>
-                          ))}
-                        </optgroup>
-                        <optgroup label="Andaman Island Packages">
-                          {ANDAMAN_SHOWCASE_TRIPS.map((catalogueTrip) => (
-                            <option key={catalogueTrip.id} value={catalogueTrip.id}>
-                              {catalogueTrip.name} — from {catalogueTrip.price} per adult
-                            </option>
-                          ))}
-                        </optgroup>
-                      </select>
+        {/* Fixed Trip Banner — the trip is locked to the itinerary page this booking was opened from */}
+        <div className="bg-white border border-neutral-200 rounded-3xl p-4 shadow-sm flex items-center gap-4">
+          <img
+            src={genericTrip.bannerImage || genericTrip.heroImage}
+            alt={genericTrip.name}
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-[#9C753B]">Booking For</p>
+            <h2 className="text-sm sm:text-base font-black text-neutral-900 uppercase font-display truncate">{genericTrip.name}</h2>
+            <p className="text-[11px] text-neutral-500 line-clamp-1">{genericTrip.subtitle}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate(selectedTripId)}
+            className="hidden sm:inline-flex shrink-0 px-3.5 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[11px] font-bold rounded-xl transition-all"
+          >
+            Change Trip
+          </button>
+        </div>
+
+        {/* SUCCESS BOARDING PASS VIEW */}
+        {isSuccess ? (
+          <div className="bg-white border border-emerald-200 rounded-3xl p-8 shadow-2xl space-y-8 animate-[fadeIn_0.5s_ease-out]">
+            <div className="text-center space-y-3">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+                <CheckCircle2 className="w-10 h-10" />
+              </div>
+              <h2 className="text-2xl font-black font-display uppercase text-neutral-900">
+                Booking Pass Confirmed!
+              </h2>
+              <p className="text-xs text-neutral-600 max-w-md mx-auto">
+                Congratulations <strong className="text-neutral-900">{details.fullName}</strong>! Your expedition voucher has been successfully registered.
+              </p>
+            </div>
+
+            {/* Boarding Card */}
+            <div className="max-w-xl mx-auto bg-neutral-900 text-white rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#9C753B]/20 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <p className="text-[10px] text-brand-sand uppercase tracking-wider font-bold">Official Booking Voucher</p>
+                  <p className="text-lg font-black text-white">{generatedPass}</p>
+                </div>
+                <span className="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase rounded-full">
+                  VERIFIED & CONFIRMED
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <p className="text-neutral-400 text-[10px] uppercase font-semibold">Package Name</p>
+                  <p className="font-bold text-white mt-0.5">{genericTrip.name}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400 text-[10px] uppercase font-semibold">Duration</p>
+                  <p className="font-bold text-white mt-0.5">{genericTrip.duration}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400 text-[10px] uppercase font-semibold">Travelers Selected</p>
+                  <p className="font-bold text-white mt-0.5">{selectedPaxCount} {selectedPaxCount === 1 ? 'Adult' : 'Adults'}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400 text-[10px] uppercase font-semibold">Category Tier</p>
+                  <p className="font-bold text-amber-400 mt-0.5">
+                    {sikkimPkg ? selectedSikkimTier : `${selectedStarRating}★ Category`}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-neutral-400 text-[10px] uppercase font-semibold">Departure Date</p>
+                  <p className="font-bold text-white mt-0.5">{effectiveDepartureDate || genericTrip.upcomingDeparture}</p>
+                </div>
+                <div>
+                  <p className="text-neutral-400 text-[10px] uppercase font-semibold">Total Paid / Payable</p>
+                  <p className="font-black text-emerald-400 mt-0.5">₹{finalPayable.toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-300">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#9C753B]" /> 24x7 TRAVO Ground Captain Assigned
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => onNavigate("customer-dashboard")}
+                    className="px-5 py-2.5 bg-[#9C753B] hover:bg-amber-600 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md transition-all"
+                  >
+                    <Download className="w-4 h-4" /> View in Account & Vouchers
+                  </button>
+                  <button
+                    onClick={() => onNavigate("home")}
+                    className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition-all"
+                  >
+                    Home
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* MAIN FORM VIEW */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            {/* Left Form Column */}
+            <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-8">
+              
+              {/* 1. PAX Dropdown Selection & Star Tier Customisation */}
+              <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm space-y-6">
+                <h3 className="text-sm font-black font-display uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#9C753B]" /> 1. Select Travelers PAX & Category Tier
+                </h3>
+
+                {/* PAX DROPDOWN SELECTOR */}
+                <div className="space-y-2">
+                  <label htmlFor="pax-select-dropdown" className="text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center justify-between">
+                    <span>Number of Travelers (PAX Requirements):</span>
+                    <span className="text-[#9C753B] font-black text-[11px]">{currentPricing.count} PAX Active</span>
+                  </label>
+
+                  <div className="relative">
+                    <select
+                      id="pax-select-dropdown"
+                      value={selectedPaxCount}
+                      onChange={(e) => setSelectedPaxCount(parseInt(e.target.value, 10))}
+                      className="w-full appearance-none px-4 py-3.5 bg-neutral-50 border-2 border-neutral-300 hover:border-[#9C753B] focus:border-[#9C753B] rounded-2xl text-xs font-bold text-neutral-900 focus:outline-none transition-all cursor-pointer shadow-sm pr-10"
+                    >
+                      {availablePaxOptions.map((opt) => (
+                        <option key={opt.count} value={opt.count}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-600">
+                      <Users className="w-4 h-4 text-[#9C753B]" />
                     </div>
-                  )}
+                  </div>
+                  <p className="text-[11px] text-neutral-500 font-light">
+                    * Rates adapt automatically based on vehicle allocation and group slab for this itinerary.
+                  </p>
                 </div>
 
-                {!isSuccess ? (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    
-                    {/* Live Trip Summary Banner */}
-                    <div className="p-4 rounded-xl bg-brand-sand/10 border border-brand-sand/25 flex flex-wrap gap-4 justify-between items-center">
-                      <div>
-                        <p className="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">Selected Expedition</p>
-                        <p className="text-sm font-black text-neutral-900">{trip.name}</p>
-                        <p className="text-[10px] text-neutral-600 font-light mt-0.5">Departing: <strong className="text-[#9C753B] font-bold">{trip.upcomingDeparture}</strong></p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[9px] uppercase tracking-widest text-neutral-500 font-bold">
-                          {isAndamanPackage ? "Starting Price per Adult" : "Price per Seat"}
-                        </p>
-                        <p className="text-sm font-black text-[#9C753B] font-mono">{trip.price}</p>
-                        <p className="text-[9px] text-emerald-600 font-mono font-black">All Taxes Incl.</p>
-                      </div>
-                    </div>
-
-                    {isAndamanPackage && (
-                      <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-200 text-[11px] text-sky-900 leading-relaxed">
-                        The shown amount is the starting Standard-package estimate for two adults. The final quote is confirmed after we review your package type, group size, meal plan, and travel dates.
-                      </div>
-                    )}
-
-                    {/* Full Name */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                        Full Name <span className="text-[#9C753B]">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="fullName"
-                        required
-                        value={details.fullName}
-                        onChange={handleInputChange}
-                        placeholder="e.g. Sameer Sharma"
-                        className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 shadow-sm"
-                      />
-                    </div>
-
-                    {/* Phone & Email Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                          WhatsApp Phone <span className="text-[#9C753B]">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          name="phoneNumber"
-                          required
-                          value={details.phoneNumber}
-                          onChange={handleInputChange}
-                          placeholder="e.g. +91 9996965697"
-                          className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                          Email Address <span className="text-[#9C753B]">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          required
-                          value={details.email}
-                          onChange={handleInputChange}
-                          placeholder="e.g. sameer@gmail.com"
-                          className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 shadow-sm"
-                        />
+                {/* Departure Date — group trips with fixed batch dates (Bhutan) get a dropdown
+                    of the actual available dates; every other trip runs on private/dedicated
+                    transport with no fixed batches, so the customer just picks any preferred
+                    date directly. */}
+                {bhutanPkg ? (
+                  <div className="space-y-2 pt-2 border-t border-neutral-100">
+                    <label htmlFor="departure-date-select" className="text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center justify-between">
+                      <span>Select Group Departure Date:</span>
+                      <span className="text-[#9C753B] font-black text-[11px]">{bhutanPkg.fixedDepartures.length} Batches Available</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="departure-date-select"
+                        value={effectiveDepartureDate}
+                        onChange={(e) => setSelectedDepartureDate(e.target.value)}
+                        className="w-full appearance-none px-4 py-3 bg-neutral-50 border-2 border-neutral-300 hover:border-[#9C753B] focus:border-[#9C753B] rounded-2xl text-xs font-bold text-neutral-900 focus:outline-none transition-all cursor-pointer shadow-sm pr-10"
+                      >
+                        {bhutanPkg.fixedDepartures.map((date) => (
+                          <option key={date} value={date}>{date}</option>
+                        ))}
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-neutral-600">
+                        <Calendar className="w-4 h-4 text-[#9C753B]" />
                       </div>
                     </div>
-
-                    {isAndamanPackage ? (
-                      <div className="p-4 sm:p-5 bg-sky-50/70 border border-sky-200 rounded-2xl space-y-5">
-                        <div>
-                          <p className="text-xs font-black uppercase tracking-wider text-neutral-900">Customize Your Andaman Package</p>
-                          <p className="text-[10px] text-neutral-600 mt-1">Choose the package style, number of travelers, and preferred meal plan.</p>
-                        </div>
-
-                        <div className="space-y-2">
-                          <p className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Package Type</p>
-                          <div className="grid grid-cols-2 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setAndamanPackageType("standard")}
-                              className={`p-3 rounded-xl border text-left transition-all ${andamanPackageType === "standard" ? "bg-neutral-900 border-neutral-900 text-white shadow" : "bg-white border-neutral-200 text-neutral-700 hover:border-neutral-300"}`}
-                            >
-                              <span className="text-xs font-black block">Standard</span>
-                              <span className="text-[9px] opacity-75">Solo, family or group</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setAndamanPackageType("honeymoon");
-                                setAndamanMealPlan("CP");
-                                setDetails((previous) => ({ ...previous, seats: 2 }));
-                              }}
-                              className={`p-3 rounded-xl border text-left transition-all ${andamanPackageType === "honeymoon" ? "bg-rose-900 border-rose-900 text-white shadow" : "bg-white border-rose-200 text-rose-900 hover:bg-rose-50"}`}
-                            >
-                              <span className="text-xs font-black block">Honeymoon</span>
-                              <span className="text-[9px] opacity-75">Couple package</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label htmlFor="andaman-pax" className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Travelers (Pax)</label>
-                            <select
-                              id="andaman-pax"
-                              value={details.seats}
-                              disabled={andamanPackageType === "honeymoon"}
-                              onChange={(event) => setDetails((previous) => ({ ...previous, seats: Number(event.target.value) }))}
-                              className="w-full bg-white border border-neutral-200 rounded-xl px-3.5 py-3 text-xs font-black text-neutral-900 focus:outline-none focus:border-[#9C753B] disabled:bg-neutral-100 disabled:text-neutral-500"
-                            >
-                              {Array.from({ length: 10 }, (_, index) => index + 1).map((pax) => (
-                                <option key={pax} value={pax}>{pax} {pax === 1 ? "Traveler" : "Travelers"}</option>
-                              ))}
-                            </select>
-                            {andamanPackageType === "honeymoon" && <p className="text-[9px] text-rose-700 font-bold">Honeymoon packages are fixed for two travelers.</p>}
-                          </div>
-
-                          <div className="space-y-2">
-                            <p className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">Meal Plan</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              <button
-                                type="button"
-                                onClick={() => setAndamanMealPlan("CP")}
-                                className={`p-3 rounded-xl border text-left transition-all ${andamanMealPlan === "CP" ? "bg-[#9C753B] border-[#9C753B] text-white" : "bg-white border-neutral-200 text-neutral-700"}`}
-                              >
-                                <span className="text-xs font-black block">CP</span>
-                                <span className="text-[9px] opacity-75">Breakfast</span>
-                              </button>
-                              <button
-                                type="button"
-                                disabled={andamanPackageType === "honeymoon"}
-                                onClick={() => setAndamanMealPlan("MAP")}
-                                className={`p-3 rounded-xl border text-left transition-all ${andamanPackageType === "honeymoon" ? "bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed" : andamanMealPlan === "MAP" ? "bg-[#9C753B] border-[#9C753B] text-white" : "bg-white border-neutral-200 text-neutral-700"}`}
-                              >
-                                <span className="text-xs font-black block">MAP</span>
-                                <span className="text-[9px] opacity-75">Breakfast + Dinner</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-neutral-200 rounded-xl">
-                        <div className="space-y-1">
-                          <p className="text-xs font-bold text-neutral-800 uppercase">Number of Seats</p>
-                          <p className="text-[10px] text-neutral-500">Book up to 10 travelers in one ticket</p>
-                        </div>
-                        <div className="flex items-center gap-4 bg-white border border-neutral-200 p-1.5 rounded-xl shadow-sm">
-                          <button type="button" onClick={() => handleSeatsChange(-1)} className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors">
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="text-sm font-black font-mono text-neutral-900 w-5 text-center">{details.seats}</span>
-                          <button type="button" onClick={() => handleSeatsChange(1)} className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors">
-                            <Plus className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Special Requests */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] uppercase tracking-widest text-neutral-600 font-bold">
-                        Special Requests / Medical Notes (Optional)
-                      </label>
-                      <textarea
-                        name="specialRequests"
-                        rows={2}
-                        value={details.specialRequests}
-                        onChange={handleInputChange}
-                        placeholder="e.g., Row preferences, medical conditions, diet notes."
-                        className="w-full bg-[#FAF9F6] border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-[#9C753B] transition-colors font-medium placeholder-neutral-400 resize-none shadow-sm"
-                      />
-                    </div>
-
-                    {/* Dynamic Cost breakdown */}
-                    <div className="bg-[#FAF9F6] p-4 rounded-xl border border-neutral-200 space-y-3 shadow-sm">
-                      {isAndamanPackage ? (
-                        <>
-                          <div className="flex justify-between items-center gap-4">
-                            <div>
-                              <span className="text-xs font-bold text-neutral-900 uppercase block">Starting Package Estimate</span>
-                              <span className="text-[9px] text-neutral-500">For {details.seats} pax · {andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"} · {andamanMealPlan}</span>
-                            </div>
-                            <span className="text-lg font-black text-[#9C753B] font-mono shrink-0">₹{netTotal.toLocaleString()}</span>
-                          </div>
-                          <div className="p-3 bg-sky-50 border border-sky-200 rounded-lg flex items-start gap-2">
-                            <Info className="w-3.5 h-3.5 text-sky-700 shrink-0 mt-0.5" />
-                            <p className="text-[10px] text-sky-900 leading-normal">
-                              This is a starting estimate, not a price breakup. Our coordinator will confirm the final package fare after checking your dates and preferences.
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex justify-between items-center text-xs">
-                            <span className="text-neutral-500">Seat Fare ({details.seats} seats)</span>
-                            <span className="font-mono text-neutral-800">₹{subTotal.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between items-center text-xs text-neutral-500">
-                            <span>Tolls, Taxes & Permits</span>
-                            <span className="text-emerald-600 uppercase font-black text-[9px] bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">Included</span>
-                          </div>
-
-                          <div className="pt-2.5 border-t border-neutral-200 space-y-2">
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs font-bold text-neutral-900 uppercase">Net Travel Investment</span>
-                              <span className="text-lg font-black text-[#9C753B] font-mono">₹{netTotal.toLocaleString()}</span>
-                            </div>
-
-                            <div className="p-3 bg-brand-sand/15 border border-brand-sand/30 rounded-lg flex items-start gap-2">
-                              <Info className="w-3.5 h-3.5 text-[#9C753B] shrink-0 mt-0.5" />
-                              <p className="text-[10px] text-neutral-700 leading-normal">
-                                You can choose to pay only the <strong className="text-[#9C753B]">₹2,000 per seat (Total: ₹{tokenAmount.toLocaleString()})</strong> advance slot booking fee today to lock your ticket, and pay the rest before boarding!
-                              </p>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    {formError && (
-                      <p className="text-xs text-rose-600 font-bold flex items-center gap-1 bg-rose-50 p-2.5 rounded-lg border border-rose-200">
-                        <ShieldAlert className="w-4 h-4 shrink-0" /> {formError}
-                      </p>
-                    )}
-
-                    {/* Submit Inquiry Button */}
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-4 text-center bg-[#9C753B] hover:bg-[#7C552B] text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
-                    >
-                      {isSubmitting ? "Saving Booking Inquiry..." : isAndamanPackage ? "Submit Package Inquiry" : "Authorize Boarding Booking"}
-                    </button>
-
-                  </form>
+                    <p className="text-[11px] text-neutral-500 font-light">
+                      * This trip runs as a fixed small-group batch — choose from the guaranteed departure dates above.
+                    </p>
+                  </div>
                 ) : (
-                  /* Form Submitted successfully, show receipt boarding pass */
-                  <div className="space-y-6 text-center py-4 animate-[fadeIn_0.5s_ease-out]">
-                    <div className="flex flex-col items-center space-y-3">
-                      <div className="w-16 h-16 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600">
-                        <CheckCircle2 className="w-10 h-10 animate-bounce" />
-                      </div>
-                      <h3 className="text-2xl font-black text-neutral-900 font-display uppercase tracking-wider">
-                        Inquiry Submitted!
-                      </h3>
-                      <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-                        We've initialized your slot allocation. Please proceed to the payment details to secure this reservation.
-                      </p>
-                    </div>
+                  <div className="space-y-2 pt-2 border-t border-neutral-100">
+                    <label htmlFor="departure-date-input" className="text-xs font-bold text-neutral-700 uppercase tracking-wider">
+                      Preferred Departure Date:
+                    </label>
+                    <CustomDatePicker
+                      id="departure-date-input"
+                      value={selectedDepartureDate}
+                      onChange={setSelectedDepartureDate}
+                      minDate={minSelectableDate}
+                      placeholder="Choose your departure date"
+                    />
+                    <p className="text-[11px] text-neutral-500 font-light">
+                      * This itinerary runs on your own dedicated private vehicle — pick any date that works for you.
+                    </p>
+                  </div>
+                )}
 
-                    {/* Ticket Code Display */}
-                    <div className="p-1 rounded-2xl bg-gradient-to-br from-[#9C753B] via-[#E5E1D6] to-transparent border border-neutral-200 shadow-sm">
-                      <div className="p-5 rounded-2xl bg-white text-left space-y-4">
-                        <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-2 pb-3 border-b border-neutral-200">
-                          <span className="text-[10px] font-black text-[#9C753B] uppercase tracking-widest font-display">
-                            TRAVO Boarding Ticket Inquiry
-                          </span>
-                          <span className="text-[10px] font-mono font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
-                            Pending Validation
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-4 text-xs">
-                          <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">Primary Traveler</p>
-                            <p className="font-black text-neutral-800 truncate">{details.fullName}</p>
-                          </div>
-                          <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">Ticket Code</p>
-                            <p className="font-black text-[#9C753B] font-mono">{generatedPass}</p>
-                          </div>
-                          <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">Expedition</p>
-                            <p className="font-black text-neutral-800 truncate">{trip.name}</p>
-                          </div>
-                          <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">{isAndamanPackage ? "Travelers" : "Seats Reserved"}</p>
-                            <p className="font-black text-neutral-800 font-mono">{details.seats} {isAndamanPackage ? "Pax" : "Seats"}</p>
-                          </div>
-                          {isAndamanPackage ? (
-                            <div>
-                              <p className="text-[9px] uppercase text-neutral-400 font-bold">Package Preferences</p>
-                              <p className="font-black text-neutral-800">{andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"} · {andamanMealPlan}</p>
-                            </div>
-                          ) : (
-                            <div>
-                              <p className="text-[9px] uppercase text-neutral-400 font-bold">Advance Deposit</p>
-                              <p className="font-black text-emerald-600 font-mono">₹{tokenAmount.toLocaleString()} <span className="text-[9px] text-neutral-500 font-light">({details.seats} x ₹2K)</span></p>
-                            </div>
-                          )}
-                          <div>
-                            <p className="text-[9px] uppercase text-neutral-400 font-bold">Departure Date</p>
-                            <p className="font-black text-neutral-800">{trip.upcomingDeparture}</p>
-                          </div>
-                        </div>
-
-                        <div className="pt-3 border-t border-dashed border-neutral-200">
-                          <p className="text-[9px] uppercase text-neutral-400 font-bold">Assembly Point</p>
-                          <p className="text-[10px] text-neutral-600 leading-tight mt-0.5">{assemblyPoint}</p>
-                        </div>
+                {/* Sikkim Tier & Season Switchers if Sikkim Package */}
+                {sikkimPkg && (
+                  <div className="space-y-4 pt-2 border-t border-neutral-100">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-neutral-600 uppercase tracking-wider">
+                        Hotel Category Tier:
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {sikkimPkg.hotelTiers.map((tier) => (
+                          <button
+                            key={tier.tierId}
+                            type="button"
+                            onClick={() => setSelectedSikkimTier(tier.tierId)}
+                            className={`p-3 rounded-2xl border text-left transition-all ${
+                              selectedSikkimTier === tier.tierId
+                                ? "bg-[#9C753B] text-white border-[#9C753B] shadow-md"
+                                : "bg-neutral-50 border-neutral-200 text-neutral-800 hover:bg-neutral-100"
+                            }`}
+                          >
+                            <span className="text-[9px] font-black uppercase tracking-wider opacity-90">{tier.badgeLabel}</span>
+                            <p className="text-xs font-bold mt-0.5">{tier.categoryName}</p>
+                          </button>
+                        ))}
                       </div>
                     </div>
 
-                    {/* WhatsApp Action with prefilled message */}
-                    <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl space-y-3">
-                      <p className="text-xs text-neutral-700">
-                        <strong>Next Step:</strong> Share your ticket code and booking details on WhatsApp to lock your slots instantly. Our coordinator is waiting to verify!
-                      </p>
-                      
-                      <a
-                        href={`https://wa.me/919996965697?text=${encodeURIComponent(`Hi TRAVO! My name is ${details.fullName}. I've submitted a Booking Inquiry on your page for the ${trip.name} starting on ${trip.upcomingDeparture}.${isAndamanPackage ? ` My preferences are: ${andamanPackageType === "honeymoon" ? "Honeymoon" : "Standard"} package, ${details.seats} pax, ${andamanMealPlan} meal plan.` : ""} Here is my Boarding Pass Ticket Code: ${generatedPass}. I am ready to complete the booking!`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-4 bg-[#25D366] hover:bg-[#20ba56] transition-all font-black text-xs uppercase tracking-widest text-white rounded-xl inline-flex items-center justify-center gap-2 shadow hover:scale-[1.02] active:scale-95"
-                      >
-                        💬 Submit Pass to WhatsApp Support
-                      </a>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-neutral-600 uppercase tracking-wider">
+                        Season Selection:
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedSikkimSeason("offSeason")}
+                          className={`p-2.5 rounded-xl border text-xs font-bold text-center transition-all ${
+                            selectedSikkimSeason === "offSeason"
+                              ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
+                              : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100"
+                          }`}
+                        >
+                          Off-Season Rates (Best Value)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedSikkimSeason("season")}
+                          className={`p-2.5 rounded-xl border text-xs font-bold text-center transition-all ${
+                            selectedSikkimSeason === "season"
+                              ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
+                              : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100"
+                          }`}
+                        >
+                          Peak Season Rates (April-June)
+                        </button>
+                      </div>
                     </div>
+                  </div>
+                )}
 
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => setIsSuccess(false)}
-                        className="flex-1 py-3 border border-neutral-200 hover:bg-neutral-50 rounded-xl text-xs uppercase tracking-widest font-black text-neutral-600 transition-colors"
-                      >
-                        Edit Details
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsSuccess(false);
-                          setDetails({
-                            fullName: "",
-                            phoneNumber: "",
-                            email: "",
-                            seats: 1,
-                            specialRequests: ""
-                          });
-                          setAndamanPackageType("standard");
-                          setAndamanMealPlan("CP");
-                        }}
-                        className="flex-1 py-3 bg-neutral-100 hover:bg-neutral-200 rounded-xl text-xs uppercase tracking-widest font-black text-neutral-800 transition-colors"
-                      >
-                        New Inquiry
-                      </button>
+                {/* Star Rating Selector for Andaman, Kerala, Nepal */}
+                {(andamanPkg || keralaPkg || nepalPkg) && (
+                  <div className="space-y-2 pt-2 border-t border-neutral-100">
+                    <label className="text-xs font-bold text-neutral-600 uppercase tracking-wider">
+                      Hotel Accommodation Star Rating:
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {[
+                        { star: 2, label: "2★ Standard", badge: "BUDGET" },
+                        { star: 3, label: "3★ Deluxe", badge: "POPULAR" },
+                        { star: 4, label: "4★ Premium", badge: "RECOMMENDED" },
+                        { star: 5, label: "5★ Luxury", badge: "HERITAGE" }
+                      ].filter(tier => {
+                        if (keralaPkg) return [3, 4, 5].includes(tier.star);
+                        if (nepalPkg) return [3, 4, 5].includes(tier.star);
+                        if (andamanPkg) return [2, 3, 4, 5].includes(tier.star);
+                        return true;
+                      }).map((tier) => (
+                        <button
+                          key={tier.star}
+                          type="button"
+                          onClick={() => setSelectedStarRating(tier.star)}
+                          className={`p-3 rounded-2xl border text-left transition-all ${
+                            selectedStarRating === tier.star
+                              ? "bg-[#9C753B] text-white border-[#9C753B] shadow-md"
+                              : "bg-neutral-50 border-neutral-200 text-neutral-800 hover:bg-neutral-100"
+                          }`}
+                        >
+                          <span className="text-[9px] font-black uppercase tracking-wider opacity-90">{tier.badge}</span>
+                          <p className="text-xs font-bold mt-0.5">{tier.label}</p>
+                        </button>
+                      ))}
                     </div>
-
                   </div>
                 )}
 
               </div>
-            </div>
-          </div>
 
-          {/* RIGHT: Payment info, WhatsApp Inquiry button and Steps (5 Cols) */}
-          <div className="lg:col-span-5 space-y-8">
-            
-            {/* Payment Information Card */}
-            <div className="p-1 rounded-3xl bg-gradient-to-b from-[#9C753B]/20 via-transparent to-transparent border border-neutral-200 shadow-sm">
-              <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-white text-left space-y-6">
-                
-                <div className="space-y-2 pb-4 border-b border-neutral-200">
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-black text-[#9C753B] px-3.5 py-1.5 bg-brand-sand/15 border border-brand-sand/30 rounded-full inline-block">
-                    STEP 2: PAYMENT & VERIFICATION
-                  </span>
-                  <h2 className="text-xl font-black text-neutral-900 uppercase font-display">
-                    Payment Information
-                  </h2>
-                  <p className="text-xs text-neutral-600 font-light leading-relaxed">
-                    {isAndamanPackage ? (
-                      <>After your dates and package preferences are confirmed, our coordinator will share the <strong>final quotation and booking advance</strong> for payment.</>
-                    ) : (
-                      <>To secure your seat, you may pay either the <strong>Full Trip Fare</strong> or just a <strong>₹2,000/- per seat token advance</strong> today. The remaining balance can be cleared on departure.</>
-                    )}
-                  </p>
+              {/* 3. Lead Traveler Primary Info */}
+              <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-black font-display uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                    <Wallet className="w-4 h-4 text-[#9C753B]" /> 2. Lead Traveler Details
+                  </h3>
+                  {isLoggedIn ? (
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200">
+                      <UserCheck className="w-3 h-3" /> Logged In: {user?.name.split(" ")[0]}
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => openAuthModal("Sign in to automatically save your bookings, earn loyalty points, and receive digital passes")}
+                      className="text-[10px] bg-[#9C753B]/10 hover:bg-[#9C753B]/20 text-[#9C753B] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-[#9C753B]/30 transition-all"
+                    >
+                      <Lock className="w-3 h-3" /> Sign In / Register
+                    </button>
+                  )}
                 </div>
 
-                {/* Available Payment Methods */}
-                <div className="space-y-4">
-                  <h3 className="text-xs uppercase tracking-widest font-bold text-neutral-400">
-                    Available Payment Methods:
-                  </h3>
+                {!isLoggedIn && (
+                  <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-2xl flex items-start gap-2.5 text-xs text-amber-900">
+                    <Info className="w-4 h-4 text-[#9C753B] shrink-0 mt-0.5" />
+                    <p className="text-[11px] leading-relaxed">
+                      <strong>Tip:</strong> Sign in or create a quick account so this booking, your vouchers, and loyalty points are saved to My Account. You can also continue as a guest.
+                    </p>
+                  </div>
+                )}
 
-                  {/* UPI Box */}
-                  <div className="p-4 rounded-xl bg-[#FAF9F6] border border-neutral-200 space-y-3 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-brand-sand/15 border border-brand-sand/30 flex items-center justify-center text-[#9C753B]">
-                        <Coins className="w-4.5 h-4.5" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-black text-neutral-900 uppercase font-display">Instant UPI / QR Code</p>
-                        <p className="text-[10px] text-neutral-500">Google Pay, PhonePe, Paytm, BHIM</p>
-                      </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-neutral-700">Full Name *</label>
+                    <input 
+                      type="text"
+                      name="fullName"
+                      placeholder="e.g. Rahul Sharma"
+                      value={details.fullName}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:border-[#9C753B]"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-neutral-700">Phone Number (WhatsApp) *</label>
+                    <input 
+                      type="tel"
+                      name="phoneNumber"
+                      placeholder="+91 98765 43210"
+                      value={details.phoneNumber}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:border-[#9C753B]"
+                      required
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <label className="font-bold text-neutral-700">Email Address (For Vouchers) *</label>
+                    <input 
+                      type="email"
+                      name="email"
+                      placeholder="rahul.sharma@example.com"
+                      value={details.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:border-[#9C753B]"
+                      required
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <label className="font-bold text-neutral-700">Special Requests / Flight Numbers (Optional)</label>
+                    <textarea 
+                      name="specialRequests"
+                      rows={2}
+                      placeholder="e.g. Arriving on Indigo flight at 11:30 AM, need vegetarian meals"
+                      value={details.specialRequests}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:border-[#9C753B]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Payment Method Selection */}
+              <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm space-y-4">
+                <h3 className="text-sm font-black font-display uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-[#9C753B]" /> 3. Payment Gateway & Options
+                </h3>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { id: "upi", label: "UPI QR Code", icon: <QrCode className="w-4 h-4 text-[#9C753B]" /> },
+                    { id: "card", label: "Cards / Razorpay", icon: <CreditCard className="w-4 h-4 text-[#9C753B]" /> },
+                    { id: "netbanking", label: "Net Banking", icon: <Building2 className="w-4 h-4 text-[#9C753B]" /> },
+                    { id: "bank", label: "Bank NEFT/IMPS", icon: <Coins className="w-4 h-4 text-[#9C753B]" /> }
+                  ].map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setDetails(prev => ({ ...prev, paymentMethod: m.id as any }))}
+                      className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 ${
+                        details.paymentMethod === m.id
+                          ? "bg-neutral-900 text-white border-neutral-900 shadow-md"
+                          : "bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-neutral-100"
+                      }`}
+                    >
+                      {m.icon}
+                      <span className="text-xs font-bold">{m.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {details.paymentMethod === "upi" && (
+                  <div className="p-4 bg-[#FAF9F6] border border-neutral-200 rounded-2xl flex flex-col sm:flex-row items-center gap-4 text-xs">
+                    <div className="p-2 bg-white border border-neutral-200 rounded-xl shrink-0">
+                      <QrCode className="w-20 h-20 text-neutral-800" />
                     </div>
-                    
-                    <div className="pt-2 border-t border-neutral-200 flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-[9px] uppercase text-neutral-400 font-bold">UPI ID</p>
-                        <p className="text-xs font-mono font-black text-[#9C753B] break-all">travoexpeditions@hdfcbank</p>
-                      </div>
+                    <div className="space-y-1 text-center sm:text-left">
+                      <p className="font-bold text-neutral-900">Scan & Pay via any UPI App (GPay, PhonePe, Paytm)</p>
+                      <p className="text-[#9C753B] font-mono font-bold">travo.payments@icici</p>
                       <button
-                        onClick={() => handleCopy("travoexpeditions@hdfcbank", "upi")}
-                        className="self-start min-[420px]:self-auto p-2 rounded-lg bg-white hover:bg-neutral-50 border border-neutral-200 shadow-sm transition-colors text-neutral-700 shrink-0 flex items-center gap-1.5 text-[10px] font-bold"
+                        type="button"
+                        onClick={() => handleCopy("travo.payments@icici", "UPI ID")}
+                        className="px-3 py-1 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 text-[10px] font-bold rounded-lg transition-all"
                       >
-                        {copiedText === "upi" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span>{copiedText === "upi" ? "Copied" : "Copy ID"}</span>
+                        {copiedText === "UPI ID" ? "Copied UPI ID!" : "Copy Official UPI ID"}
                       </button>
                     </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Bank Transfer Box */}
-                  <div className="p-4 rounded-xl bg-[#FAF9F6] border border-neutral-200 space-y-3.5 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-brand-sand/15 border border-brand-sand/30 flex items-center justify-center text-[#9C753B]">
-                        <Building2 className="w-4.5 h-4.5" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-black text-neutral-900 uppercase font-display">Bank Account (IMPS/NEFT)</p>
-                        <p className="text-[10px] text-neutral-500">Direct transfer to corporate account</p>
-                      </div>
-                    </div>
+              {formError && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-800 font-bold flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4 shrink-0" /> {formError}
+                </div>
+              )}
 
-                    <div className="space-y-2 pt-2 border-t border-neutral-200 text-xs">
-                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1 border-b border-neutral-100">
-                        <span className="text-neutral-400 text-[10px] uppercase font-bold">Account Name</span>
-                        <span className="font-extrabold text-neutral-800 min-[420px]:text-right break-words">TRAVO EXPEDITIONS PVT LTD</span>
-                      </div>
-                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1 border-b border-neutral-100">
-                        <span className="text-neutral-400 text-[10px] uppercase font-bold">Account Number</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-extrabold text-neutral-800">50200084321945</span>
-                          <button 
-                            onClick={() => handleCopy("50200084321945", "acc")}
-                            className="text-[#9C753B] hover:text-[#7C552B]"
-                          >
-                            {copiedText === "acc" ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1 border-b border-neutral-100">
-                        <span className="text-neutral-400 text-[10px] uppercase font-bold">IFSC Code</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-extrabold text-neutral-800">HDFC0001245</span>
-                          <button 
-                            onClick={() => handleCopy("HDFC0001245", "ifsc")}
-                            className="text-[#9C753B] hover:text-[#7C552B]"
-                          >
-                            {copiedText === "ifsc" ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 py-1">
-                        <span className="text-neutral-400 text-[10px] uppercase font-bold">Bank Name</span>
-                        <span className="font-extrabold text-neutral-700">HDFC Bank Limited</span>
-                      </div>
-                    </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-[#9C753B] hover:bg-amber-600 text-white text-sm font-black uppercase tracking-wider rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <span>Generating TRAVO Boarding Voucher...</span>
+                ) : (
+                  <>Confirm & Generate Boarding Voucher <ArrowRight className="w-4 h-4" /></>
+                )}
+              </button>
+
+            </form>
+
+            {/* Right Summary Sidebar */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm space-y-6 sticky top-8">
+                <h3 className="text-sm font-black font-display uppercase tracking-wider text-neutral-900 border-b border-neutral-200 pb-3">
+                  Fare Breakdown & Summary
+                </h3>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-neutral-600">Selected Package:</span>
+                    <span className="font-bold text-neutral-900 text-right max-w-[60%] line-clamp-1">{genericTrip.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-600">Duration:</span>
+                    <span className="font-bold text-neutral-900">{genericTrip.duration}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-600">Travelers Group:</span>
+                    <span className="font-bold text-neutral-900">{selectedPaxCount} {selectedPaxCount === 1 ? 'Adult' : 'Adults'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-600">Per Person Fare:</span>
+                    <span className="font-bold text-neutral-900">₹{PER_PERSON_FARE.toLocaleString('en-IN')}</span>
                   </div>
 
-                </div>
-
-                {/* Booking Steps Roadmap */}
-                <div className="space-y-4 pt-4 border-t border-neutral-200">
-                  <h3 className="text-xs uppercase tracking-widest font-bold text-neutral-400">
-                    Booking Confirmation Steps:
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    {[
-                      {
-                        num: "01",
-                        title: "Inquiry Submit",
-                        desc: "Complete the group registration form on this page with correct contact numbers."
-                      },
-                      {
-                        num: "02",
-                        title: "Transfer Slot Fee",
-                        desc: "Make payment of ₹2,000 per seat (or full fare) using our UPI ID or Corporate bank details."
-                      },
-                      {
-                        num: "03",
-                        title: "Share Screenshot",
-                        desc: "Send the payment screenshot & ticket inquiry code to our WhatsApp support channel."
-                      },
-                      {
-                        num: "04",
-                        title: "Voucher Issued",
-                        desc: "Get certified digital boarding passes within 30 minutes, securing your spots."
-                      }
-                    ].map((step, idx) => (
-                      <div key={idx} className="flex gap-4 items-start">
-                        <span className="text-xs font-mono font-black text-[#9C753B] px-2 py-1 rounded bg-brand-sand/15 border border-brand-sand/30 shrink-0 mt-0.5">
-                          {step.num}
-                        </span>
-                        <div>
-                          <h4 className="text-xs font-black text-neutral-900 uppercase tracking-wider">{step.title}</h4>
-                          <p className="text-[10px] text-neutral-600 font-light leading-normal">{step.desc}</p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="pt-3 border-t border-neutral-200 flex justify-between text-sm">
+                    <span className="font-bold text-neutral-800">Base Group Total:</span>
+                    <span className="font-black text-neutral-900">₹{BASE_TOTAL_FARE.toLocaleString('en-IN')}</span>
                   </div>
 
+                  {/* Travo Coins Redemption */}
+                  {isLoggedIn && user && (
+                    <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-2xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-[#9C753B] text-white flex items-center justify-center text-xs font-black shadow-sm">
+                            <TravoCoinIcon className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-neutral-900">Redeem Travo Coins</p>
+                            <p className="text-[10px] text-neutral-600">Balance: <strong className="text-[#9C753B]">{user.travoCoins || 0} Coins</strong> (Worth ₹{user.travoCoins || 0})</p>
+                          </div>
+                        </div>
+
+                        {(user.travoCoins || 0) > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => setUseCoins(!useCoins)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                              useCoins
+                                ? "bg-[#9C753B] text-white shadow-sm"
+                                : "bg-white border border-neutral-300 text-neutral-800 hover:bg-neutral-50"
+                            }`}
+                          >
+                            {useCoins ? "Applied ✓" : "Apply Coins"}
+                          </button>
+                        ) : (
+                          <span className="text-[10px] text-neutral-400 font-medium">0 Coins</span>
+                        )}
+                      </div>
+
+                      {useCoins && coinsDiscount > 0 && (
+                        <p className="text-[11px] text-amber-900 font-semibold bg-white/80 p-2 rounded-xl border border-amber-200 flex items-center justify-between">
+                          <span>Travo Coins Discount:</span>
+                          <strong className="text-emerald-700">-₹{coinsDiscount.toLocaleString('en-IN')}</strong>
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Travo Coins Earning Banner */}
+                  <div className="p-3 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-2.5">
+                    <Gift className="w-4 h-4 text-[#9C753B] shrink-0" />
+                    <p className="text-[11px] text-neutral-800">
+                      You will earn <strong className="text-[#9C753B] font-black">+{potentialEarnedCoins} Travo Coins</strong> on this booking! (5 Coins per ₹100 spent)
+                    </p>
+                  </div>
+
+                  {/* Final Total Payable */}
+                  <div className="p-4 bg-neutral-900 text-white rounded-2xl space-y-1">
+                    <p className="text-[10px] uppercase font-bold text-neutral-400">Net Total Payable (100% Tax Included)</p>
+                    <p className="text-2xl font-black text-emerald-400">₹{finalPayable.toLocaleString('en-IN')}</p>
+                    <p className="text-[10px] text-neutral-300">All permits, tolls, driver allowance & GST included.</p>
+                  </div>
                 </div>
 
-              </div>
-            </div>
-
-            {/* Support Guarantee Trust Shield */}
-            <div className="p-6 rounded-3xl bg-brand-sand/10 border border-brand-sand/20 text-left space-y-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-brand-sand/20 border border-brand-sand/35 rounded-2xl text-[#9C753B]">
-                  <ShieldCheck className="w-5 h-5" />
+                <div className="p-4 bg-[#FAF9F6] rounded-2xl space-y-2 text-[11px] text-neutral-700">
+                  <p className="font-bold text-neutral-900 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#9C753B]" /> TRAVO Assured Ground Logistics
+                  </p>
+                  <ul className="space-y-1 text-neutral-600">
+                    <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-emerald-600" /> Airport / Station Pickup & Drop in AC Private Cab</li>
+                    <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-emerald-600" /> Pre-verified Deluxe / 3★ / 4★ Hotel Accommodations</li>
+                    <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-emerald-600" /> Daily Breakfast & Dinner Included</li>
+                    <li className="flex items-center gap-1.5"><Check className="w-3 h-3 text-emerald-600" /> 24x7 Dedicated Ground Support & Assistance</li>
+                  </ul>
                 </div>
-                <div>
-                  <h3 className="text-xs font-black text-neutral-900 uppercase tracking-wider font-display">
-                    Secure Group Travel Promise
-                  </h3>
-                  <p className="text-[10px] text-[#9C753B] font-mono font-bold">TRAVO OFFICIAL GUARANTEE</p>
-                </div>
-              </div>
-              <p className="text-[11px] text-neutral-700 leading-relaxed font-light">
-                All transactions are safe and verified. Spots are locked instantly on a first-come, first-serve basis. Under our <strong>100% Honest Budgets guidelines</strong>, we guarantee zero hidden costs or extra charges en route.
-              </p>
-              <div className="pt-2 border-t border-brand-sand/30 flex flex-wrap gap-x-4 gap-y-2 text-[9px] font-mono uppercase tracking-widest text-neutral-500">
-                <span>🛡️ Corporate Registered</span>
-                <span>⭐ 4.9/5 Rated Trip Leaders</span>
               </div>
             </div>
 
           </div>
+        )}
 
-        </div>
       </div>
     </div>
   );

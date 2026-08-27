@@ -115,7 +115,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-1 text-xs">
                   <p className="font-bold text-neutral-400 uppercase tracking-widest text-[9px] leading-none">Official email</p>
-                  <p className="font-black text-neutral-800 text-sm mt-0.5 break-all">expeditions@travotrips.com</p>
+                  <p className="font-black text-neutral-800 text-sm mt-0.5 break-all">hello@travotrips.com</p>
                   <p className="text-[10px] text-neutral-500 font-light">Inquiries answered in under 2 hrs</p>
                 </div>
               </div>
