@@ -158,7 +158,9 @@ export default function BookNowPage({ onNavigate, initialTripId = "andaman-dream
         const perPerson = applyMarkup(slab?.pricePerPerson ?? 0, selectedTripId);
         return {
           count,
-          label: `${count} ${count === 1 ? 'Adult' : 'Adults'} (${slab?.paxSlab || ''}) — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * count).toLocaleString('en-IN')})`,
+          // No pricing-slab jargon (e.g. "4-5 PAX") in the customer-facing label — matches how
+          // the itinerary page's own selector reads, just the count and the price.
+          label: `${count} ${count === 1 ? 'Adult' : 'Adults'} — ₹${perPerson.toLocaleString('en-IN')} / person (Total ₹${(perPerson * count).toLocaleString('en-IN')})`,
           perPersonPrice: perPerson,
           totalPrice: perPerson * count
         };

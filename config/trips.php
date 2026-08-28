@@ -60,8 +60,8 @@ return [
     'sikkim-north-gurudongmar-yumthang-darjeeling-8d7n' => ['name' => 'North Sikkim & Darjeeling High Altitude Expedition', 'price' => 17080],
 
     // Kashmir
-    'kashmir-paradise-4n5d' => ['name' => '4N/5D B2B Kashmir Tour Package (Srinagar, Sonamarg, Gulmarg & Pahalgam)', 'price' => 6000],
+    'kashmir-paradise-4n5d' => ['name' => '4N/5D Kashmir Tour Package (Srinagar, Sonamarg, Gulmarg & Pahalgam)', 'price' => 6000],
 
     // Ladakh
-    'leh-ladakh-b2b-5n6d' => ['name' => 'B2B Leh Ladakh Package (Leh, Khardung La, Nubra Valley & Pangong Lake)', 'price' => 8499],
+    'leh-ladakh-5n6d' => ['name' => 'Leh Ladakh Package (Leh, Khardung La, Nubra Valley & Pangong Lake)', 'price' => 8499],
 ];

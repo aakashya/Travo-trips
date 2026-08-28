@@ -174,7 +174,7 @@ const INITIAL_WISHLIST = [
   "andaman-island-hopper-5d4n",
   "nepal-annapurna-6d5n",
   "kashmir-paradise-4n5d",
-  "leh-ladakh-b2b-5n6d"
+  "leh-ladakh-5n6d"
 ];
 
 interface CustomerAuthContextType {

@@ -703,7 +703,7 @@ function convertKashmirToTripDetails(pkg: KashmirPackage): TripDetails {
       { category: "Essentials & Documents", items: ["Aadhaar / Voter ID / Passport for hotel & airport checkpoints", "Postpaid mobile connection (Prepaid SIM cards from other states do not work in J&K)", "Personal medications & power banks"] }
     ],
     termsAccordion: [
-      { title: "1. Validity & B2B Rates", content: "Valid from July 2025 through March 2027. Rates are per person on double sharing basis based on minimum group size mentioned in pricing slabs." },
+      { title: "1. Validity & Rates", content: "Valid from July 2025 through March 2027. Rates are per person on double sharing basis based on minimum group size mentioned in pricing slabs." },
       { title: "2. Houseboat & Hotel Category", content: "Includes 3 Nights 3-Star Hotel in Srinagar and 1 Night Deluxe Houseboat on Dal Lake with buffet breakfast & dinner." },
       { title: "3. Cab & Local Sightseeing", content: "All sightseeing by dedicated private vehicle (Sedan / Ertiga / Tempo Traveller) including toll, parking, and driver allowance. Local union cabs in Sonamarg/Aru/Betaab valley are direct payable." }
     ]

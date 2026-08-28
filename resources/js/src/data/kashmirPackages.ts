@@ -32,7 +32,7 @@ export interface KashmirPackage {
 export const KASHMIR_PACKAGES: KashmirPackage[] = [
   {
     id: "kashmir-paradise-4n5d",
-    title: "4N/5D B2B Kashmir Tour Package (Srinagar, Sonamarg, Gulmarg & Pahalgam)",
+    title: "4N/5D Kashmir Tour Package (Srinagar, Sonamarg, Gulmarg & Pahalgam)",
     subtitle: "From July to March-2027 • 3 Nights Srinagar Hotel + 1 Night Deluxe Houseboat + 1 Hr Shikara Ride",
     duration: "5 Days / 4 Nights",
     nights: 4,
@@ -40,7 +40,7 @@ export const KASHMIR_PACKAGES: KashmirPackage[] = [
     destinationsCovered: ["Srinagar", "Sonamarg", "Gulmarg", "Pahalgam", "Dal Lake Houseboat"],
     heroImage: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?q=80&w=1200&auto=format&fit=crop",
     bannerImage: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?q=80&w=1200&auto=format&fit=crop",
-    badge: "B2B SPECIAL • JULY TO MARCH 2027",
+    badge: "SEASON SPECIAL • JULY TO MARCH 2027",
     shortDescription: "Experience the paradise on earth with luxury 3-Star hotel & deluxe Dal Lake houseboat stay, buffet breakfast & dinner, 1-hour Shikara ride, and private cab sightseeing.",
     validity: "Valid from July to March-2027",
     hotelCategory: "3-Star Hotel & Deluxe Houseboat",

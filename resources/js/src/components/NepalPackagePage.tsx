@@ -335,7 +335,7 @@ Please share availability and booking confirmation details.`;
               <div className="space-y-2 pt-2 border-t border-neutral-100">
                 <label htmlFor="nepal-pax-select" className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center justify-between">
                   <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-[#9C753B]" /> 1. Adult Travelers (PAX Dropdown):</span>
-                  <span className="text-[#9C753B] font-black">{adultCount} {adultCount === 1 ? 'Adult' : 'Adults'} ({selectedPaxSlab})</span>
+                  <span className="text-[#9C753B] font-black">{adultCount} {adultCount === 1 ? 'Adult' : 'Adults'}</span>
                 </label>
 
                 <select
@@ -583,7 +583,7 @@ Please share availability and booking confirmation details.`;
           
           <div>
             <div className="flex items-center gap-2 text-[11px] text-neutral-500 font-medium">
-              <span>Group: <strong>{adultCount} Adults ({selectedPaxSlab})</strong></span>
+              <span>Group: <strong>{adultCount} Adults</strong></span>
               <span>•</span>
               <span>Category: <strong>{activeTier.categoryName}</strong></span>
               {includeEverestFlight && <span>• <strong>Everest Flight Included</strong></span>}

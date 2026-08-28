@@ -30,8 +30,8 @@ export interface LadakhPackage {
 
 export const LADAKH_PACKAGES: LadakhPackage[] = [
   {
-    id: "leh-ladakh-b2b-5n6d",
-    title: "B2B Leh Ladakh Package (Leh, Khardung La, Nubra Valley & Pangong Lake)",
+    id: "leh-ladakh-5n6d",
+    title: "Leh Ladakh Package (Leh, Khardung La, Nubra Valley & Pangong Lake)",
     subtitle: "3 Nights Leh + 1 Night Nubra + 1 Night Pangong • MAPAI Meal Plan",
     duration: "6 Days / 5 Nights",
     nights: 5,
@@ -39,7 +39,7 @@ export const LADAKH_PACKAGES: LadakhPackage[] = [
     destinationsCovered: ["Leh", "Khardung La Pass (18,380 ft)", "Nubra Valley", "Diskit Monastery", "Hunder Sand Dunes", "Pangong Tso Lake", "Changla Pass"],
     heroImage: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1200&auto=format&fit=crop",
     bannerImage: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=1200&auto=format&fit=crop",
-    badge: "B2B SPECIAL • @ ₹8,499/- PP",
+    badge: "GROUP SPECIAL • @ ₹8,499/- PP",
     shortDescription: "High-altitude road trip across the Land of High Passes with Deluxe Hotel, Luxury Camps in Nubra and Pangong, MAPAI buffet meals, Inner Line Permits, and private Scorpio/Xylo/Ertiga.",
     hotelCategory: "Deluxe Hotel, Cottage & Camp",
     pricingByPax: [

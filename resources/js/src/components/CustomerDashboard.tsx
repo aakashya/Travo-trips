@@ -856,7 +856,7 @@ export default function CustomerDashboard({ onNavigate, onOpenBooking, initialTa
                   <div className="w-8 h-8 rounded-xl bg-amber-100 text-[#9C753B] flex items-center justify-center font-bold">1</div>
                   <h5 className="font-bold text-neutral-900">Earn On Every Spend</h5>
                   <p className="text-neutral-600 leading-relaxed">
-                    For every ₹100 you spend on any B2B tour package, Kashmir package, Leh Ladakh package, or Andaman trip, you automatically earn <strong>5 Travo Coins</strong> — credited to your wallet 30 days after your payment is confirmed.
+                    For every ₹100 you spend on any tour package — Kashmir, Leh Ladakh, Andaman, or any other destination — you automatically earn <strong>5 Travo Coins</strong> — credited to your wallet 30 days after your payment is confirmed.
                   </p>
                 </div>
 

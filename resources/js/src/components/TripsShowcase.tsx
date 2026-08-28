@@ -177,7 +177,7 @@ const CITIES_DATA: CityItem[] = [
     countryFlag: "🇮🇳",
     tagline: "Dal Lake Shikaras, Gulmarg Gondola & Houseboats",
     image: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?q=80&w=800&auto=format&fit=crop",
-    keywords: ["kashmir", "srinagar", "gulmarg", "pahalgam", "sonamarg", "dal lake", "shikara", "houseboat", "b2b"],
+    keywords: ["kashmir", "srinagar", "gulmarg", "pahalgam", "sonamarg", "dal lake", "shikara", "houseboat"],
     featuredTripId: "kashmir-paradise-4n5d"
   },
   {
@@ -189,8 +189,8 @@ const CITIES_DATA: CityItem[] = [
     countryFlag: "🇮🇳",
     tagline: "Khardung La, Pangong Tso & Nubra Sand Dunes",
     image: "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=800&auto=format&fit=crop",
-    keywords: ["ladakh", "leh", "pangong", "nubra", "khardung la", "hunder", "diskit", "b2b"],
-    featuredTripId: "leh-ladakh-b2b-5n6d"
+    keywords: ["ladakh", "leh", "pangong", "nubra", "khardung la", "hunder", "diskit"],
+    featuredTripId: "leh-ladakh-5n6d"
   },
   {
     id: "udaipur-lakes",
