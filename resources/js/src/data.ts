@@ -138,7 +138,7 @@ export const MANALI_TRIP: TripDetails = {
     { id: "exp-m1", title: "Solang Paragliding Flight", tag: "2,560M ALTITUDE", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=800&auto=format&fit=crop", icon: "Sparkles" },
     { id: "exp-m2", title: "Old Manali Cafe Hopping", tag: "LIVE MUSIC & CREPES", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop", icon: "Music" },
     { id: "exp-m3", title: "Manikaran Hot Springs", tag: "NATURAL HEALING WATERS", image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=800&auto=format&fit=crop", icon: "Compass" },
-    { id: "exp-m4", title: "Riverside Bonfire Night", tag: "STARLIT ACOUSTIC JAM", image: "https://images.unsplash.com/photo-1508873696983-2df515122519?q=80&w=800&auto=format&fit=crop", icon: "Flame" }
+    { id: "exp-m4", title: "Riverside Bonfire Night", tag: "STARLIT ACOUSTIC JAM", image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800&auto=format&fit=crop", icon: "Flame" }
   ],
   inclusions: [
     { text: "Delhi to Manali & Kasol to Delhi Volvo AC Bus Tickets", icon: "Check" },

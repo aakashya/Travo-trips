@@ -33,9 +33,14 @@ class SecurityHeaders
                 "default-src 'self'",
                 "script-src 'self' 'nonce-{$nonce}' 'strict-dynamic' https://www.googletagmanager.com",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-                // GTM/GA4 fall back to plain <img> pixel beacons for some hits (e.g. googletagmanager.com/td)
-                // alongside their normal fetch/XHR beacons, so both need to be in img-src too.
-                "img-src 'self' data: https://images.unsplash.com https://commons.wikimedia.org https://www.googletagmanager.com https://www.google-analytics.com",
+                // Two things to keep in mind here:
+                // 1. commons.wikimedia.org/.../Special:FilePath/... is only the entry point — it
+                //    302s on to thumb.wikimedia.org (resized) or upload.wikimedia.org (original),
+                //    and CSP re-checks the redirect target, so those two hosts must be listed
+                //    too or every Wikimedia photo on the site is blocked in production.
+                // 2. GTM/GA4 fall back to plain <img> pixel beacons for some hits
+                //    (e.g. googletagmanager.com/td) alongside their normal fetch/XHR beacons.
+                "img-src 'self' data: https://images.unsplash.com https://commons.wikimedia.org https://upload.wikimedia.org https://thumb.wikimedia.org https://www.googletagmanager.com https://www.google-analytics.com",
                 "font-src 'self' data: https://fonts.gstatic.com",
                 "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
                 "frame-src https://www.googletagmanager.com",

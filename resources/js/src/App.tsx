@@ -88,7 +88,10 @@ const FIXED_VIEW_TITLES: Record<string, string> = {
   "not-found": "Page Not Found | TRAVO",
 };
 
-const FOOTER_BG_IMAGE = "https://unsplash.com/photos/dgyl6znQ3Q4/download?force=true&w=1800";
+// Served straight off the Unsplash CDN. The old unsplash.com/photos/<id>/download form is no
+// longer hotlinkable — it now 401s behind an anti-bot redirect, so the footer banner rendered
+// with no background at all.
+const FOOTER_BG_IMAGE = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1800&auto=format&fit=crop";
 
 const normalizePath = (pathname: string) => {
   if (pathname === "/") return pathname;
