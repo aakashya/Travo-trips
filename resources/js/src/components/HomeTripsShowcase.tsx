@@ -30,6 +30,9 @@ const CATEGORIES: { id: CountryFilter; name: string }[] = [
 // Fixed-date, small-batch departures (as opposed to the daily/flexible-departure island & hill packages).
 const GROUP_BATCH_TRIP_IDS = ["manali", "valley-of-flowers", "udaipur-lakes"];
 
+// The newest daily-departure winter routes, listed first in the catalogue (see TRIPS_LIST).
+const WINTER_EDITION_TRIP_IDS = ["chopta-tungnath-3d2n", "manali-sissu-kasol-4d3n"];
+
 interface TripBadge {
   label: string;
   className: string;
@@ -38,6 +41,12 @@ interface TripBadge {
 // One or two top-left badges per card. Andaman is the flagship destination, so it gets both a
 // "Hot" and a "Trending" badge; every other destination gets a single badge suited to its vibe.
 function getTripBadges(tripId: string): TripBadge[] {
+  if (WINTER_EDITION_TRIP_IDS.includes(tripId)) {
+    return [
+      { label: "🆕 New", className: "bg-rose-600/90" },
+      { label: "❄️ Winter Edition", className: "bg-sky-700/90" },
+    ];
+  }
   if (GROUP_BATCH_TRIP_IDS.includes(tripId)) {
     return [{ label: "👥 Group Batch", className: "bg-neutral-900/80" }];
   }

@@ -3,8 +3,16 @@
 // multiplier is defined, so every customer-facing price display (catalogue cards, trip hero,
 // each package page's own fare calculator, and the Book Now page) stays consistent.
 //
-// Manali, Valley of Flowers, and Udaipur are excluded — their listed price is the real price.
-const NO_MARKUP_TRIP_IDS = new Set(["manali", "valley-of-flowers", "udaipur-lakes"]);
+// Manali, Valley of Flowers, Udaipur and the two Winter Edition departures (Chopta, and the
+// Manali–Sissu–Kasol circuit) are excluded — their listed price is already the real, advertised
+// per-person price, not a raw operator cost.
+const NO_MARKUP_TRIP_IDS = new Set([
+  "manali",
+  "valley-of-flowers",
+  "udaipur-lakes",
+  "chopta-tungnath-3d2n",
+  "manali-sissu-kasol-4d3n",
+]);
 const MARKUP_MULTIPLIER = 1.5;
 
 export function applyMarkup(basePrice: number, tripId: string): number {

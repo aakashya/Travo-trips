@@ -4,12 +4,18 @@ namespace App\Support;
 
 /**
  * Mirrors resources/js/src/pricing.ts exactly — the internal markup applied on top of the
- * raw operator cost figures in config/trips.php. Manali, Valley of Flowers, and Udaipur are
- * excluded; their listed price is the real price. Keep both copies in sync if the rule changes.
+ * raw operator cost figures in config/trips.php. The ids listed below are excluded; their
+ * listed price is already the real advertised price. Keep both copies in sync if this changes.
  */
 class TripPricing
 {
-    private const NO_MARKUP_TRIP_IDS = ['manali', 'valley-of-flowers', 'udaipur-lakes'];
+    private const NO_MARKUP_TRIP_IDS = [
+        'manali',
+        'valley-of-flowers',
+        'udaipur-lakes',
+        'chopta-tungnath-3d2n',
+        'manali-sissu-kasol-4d3n',
+    ];
 
     private const MARKUP_MULTIPLIER = 1.5;
 

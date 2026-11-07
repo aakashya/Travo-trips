@@ -1,6 +1,15 @@
 <?php
 
 return [
+    // Winter Edition — flat per-person rates, excluded from the markup in App\Support\TripPricing
+    'chopta-tungnath-3d2n' => [
+        'name' => 'Chopta & Tungnath Winter Escape',
+        'price' => 6499,
+    ],
+    'manali-sissu-kasol-4d3n' => [
+        'name' => 'Manali, Sissu & Kasol Winter Circuit',
+        'price' => 6999,
+    ],
     'manali' => [
         'name' => 'Manali & Kasol Youth Escape',
         'price' => 9999,

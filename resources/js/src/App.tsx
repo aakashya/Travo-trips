@@ -15,6 +15,7 @@ import HomeTripsShowcase from "./components/HomeTripsShowcase";
 import CustomerAuthModal from "./components/CustomerAuthModal";
 import PageLoader from "./components/PageLoader";
 import { TRIPS_DATA } from "./data";
+import { WINTER_PACKAGE_IDS } from "./data/winterPackages";
 import { BookingPrefill } from "./types";
 import { Compass, ShieldCheck, Star, Users, Sparkles } from "lucide-react";
 
@@ -33,6 +34,7 @@ const NepalPackagePage = lazy(() => import("./components/NepalPackagePage"));
 const KeralaPackagePage = lazy(() => import("./components/KeralaPackagePage"));
 const BhutanPackagePage = lazy(() => import("./components/BhutanPackagePage"));
 const SikkimPackagePage = lazy(() => import("./components/SikkimPackagePage"));
+const WinterPackagePage = lazy(() => import("./components/WinterPackagePage"));
 const CustomerDashboard = lazy(() => import("./components/CustomerDashboard"));
 const ResetPasswordPage = lazy(() => import("./components/ResetPasswordPage"));
 const NotFoundPage = lazy(() => import("./components/NotFoundPage"));
@@ -47,7 +49,11 @@ export type AppView = string;
 // "home" falls back to the shared scenic-highway itinerary layout below —
 // that's what covers Manali, Valley of Flowers, Udaipur, Kashmir & Ladakh.
 const PACKAGE_PREFIXES = ["andaman-", "goa-", "nepal-", "kerala-", "bhutan-", "sikkim-"];
-const isPackageView = (view: string) => PACKAGE_PREFIXES.some((prefix) => view.startsWith(prefix));
+// The Winter Edition routes are matched by exact id rather than a prefix — their slugs are named
+// after the destination (chopta-…, manali-sissu-…) so they read well as URLs.
+const isWinterPackageView = (view: string) => WINTER_PACKAGE_IDS.includes(view);
+const isPackageView = (view: string) =>
+  PACKAGE_PREFIXES.some((prefix) => view.startsWith(prefix)) || isWinterPackageView(view);
 
 const FIXED_VIEW_PATHS: Record<string, string> = {
   home: "/",
@@ -341,6 +347,9 @@ export default function App() {
           )}
           {currentView.startsWith("sikkim-") && (
             <SikkimPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
+          )}
+          {isWinterPackageView(currentView) && (
+            <WinterPackagePage packageId={currentView} onNavigate={handleNavigate} onOpenBooking={handleOpenBooking} />
           )}
         </div>
       )}

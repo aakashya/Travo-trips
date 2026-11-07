@@ -8,10 +8,11 @@ import { BHUTAN_PACKAGES, BhutanPackage } from "./data/bhutanPackages";
 import { SIKKIM_PACKAGES, SikkimPackage } from "./data/sikkimPackages";
 import { KASHMIR_PACKAGES, KashmirPackage } from "./data/kashmirPackages";
 import { LADAKH_PACKAGES, LadakhPackage } from "./data/ladakhPackages";
+import { WINTER_PACKAGES, WinterPackage } from "./data/winterPackages";
 
 // Re-export packages
-export { ANDAMAN_PACKAGES, GOA_PACKAGES, NEPAL_PACKAGES, KERALA_PACKAGES, BHUTAN_PACKAGES, SIKKIM_PACKAGES, KASHMIR_PACKAGES, LADAKH_PACKAGES };
-export type { AndamanPackage, GoaPackage, NepalPackage, KeralaPackage, BhutanPackage, SikkimPackage, KashmirPackage, LadakhPackage };
+export { ANDAMAN_PACKAGES, GOA_PACKAGES, NEPAL_PACKAGES, KERALA_PACKAGES, BHUTAN_PACKAGES, SIKKIM_PACKAGES, KASHMIR_PACKAGES, LADAKH_PACKAGES, WINTER_PACKAGES };
+export type { AndamanPackage, GoaPackage, NepalPackage, KeralaPackage, BhutanPackage, SikkimPackage, KashmirPackage, LadakhPackage, WinterPackage };
 
 // Named waypoint images used by RouteJourney's Manali/Valley of Flowers/Udaipur route maps.
 export const DELHI_IMAGE = "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1800&q=85";
@@ -42,6 +43,14 @@ export const UDAIPUR_RANAKPUR_IMAGE = "https://commons.wikimedia.org/wiki/Specia
 export const UDAIPUR_KARNI_MATA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Karni%20Mata%20Ropeway%20Udaipur%20%281%29.jpg?width=1800";
 export const UDAIPUR_GANGAUR_GHAT_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Entrance%20Gate%20of%20the%20Gangaur%20Ghat.jpg?width=1800";
 export const UDAIPUR_BADI_LAKE_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Badi%20Lake%20Udaipur.jpg?width=1800";
+
+// Chopta – Tungnath (Uttarakhand) & the Sissu/Atal Tunnel leg of the Manali winter circuit.
+export const CHOPTA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Chopta%20Valley.jpg?width=1800";
+export const TUNGNATH_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Tungnath%20Temple.jpg?width=1800";
+export const CHANDRASHILA_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Chandrashila%20peak.jpg?width=1800";
+export const DEORIA_TAL_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Deoria%20Tal.jpg?width=1800";
+export const ATAL_TUNNEL_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Atal%20Tunnel.jpg?width=1800";
+export const SISSU_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Lahaul%20Valley.jpg?width=1800";
 
 // 1. Manali Kasol Original Trip
 export const MANALI_TRIP: TripDetails = {
@@ -756,6 +765,54 @@ function convertLadakhToTripDetails(pkg: LadakhPackage): TripDetails {
   };
 }
 
+// Winter Edition routes: one flat per-person rate, daily departures, so the catalogue card is
+// built straight from the package data the same way every other destination's converter does.
+function convertWinterToTripDetails(pkg: WinterPackage): TripDetails {
+  return {
+    id: pkg.id,
+    name: pkg.title,
+    subtitle: pkg.subtitle,
+    price: `₹${applyMarkup(pkg.pricePerPerson, pkg.id).toLocaleString("en-IN")}`,
+    duration: pkg.duration,
+    upcomingDeparture: pkg.departureWindow,
+    bannerImage: pkg.bannerImage,
+    heroImage: pkg.heroImage,
+    routeStops: pkg.destinationsCovered.map((dest, idx) => ({
+      id: `wstop-${pkg.id}-${idx}`,
+      name: dest,
+      coords: { x: 12 + idx * (76 / Math.max(pkg.destinationsCovered.length - 1, 1)), y: 50 + (idx % 2 === 0 ? -14 : 14) },
+      description: `${dest} — covered as part of the ${pkg.duration} itinerary.`,
+      tag: idx === 0 ? "START" : idx === pkg.destinationsCovered.length - 1 ? "FINISH" : "HIGHLIGHT"
+    })),
+    timelineItems: pkg.itinerary.map((day) => ({
+      day: `Day ${day.day}`,
+      title: day.title,
+      quote: day.timingSummary || pkg.departureWindow,
+      image: pkg.galleryPhotos[Math.min(day.day, pkg.galleryPhotos.length - 1)]?.url || pkg.heroImage,
+      highlights: day.activities
+    })),
+    experienceMoments: pkg.galleryPhotos.slice(0, 4).map((photo, idx) => ({
+      id: `wexp-${pkg.id}-${idx}`,
+      title: photo.title,
+      tag: pkg.destinationsCovered[idx] || pkg.badge,
+      image: photo.url,
+      icon: ["Sparkles", "Compass", "Flame", "Sun"][idx] || "Compass"
+    })),
+    inclusions: pkg.inclusions.map((inc) => ({ text: inc, icon: "Check" })),
+    exclusions: pkg.exclusions.map((exc) => ({ text: exc })),
+    packingChecklist: pkg.packingChecklist.map((group) => ({
+      // The package page shows these with an emoji prefix; the shared checklist widget doesn't.
+      category: group.category.replace(/^[^\w]+\s*/, ""),
+      items: group.items
+    })),
+    termsAccordion: [
+      { title: "1. Departures & Pickup Points", content: `${pkg.departureNote}. Pickup: ${pkg.pickupPoints.map(p => `${p.city} (${p.detail})`).join(", ")}.` },
+      { title: "2. Stay & Meals", content: `${pkg.nights} nights on a sharing basis — ${pkg.stayDetails.map(s => `${s.place}: ${s.property}`).join("; ")}. ${pkg.mealPlan} included. Room heaters, where available, are chargeable separately.` },
+      { title: "3. Weather, Permits & Itinerary Changes", content: "This is a winter Himalayan route. Snowfall, landslides or local permit restrictions can change the order of sightseeing or close a section at short notice — your Trip Captain adapts the plan on ground with safety as the deciding factor." }
+    ]
+  };
+}
+
 export const TRIPS_DATA: Record<string, TripDetails> = {
   "manali": MANALI_TRIP,
   "valley-of-flowers": VALLEY_TRIP,
@@ -802,11 +859,21 @@ LADAKH_PACKAGES.forEach((pkg) => {
   TRIPS_DATA[pkg.id] = convertLadakhToTripDetails(pkg);
 });
 
-// Manali, Valley of Flowers, and Udaipur are the original three trips and were inserted
-// first into TRIPS_DATA, but the catalogue and homepage listings should show them last.
+// Add converted Winter Edition packages into TRIPS_DATA
+WINTER_PACKAGES.forEach((pkg) => {
+  TRIPS_DATA[pkg.id] = convertWinterToTripDetails(pkg);
+});
+
+// Display order for the catalogue and homepage listings, independent of insertion order:
+// the two Winter Edition departures lead, then everything else, and the three original trips
+// (Manali, Valley of Flowers, Udaipur) bring up the rear.
+const TRIPS_SHOWN_FIRST = ["chopta-tungnath-3d2n", "manali-sissu-kasol-4d3n"];
 const TRIPS_SHOWN_LAST = new Set(["manali", "valley-of-flowers", "udaipur-lakes"]);
 export const TRIPS_LIST: TripDetails[] = [
-  ...Object.values(TRIPS_DATA).filter((trip) => !TRIPS_SHOWN_LAST.has(trip.id)),
+  ...TRIPS_SHOWN_FIRST.map((id) => TRIPS_DATA[id]).filter(Boolean),
+  ...Object.values(TRIPS_DATA).filter(
+    (trip) => !TRIPS_SHOWN_FIRST.includes(trip.id) && !TRIPS_SHOWN_LAST.has(trip.id),
+  ),
   ...Object.values(TRIPS_DATA).filter((trip) => TRIPS_SHOWN_LAST.has(trip.id)),
 ];
 

@@ -129,8 +129,20 @@ const CITIES_DATA: CityItem[] = [
     countryFlag: "🇮🇳",
     tagline: "Solang Snows, Parvati River & Pine Camps",
     image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80&w=800&auto=format&fit=crop",
-    keywords: ["manali", "kasol", "solang", "manikaran", "parvati", "himachal", "tosh"],
-    featuredTripId: "manali"
+    keywords: ["manali", "kasol", "solang", "manikaran", "parvati", "himachal", "tosh", "sissu", "atal tunnel", "hadimba"],
+    featuredTripId: "manali-sissu-kasol-4d3n"
+  },
+  {
+    id: "chopta-uttarakhand",
+    name: "Chopta",
+    state: "Uttarakhand",
+    country: "india",
+    countryLabel: "India",
+    countryFlag: "🇮🇳",
+    tagline: "Tungnath Temple, Chandrashila Summit & Deoria Tal",
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Tungnath%20Temple.jpg?width=800",
+    keywords: ["chopta", "tungnath", "chandrashila", "deoria", "devprayag", "uttarakhand", "garhwal"],
+    featuredTripId: "chopta-tungnath-3d2n"
   },
   {
     id: "wayanad-nature",
@@ -235,6 +247,8 @@ function getTripVibe(tripId: string): string {
   if (tripId.startsWith("bhutan-")) return "Kingdom & Heritage";
   if (tripId.startsWith("sikkim-")) return "Himalayan Vistas";
   if (tripId.startsWith("nepal-")) return "Sacred Peaks & Wildlife";
+  if (tripId === "chopta-tungnath-3d2n") return "Himalayan Summit Trek";
+  if (tripId === "manali-sissu-kasol-4d3n") return "Snow & Valley Roadtrip";
   if (tripId === "manali") return "Scenic Roadtrip";
   if (tripId === "valley-of-flowers") return "Alpine Valley Trek";
   if (tripId === "udaipur-lakes") return "Royal Heritage";

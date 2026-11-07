@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Calendar, 
@@ -15,6 +15,7 @@ import {
   List
 } from "lucide-react";
 import type { AppView } from "../App";
+import { WINTER_PACKAGES } from "../data/winterPackages";
 
 interface ScheduledTrip {
   id: string;
@@ -33,8 +34,96 @@ interface ScheduledTrip {
   image: string;
 }
 
+// ---------------------------------------------------------------------------------------
+// Winter Edition daily departures (Chopta–Tungnath & Manali–Sissu–Kasol).
+//
+// The season runs 20 Oct – 15 Dec 2026 with a departure every single day. Status is worked out
+// against the real current date rather than hardcoded, so the calendar keeps itself honest as
+// days pass: anything up to and including today reads as completed, and bookings reopen from the
+// day after tomorrow — tomorrow's bus is already closed off, so that date is simply not listed.
+// ---------------------------------------------------------------------------------------
+const WINTER_SEASON_START = "2026-10-20";
+const WINTER_SEASON_END = "2026-12-15";
+const WINTER_SEATS_PER_DEPARTURE = 40;
+
+const toDateStr = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+/**
+ * Small deterministic hash so each departure keeps the same "random" seat count between renders
+ * (Math.random() here would make the numbers jump every time React re-rendered the calendar).
+ */
+const seededCount = (seed: string, min: number, max: number) => {
+  let hash = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return min + (Math.abs(hash) % (max - min + 1));
+};
+
+function buildWinterSchedule(): ScheduledTrip[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = toDateStr(tomorrow);
+
+  const bookingOpensFrom = new Date(today);
+  bookingOpensFrom.setDate(bookingOpensFrom.getDate() + 2);
+
+  const departures: ScheduledTrip[] = [];
+  const cursor = new Date(`${WINTER_SEASON_START}T00:00:00`);
+  const seasonEnd = new Date(`${WINTER_SEASON_END}T00:00:00`);
+
+  while (cursor <= seasonEnd) {
+    const dateStr = toDateStr(cursor);
+
+    // Tomorrow's departure has closed for booking and hasn't run yet — leave it off the calendar.
+    if (dateStr !== tomorrowStr) {
+      const isCompleted = cursor <= today;
+      const isBookable = cursor >= bookingOpensFrom;
+
+      if (isCompleted || isBookable) {
+        WINTER_PACKAGES.forEach((pkg) => {
+          const slotsBooked = isCompleted
+            ? seededCount(`${pkg.id}-${dateStr}-done`, 31, WINTER_SEATS_PER_DEPARTURE)
+            : seededCount(`${pkg.id}-${dateStr}`, 6, 34);
+          const slotsLeft = WINTER_SEATS_PER_DEPARTURE - slotsBooked;
+
+          departures.push({
+            id: `${pkg.id}-${dateStr}`,
+            tripId: pkg.id,
+            name: pkg.title,
+            date: dateStr,
+            status: isCompleted ? "completed" : "open",
+            price: `₹${pkg.pricePerPerson.toLocaleString("en-IN")}`,
+            duration: pkg.duration,
+            slotsTotal: WINTER_SEATS_PER_DEPARTURE,
+            slotsBooked,
+            departureTime: "9:00 PM",
+            departurePoint: pkg.pickupPoints.map((p) => p.city).join(" / "),
+            subtitle: pkg.shortDescription,
+            badge: isCompleted
+              ? "TRIP COMPLETED"
+              : slotsLeft <= 8
+                ? "FILLING FAST"
+                : "BOOKINGS OPEN",
+            image: pkg.heroImage,
+          });
+        });
+      }
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return departures;
+}
+
 // The homepage calendar mirrors the three currently published catalogue trips.
-const UPCOMING_SCHEDULE: ScheduledTrip[] = [
+const LEGACY_SCHEDULE: ScheduledTrip[] = [
   {
     id: "manali-july-10",
     tripId: "manali",
@@ -85,6 +174,8 @@ const UPCOMING_SCHEDULE: ScheduledTrip[] = [
   }
 ];
 
+const UPCOMING_SCHEDULE: ScheduledTrip[] = [...LEGACY_SCHEDULE, ...buildWinterSchedule()];
+
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -98,12 +189,40 @@ interface UpcomingCalendarProps {
 }
 
 export default function UpcomingCalendar({ onNavigate, onOpenBooking }: UpcomingCalendarProps) {
-  // Lock starting view to July 2026 containing major expeditions
-  const [currentYear, setCurrentYear] = useState(2026);
-  const [currentMonth, setCurrentMonth] = useState(6); // 6 = July (0-indexed)
-  
-  const [selectedDateStr, setSelectedDateStr] = useState<string | null>("2026-08-07");
+  // Open on the first departure that's actually bookable, so visitors land on the live window
+  // rather than on a month of already-completed trips.
+  const firstOpenDeparture = useMemo(
+    () =>
+      [...UPCOMING_SCHEDULE]
+        .filter((trip) => trip.status === "open")
+        .sort((a, b) => a.date.localeCompare(b.date))[0] || null,
+    [],
+  );
+  const initialDate = firstOpenDeparture ? new Date(`${firstOpenDeparture.date}T00:00:00`) : new Date();
+
+  const [currentYear, setCurrentYear] = useState(initialDate.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(initialDate.getMonth());
+
+  const [selectedDateStr, setSelectedDateStr] = useState<string | null>(firstOpenDeparture?.date ?? null);
   const [displayMode, setDisplayMode] = useState<"calendar" | "list">("calendar");
+
+  // Picking a row in the Trip List pins that one departure on the right; picking a calendar date
+  // clears it so the right panel goes back to cycling through every departure on that date.
+  const [pinnedTripId, setPinnedTripId] = useState<string | null>(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
+
+  const selectDate = (dateStr: string) => {
+    setSelectedDateStr(dateStr);
+    setPinnedTripId(null);
+    setCarouselIndex(0);
+  };
+
+  const selectTripFromList = (trip: ScheduledTrip) => {
+    setSelectedDateStr(trip.date);
+    setPinnedTripId(trip.id);
+    setCarouselIndex(0);
+  };
 
   // Month navigation
   const handlePrevMonth = () => {
@@ -187,13 +306,40 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
     return map;
   }, []);
 
-  const timelineList = useMemo(
-    () => [...UPCOMING_SCHEDULE].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
-    [],
-  );
+  // The winter season runs daily, so the full schedule is ~110 departures — far too many to dump
+  // into the list view. Show the bookable ones in date order, capped, since that's what a visitor
+  // browsing this list is actually choosing between.
+  const timelineList = useMemo(() => {
+    const sorted = [...UPCOMING_SCHEDULE].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+    const open = sorted.filter((trip) => trip.status === "open").slice(0, 24);
+    return open.length > 0 ? open : sorted.slice(-12);
+  }, []);
 
   // Active selected trips details display
-  const selectedTrips = selectedDateStr ? tripsByDate[selectedDateStr] || [] : [];
+  const tripsOnSelectedDate = selectedDateStr ? tripsByDate[selectedDateStr] || [] : [];
+  // A pinned trip (chosen from the list) collapses the panel down to just that departure.
+  const selectedTrips = pinnedTripId
+    ? tripsOnSelectedDate.filter((trip) => trip.id === pinnedTripId)
+    : tripsOnSelectedDate;
+
+  const isCarousel = selectedTrips.length > 1;
+  const activeIndex = isCarousel ? carouselIndex % selectedTrips.length : 0;
+  const activeTrip = selectedTrips[activeIndex];
+
+  const goToPrevTrip = () =>
+    setCarouselIndex((i) => (i - 1 + selectedTrips.length) % selectedTrips.length);
+  const goToNextTrip = () => setCarouselIndex((i) => (i + 1) % selectedTrips.length);
+
+  // Auto-advance every 2s, paused while the pointer is over the panel (or the tab is hidden).
+  useEffect(() => {
+    if (!isCarousel || isCarouselPaused) return;
+    const timer = window.setInterval(() => {
+      setCarouselIndex((i) => (i + 1) % selectedTrips.length);
+    }, 2000);
+    return () => window.clearInterval(timer);
+  }, [isCarousel, isCarouselPaused, selectedTrips.length]);
 
   return (
     <section id="trip-calendar" className="py-14 sm:py-16 md:py-20 px-4 sm:px-6 bg-[#FAF9F6] relative border-t border-b border-neutral-200 scroll-mt-20 overflow-hidden">
@@ -274,10 +420,14 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => { setCurrentYear(2026); setCurrentMonth(6); }}
+                      onClick={() => {
+                        setCurrentYear(initialDate.getFullYear());
+                        setCurrentMonth(initialDate.getMonth());
+                        setSelectedDateStr(firstOpenDeparture?.date ?? null);
+                      }}
                       className="px-2.5 py-1.5 rounded-lg bg-neutral-50 border border-neutral-200 hover:bg-neutral-100 text-[9px] uppercase font-bold tracking-wider text-neutral-700 hover:text-[#9C753B] transition-all"
                     >
-                      Reset (July '26)
+                      Next Departure
                     </button>
                     <button 
                       onClick={handleNextMonth}
@@ -318,7 +468,7 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                     return (
                       <button
                         key={idx}
-                        onClick={() => setSelectedDateStr(dayObj.dateStr)}
+                        onClick={() => selectDate(dayObj.dateStr)}
                         className={`relative aspect-square p-0.5 sm:p-2 flex flex-col justify-between items-center rounded-lg sm:rounded-xl border text-xs font-bold transition-all ${bgClass} ${ringClass} ${
                           hasTrips ? "font-black" : dayObj.isCurrentMonth ? "text-neutral-800" : "text-neutral-400 hover:text-neutral-600"
                         }`}
@@ -364,12 +514,12 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                 </h3>
                 {timelineList.map((trip) => {
                   const date = new Date(trip.date);
-                  const isSelected = selectedDateStr === trip.date;
+                  const isSelected = pinnedTripId ? pinnedTripId === trip.id : selectedDateStr === trip.date;
                   
                   return (
                     <div
                       key={trip.id}
-                      onClick={() => setSelectedDateStr(trip.date)}
+                      onClick={() => selectTripFromList(trip)}
                       className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between ${trip.status === "completed" ? "opacity-60 bg-neutral-100" : "bg-white"} ${
                         isSelected 
                           ? "bg-neutral-50 border-[#9C753B] shadow-md" 
@@ -410,7 +560,7 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedDateStr(trip.date);
+                            selectTripFromList(trip);
                           }}
                           className="px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-[#9C753B] hover:text-white border border-neutral-200 text-[9px] font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-1 transition-all"
                         >
@@ -426,16 +576,25 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
 
           </div>
 
-          {/* Right Column: Interaction Details Panel */}
-          <div className="lg:col-span-5 h-full">
+          {/* Right Column: Interaction Details Panel.
+              With more than one departure on the selected date this becomes a carousel — one card
+              at a time, auto-advancing every 2s, paused while the pointer is over the panel.
+              A trip pinned from the Trip List shows on its own, so no arrows or dots appear. */}
+          <div
+            className="lg:col-span-5 h-full"
+            onMouseEnter={() => setIsCarouselPaused(true)}
+            onMouseLeave={() => setIsCarouselPaused(false)}
+            onFocusCapture={() => setIsCarouselPaused(true)}
+            onBlurCapture={() => setIsCarouselPaused(false)}
+          >
             <AnimatePresence mode="wait">
               {selectedTrips.length > 0 ? (
-                <div className="space-y-4">
-                  {selectedTrips.map((trip) => {
+                <div className="space-y-3">
+                  {[activeTrip].map((trip) => {
                     const isCompleted = trip.status === "completed";
                     const slotsLeft = trip.slotsTotal - trip.slotsBooked;
                     const fillingPercentage = isCompleted ? 100 : (trip.slotsBooked / trip.slotsTotal) * 100;
-                    
+
                     return (
                       <motion.div
                         key={trip.id}
@@ -558,6 +717,47 @@ export default function UpcomingCalendar({ onNavigate, onOpenBooking }: Upcoming
                       </motion.div>
                     );
                   })}
+
+                  {/* Carousel controls — only when the date actually has more than one departure */}
+                  {isCarousel && (
+                    <div className="flex items-center justify-between gap-3 px-1">
+                      <button
+                        type="button"
+                        onClick={goToPrevTrip}
+                        aria-label="Previous departure"
+                        className="w-9 h-9 shrink-0 flex items-center justify-center rounded-full bg-white border border-neutral-200 text-neutral-600 shadow-sm hover:border-[#9C753B] hover:text-[#9C753B] active:scale-95 transition-all"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+
+                      <div className="flex items-center gap-2" role="tablist" aria-label="Departures on this date">
+                        {selectedTrips.map((trip, idx) => (
+                          <button
+                            key={trip.id}
+                            type="button"
+                            role="tab"
+                            aria-selected={idx === activeIndex}
+                            aria-label={`Show ${trip.name}`}
+                            onClick={() => setCarouselIndex(idx)}
+                            className={`h-2.5 rounded-full transition-all duration-300 ${
+                              idx === activeIndex
+                                ? "w-8 bg-[#9C753B] shadow-sm"
+                                : "w-2.5 bg-neutral-300 hover:bg-neutral-400"
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={goToNextTrip}
+                        aria-label="Next departure"
+                        className="w-9 h-9 shrink-0 flex items-center justify-center rounded-full bg-white border border-neutral-200 text-neutral-600 shadow-sm hover:border-[#9C753B] hover:text-[#9C753B] active:scale-95 transition-all"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <motion.div
